@@ -84,7 +84,7 @@ services:
             - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
             - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
             - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
-            # Scraped by this repo's Alloy over kreditozrouti-monitoring-network. Only scrape + port:
+            # Scraped by the host's shared Alloy (Infrastructure monitoring/) over kreditozrouti-monitoring-network. Only scrape + port:
             # project/env/service/instance labels come from compose metadata.
             - 'prometheus.io/scrape=true'
             - 'prometheus.io/port=80'

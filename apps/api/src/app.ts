@@ -6,8 +6,9 @@ import cors, { CorsOptions } from 'cors'
 import express from 'express'
 import session from 'express-session'
 import helmet from 'helmet'
+import { sql } from 'kysely'
 import responseTime from 'response-time'
-import { redis } from '@api/clients'
+import { mysql, redis } from '@api/clients'
 import Config from '@api/Config/Config'
 import ErrorHandler from '@api/Handlers/ErrorHandler'
 import { metricsHandler, metricsMiddleware } from '@api/metrics'
@@ -79,6 +80,16 @@ app.use(responseTime())
 app.use(metricsMiddleware)
 
 app.use('/health', (req, res) => res.status(200).send('OK'))
+// Readiness for the container healthcheck and the deploy gate: MySQL and Redis must answer.
+app.get('/ready', async (_req, res) => {
+	try {
+		await sql`select 1`.execute(mysql)
+		await redis.ping()
+		res.status(200).send('OK')
+	} catch {
+		res.status(503).send('NOT READY')
+	}
+})
 app.get('/metrics', metricsHandler)
 
 // Routes

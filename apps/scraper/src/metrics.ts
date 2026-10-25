@@ -7,7 +7,7 @@ import { logger } from '@scraper/logger'
 /**
  * Prometheus metrics for one scraper replica, served on its own port (`Config.metricsPort`) and
  * scraped per container by the monitoring stack's Alloy. Names and labels are the monitoring
- * contract shared with deployment/monitoring and the Ohlidame stack. Everything is in-process:
+ * contract shared with Infrastructure's shared monitoring (`monitoring/`) and Ohlidame. Everything is in-process:
  * nothing is mirrored through Redis, so a replica's counters reset when it restarts, which
  * `increase()` in the rules already handles.
  */

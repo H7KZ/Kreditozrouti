@@ -3,8 +3,8 @@
 # Description: Builds and pushes a single service Docker image to GHCR.
 #              Called by deploy.yml for each selected service.
 #
-# Inputs: service, source_commit, environment, image_tag, no_cache
-# Outputs: image_tag (short SHA for development deploy), image_prefix
+# Inputs: service, source_commit, environment, image_tag, version, no_cache
+# Outputs: image_tag (the CalVer version YYYY.MM.DD-<run number>), image_prefix
 #          image_digest (immutable registry manifest digest)
 # Also publishes the full source SHA tag for guarded manual production promotion.
 #
@@ -32,12 +32,16 @@ on:
       image_tag:
         required: true
         type: string
+      version:
+        description: 'Release version YYYY.MM.DD-<run number>: image tag, APP_VERSION, OCI version label'
+        required: true
+        type: string
       no_cache:
         type: boolean
         default: false
     outputs:
       image_tag:
-        description: 'Short SHA used as the versioned image tag'
+        description: 'Release version tag of this build (YYYY.MM.DD-<run number>)'
         value: ${{ jobs.build.outputs.image_tag }}
       image_prefix:
         description: 'Registry path prefix without registry host (e.g. h7kz/kreditozrouti)'
@@ -73,9 +77,10 @@ jobs:
       - name: Extract Metadata
         id: meta
         env:
-          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          VERSION: ${{ inputs.version }}
         run: |
-          TAG="${SOURCE_COMMIT::8}"
+          [[ "$VERSION" =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[1-9][0-9]*$ ]] || { echo "::error::invalid version $VERSION"; exit 1; }
+          TAG="$VERSION"
           PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
           echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
@@ -110,6 +115,8 @@ jobs:
             GIT_SHA=${{ inputs.source_commit }}
           labels: |
             org.opencontainers.image.revision=${{ inputs.source_commit }}
+            org.opencontainers.image.version=${{ inputs.version }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           cache-from: ${{ !inputs.no_cache && format('type=gha,scope={0}-{1}', inputs.service, inputs.environment) || '' }}
           cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
           platforms: linux/amd64

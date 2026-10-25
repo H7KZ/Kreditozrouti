@@ -1,0 +1,161 @@
+# ==============================================================================
+# Workflow: Host Sync
+# Description: Brings the VPS in line with this repository's toolkit integration: the pinned
+#              toolkit's control copy, the units declared in deployment/toolkit.conf (enabled),
+#              /etc/toolkit/kreditozrouti.env rendered from GitHub secrets, and the first backup that
+#              enables the backup timer. Runs on every change to those files, before every deploy
+#              (workflow_call) and by hand. The toolkit refuses deploys on an unsynced host.
+# Trigger: push to main (toolkit pin, toolkit.conf, backup components), workflow_call, manual
+# ==============================================================================
+
+name: Host Sync
+run-name: 'Host Sync · ${{ inputs.ref || github.ref_name }}'
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - deployment/toolkit
+      - deployment/toolkit.conf
+      - deployment/toolkit.lock
+      - deployment/vendor/toolkit/**
+      - deployment/backup/**
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git branch, tag or SHA whose toolkit integration to install (empty = the workflow ref)
+        required: false
+        type: string
+        default: ''
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit whose toolkit integration to install
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Sync host
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: deploy-host-sync
+      cancel-in-progress: false
+    steps:
+      - name: Validate trusted SSH fingerprint
+        env:
+          SSH_HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: Build packet
+        env:
+          BACKUP_BUCKET: ${{ vars.BACKUP_BUCKET }}
+          BACKUP_B2_KEY_ID: ${{ secrets.BACKUP_B2_KEY_ID }}
+          BACKUP_B2_KEY: ${{ secrets.BACKUP_B2_KEY }}
+          BACKUP_AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+          HC_PING_KEY: ${{ secrets.HC_PING_KEY }}
+          ALERT_DISCORD_WEBHOOK_URL: ${{ secrets.ALERT_DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          umask 077
+          TOOLKIT_DIRECT=1 bash deployment/toolkit pack "$PWD/packet"
+          for key in BACKUP_BUCKET BACKUP_B2_KEY_ID BACKUP_B2_KEY BACKUP_AGE_RECIPIENT; do
+            [[ -n "${!key}" ]] || { echo "::error::$key is not set; set it with the Toolkit's secrets setup script (Toolkit docs/backups.md)"; exit 1; }
+          done
+          for key in BACKUP_BUCKET BACKUP_B2_KEY_ID BACKUP_B2_KEY BACKUP_AGE_RECIPIENT HC_PING_KEY ALERT_DISCORD_WEBHOOK_URL; do
+            [[ "${!key}" != *$'\n'* ]] || { echo "::error::$key must be one line"; exit 1; }
+            printf '%s=%s\n' "$key" "${!key}"
+          done >packet/operator.env
+      - name: Reserve isolated incoming directory
+        id: reserve
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: INCOMING_ID
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            umask 077
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner not installed: bootstrap the host (docs/runbooks/fresh-server.md)' >&2; exit 1; }
+            mkdir -p -m 700 "$HOME/kreditozrouti/incoming/host-sync"
+            mkdir -m 700 "$HOME/kreditozrouti/incoming/host-sync/$INCOMING_ID"
+        env:
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Upload packet
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          source: packet/
+          target: ~/kreditozrouti/incoming/host-sync/${{ github.run_id }}-${{ github.run_attempt }}
+          strip_components: 1
+      - name: Install on the host
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: INCOMING_ID
+          command_timeout: 25m
+          script: |
+            set -euo pipefail
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            incoming="$HOME/kreditozrouti/incoming/host-sync/$INCOMING_ID"
+            chmod 600 "$incoming/operator.env"
+            bash "$incoming/deployment/toolkit" install --deploy-user "$(id -un)" --env-file "$incoming/operator.env"
+            bash "$incoming/deployment/toolkit" doctor || echo '::warning::doctor reported problems (see above)'
+        env:
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Remove own incoming packet
+        if: always() && steps.reserve.outcome == 'success'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: INCOMING_ID
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ ]] || exit 1
+            incoming="$HOME/kreditozrouti/incoming/host-sync/$INCOMING_ID"
+            [[ ! -L "$incoming" ]] || exit 1
+            rm -rf -- "$incoming"
+        env:
+          INCOMING_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Remove local packet
+        if: always()
+        run: rm -rf -- "$GITHUB_WORKSPACE/packet"
+      - name: Alert on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.ALERT_DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [[ -n "$WEBHOOK" ]] || exit 0
+          curl -fsS -m 10 -H 'Content-Type: application/json' \
+            --data "{\"content\":\":rotating_light: **${GITHUB_REPOSITORY}** Host Sync failed: ${RUN_URL}\"}" "$WEBHOOK" >/dev/null || true

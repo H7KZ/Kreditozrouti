@@ -11,10 +11,11 @@ owns them.
 
 ## Scripts
 
-| Script        | Purpose                                                      | Requires Root |
-| ------------- | ------------------------------------------------------------ | ------------- |
-| `clone-db.sh` | Clone MySQL DB between dev and prod stacks on the same VPS   | Yes           |
-| `migrate-infrastructure.sh` | One-off: dump Infrastructure state on the old VPS, restore on the new one | Yes           |
+| Script                      | Purpose                                                                                                 | Requires Root |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- | ------------- |
+| `clone-db.sh`               | Clone MySQL DB between dev and prod stacks on the same VPS                                              | Yes           |
+| `migrate-infrastructure.sh` | One-off: dump Infrastructure state on the old VPS, restore on the new one                               | Yes           |
+| `migration-lint.mjs`        | CI: fails when a new migration's `up()` drops, renames or modifies (migrations only add; rollback-safe) | No            |
 
 `clone-db.sh` is standalone and takes no repository lock: do not start a deploy while it runs.
 
@@ -38,8 +39,8 @@ log_error() { echo "[$SCRIPT_NAME] ERROR: $*" >&2; }
 
 ## Key Docs
 
-| Topic                                                                      | Doc                                              |
-| -------------------------------------------------------------------------- | ------------------------------------------------ |
-| VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md`               |
+| Topic                                                                      | Doc                                |
+| -------------------------------------------------------------------------- | ---------------------------------- |
+| VPS-wide scripts (install-docker, maintenance, docker-cleanup, setup-swap) | `Infrastructure/scripts/CLAUDE.md` |
 
 Historical deployment migration scripts fail closed; use a reviewed owner procedure.

@@ -24,46 +24,52 @@ def main():
     slug = repository.split("/")[-1].lower()
     require(repository.lower() in ("h7kz/ohlidame", "h7kz/kreditozrouti"), "unexpected repository")
     target = os.environ["TARGET_ENVIRONMENT"]
-    require(target in ("production", "development", "monitoring", "ingress"), "invalid environment")
+    # Monitoring is shared per host and deployed by Infrastructure.
+    require(target in ("production", "development", "ingress"), "invalid environment")
     commit = os.environ["SOURCE_COMMIT"]
     require(re.fullmatch(r"[a-f0-9]{40}", commit), "source_commit must be a full SHA")
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     require(all(re.fullmatch(r"[1-9][0-9]*", value) for value in (run, attempt)), "invalid workflow identity")
+    # CalVer (YYYY.MM.DD-<run number>): image tag shown by `docker ps`, APP_VERSION and release ID.
+    version = os.environ["RELEASE_VERSION"]
+    require(re.fullmatch(r"\d{4}\.\d{2}\.\d{2}-[1-9][0-9]*", version), "RELEASE_VERSION must be YYYY.MM.DD-<run number>")
     lock = (source / "toolkit.lock").read_text(encoding="utf-8")
     versions = re.findall(r"^TOOLKIT_VERSION=([0-9]+\.[0-9]+\.[0-9]+)$", lock, re.M)
     require(len(versions) == 1, "invalid toolkit version pin")
     require(tuple(map(int, versions[0].split("."))) >= (0, 8, 1), "snapshot API requires toolkit >=0.8.1; await reviewed repin")
     app_services = ["api", "web", "scraper"] + (["mcp"] if slug == "kreditozrouti" else [])
-    services = [] if target in ("monitoring", "ingress") else app_services.copy()
+    services = [] if target == "ingress" else app_services.copy()
     if slug == "ohlidame" and target == "development":
         services.append("test-eshop")
     prefix = repository.lower()
     images, variables, digests = {}, {}, {}
-    if target not in ("monitoring", "ingress"):
+    if target != "ingress":
         variables.update(IMAGE_REGISTRY="ghcr.io", IMAGE_PREFIX=prefix)
         for service in services:
             key = service.upper().replace("-", "_")
             digest = os.environ.get(key + "_DIGEST", "")
             require(re.fullmatch(r"sha256:[a-f0-9]{64}", digest), f"complete release requires {service} digest")
             digests[service] = digest
-            images[service] = f"ghcr.io/{prefix}/{service}@{digest}"
+            # The tag is for people (`docker ps`); Docker resolves the digest.
+            images[service] = f"ghcr.io/{prefix}/{service}:{version}@{digest}"
             # Existing Compose files concatenate the reference suffix to repository/service.
-            variables[key + "_IMAGE_REFERENCE"] = "@" + digest
-            variables[key + "_IMAGE_TAG"] = commit
+            variables[key + "_IMAGE_REFERENCE"] = f":{version}@{digest}"
+            variables[key + "_IMAGE_TAG"] = version
         domain = os.environ["APP_DOMAIN"]
         require(re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?", domain), "DOMAIN must be a hostname")
         health = [f"https://{domain}/", f"https://{domain}/api/health"]
         if slug == "kreditozrouti":
             health.append(f"https://{domain}/mcp/health")
     else:
-        # Monitoring and ingress readiness is checked on the host by the post-deploy hook.
+        # Ingress readiness is checked on the host by its post-deploy hook.
         health = []
-    project = "global" if target == "ingress" else slug + ("-dev" if target == "development" else "-monitoring" if target == "monitoring" else "")
+    project = "global" if target == "ingress" else slug + ("-dev" if target == "development" else "")
     manifest = {
         "schema_version": 1,
         "repository": slug,
         "environment": "infrastructure" if target == "ingress" else target,
-        "release_id": f"{commit}-{run}-{attempt}",
+        # A rerun attempt of the same workflow run gets its own snapshot.
+        "release_id": version if attempt == "1" else f"{version}.{attempt}",
         "source_commit": commit,
         "project": project,
         "compose_files": [f"{target}/networks.yml", f"{target}/volumes.yml", f"{target}/docker-compose.{target}.yml"],
@@ -73,7 +79,7 @@ def main():
     }
     encoded = os.environ.get("QUALIFICATION_B64", "")
     if encoded:
-        require(target not in ("monitoring", "ingress"), "only application environments consume qualification")
+        require(target != "ingress", "only application environments consume qualification")
         raw = base64.b64decode(encoded, validate=True)
         require(base64.b64encode(raw).decode("ascii") == encoded, "noncanonical qualification encoding")
         checksum = os.environ.get("QUALIFICATION_SHA256", "")
@@ -89,8 +95,6 @@ def main():
         manifest["qualification"] = document
     else:
         require(not encoded and not os.environ.get("QUALIFICATION_SHA256"), "qualification checksum requires a manifest")
-    if target == "monitoring":
-        manifest.update(runtime_directories=["monitoring/.secrets"], prepare_script="monitoring/prepare.sh", post_deploy_script="monitoring/post-deploy.sh")
     if target == "ingress":
         manifest.update(runtime_directories=["ingress/.rendered"], prepare_script="ingress/prepare.sh", post_deploy_script="ingress/post-deploy.sh")
     # Only the selected Compose model and its support files enter the archive.

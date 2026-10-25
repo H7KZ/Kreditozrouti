@@ -76,18 +76,20 @@ services:
             - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-stripprefix.stripprefix.prefixes=/api'
             - "traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.regex=^https://www\\.(.*)"
             - 'traefik.http.middlewares.kreditozrouti-api-${PROJECT}-redirect-www.redirectregex.replacement=https://$${1}'
-            # Scraped by this repo's Alloy over kreditozrouti-monitoring-network. Only scrape + port:
+            # Scraped by the host's shared Alloy (Infrastructure monitoring/) over kreditozrouti-monitoring-network. Only scrape + port:
             # project/env/service/instance labels come from compose metadata.
             - 'prometheus.io/scrape=true'
             - 'prometheus.io/port=80'
 
+        # Readiness (MySQL + Redis): the deploy gate and Traefik (it skips unhealthy containers) see outages.
         healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://localhost:80/health']
-            interval: 60s
+            test: ['CMD', 'curl', '-f', 'http://localhost:80/ready']
+            interval: 30s
             timeout: 10s
             retries: 3
             start_period: 40s
             start_interval: 3s
+        stop_grace_period: 30s
 
         logging:
             driver: 'json-file'
@@ -105,11 +107,6 @@ services:
                 reservations:
                     cpus: '0.25'
                     memory: 256M
-            update_config:
-                parallelism: 1
-                delay: 10s
-                order: start-first
-                failure_action: rollback
             rollback_config:
                 parallelism: 1
                 delay: 10s
@@ -149,6 +146,16 @@ services:
             - 'prometheus.io/scrape=true'
             - 'prometheus.io/port=9101'
 
+        # Liveness of the worker process: its metrics server answers once the queue worker started.
+        healthcheck:
+            test: ['CMD', 'wget', '-qO', '/dev/null', 'http://127.0.0.1:9101/metrics']
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 30s
+            start_interval: 3s
+        # SIGTERM lets the running job finish (apps/scraper/src/index.ts); a longer one is retried as stalled.
+        stop_grace_period: 60s
         logging:
             driver: 'json-file'
             options:
@@ -165,10 +172,6 @@ services:
                 reservations:
                     cpus: '0.1'
                     memory: 128M
-            update_config:
-                parallelism: 1
-                delay: 5s
-                order: start-first
 
     # ============================================================================
     # Web Service
@@ -227,6 +230,7 @@ services:
             start_period: 20s
             start_interval: 3s
 
+        stop_grace_period: 20s
         logging:
             driver: 'json-file'
             options:
@@ -235,7 +239,7 @@ services:
 
         deploy:
             mode: replicated
-            replicas: 1
+            replicas: 2
             resources:
                 limits:
                     cpus: '1'
@@ -243,10 +247,6 @@ services:
                 reservations:
                     cpus: '0.1'
                     memory: 64M
-            update_config:
-                parallelism: 1
-                delay: 10s
-                order: start-first
 
     # ============================================================================
     # MCP Service
@@ -296,6 +296,7 @@ services:
             start_period: 20s
             start_interval: 3s
 
+        stop_grace_period: 20s
         logging:
             driver: 'json-file'
             options:
@@ -312,11 +313,6 @@ services:
                 reservations:
                     cpus: '0.1'
                     memory: 64M
-            update_config:
-                parallelism: 1
-                delay: 10s
-                order: start-first
-                failure_action: rollback
 
     # ============================================================================
     # Database (MySQL)

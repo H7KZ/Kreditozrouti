@@ -11,6 +11,11 @@ on:
       source_commit:
         required: true
         type: string
+      version:
+        description: Release version YYYY.MM.DD-<run number> (empty = today and this run number)
+        required: false
+        type: string
+        default: ''
       qualified_release_manifest_b64:
         required: false
         type: string
@@ -53,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$OPERATION" =~ ^(deploy|stage|rollback)$ ]] || exit 1
-          [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+          [[ "$TARGET_ENVIRONMENT" =~ ^(production|development|ingress)$ ]] || exit 1
           [[ "$SSH_HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || { echo 'ERROR: trusted SSH fingerprint required'; exit 1; }
       - name: Check out controller
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,6 +76,7 @@ jobs:
         env:
           TARGET_ENVIRONMENT: ${{ inputs.environment }}
           SOURCE_COMMIT: ${{ inputs.source_commit }}
+          INPUT_VERSION: ${{ inputs.version }}
           QUALIFICATION_B64: ${{ inputs.qualified_release_manifest_b64 }}
           QUALIFICATION_SHA256: ${{ inputs.qualified_manifest_sha256 }}
           API_DIGEST: ${{ inputs.api_digest }}
@@ -96,14 +102,6 @@ jobs:
           APP_PHPMYADMIN_BASIC_AUTH: ${{ secrets.PHPMYADMIN_BASIC_AUTH }}
           APP_ENVIRONMENT: ${{ inputs.environment }}
           APP_SOURCE_COMMIT: ${{ inputs.source_commit }}
-          GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
-          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
-          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
-          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
-          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
-          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
           TRAEFIK_DOMAIN: ${{ vars.TRAEFIK_DOMAIN }}
           TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
           CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
@@ -116,6 +114,9 @@ jobs:
           set -euo pipefail
           set +x
           umask 077
+          RELEASE_VERSION="${INPUT_VERSION:-$(date -u +%Y.%m.%d)-$GITHUB_RUN_NUMBER}"
+          export RELEASE_VERSION
+          echo "release_version=$RELEASE_VERSION" >>"$GITHUB_OUTPUT"
           mkdir -m 700 incoming
           python3 controller/deployment/package-release.py bundle/deployment "$PWD/incoming"
           # The deployed revision's own pinned toolkit runs the release on the VPS.
@@ -133,8 +134,9 @@ jobs:
           SOURCE_COMMIT: ${{ inputs.source_commit }}
           TARGET_ENVIRONMENT: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
+          RELEASE_VERSION: ${{ steps.packet.outputs.release_version }}
         run: |
-          printf 'Snapshot: %s-%s-%s\n\nTarget: %s; operation: %s\n' "$SOURCE_COMMIT" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$TARGET_ENVIRONMENT" "$OPERATION" >> "$GITHUB_STEP_SUMMARY"
+          printf 'Release: %s (source %s)\n\nTarget: %s; operation: %s\n' "$RELEASE_VERSION" "$SOURCE_COMMIT" "$TARGET_ENVIRONMENT" "$OPERATION" >> "$GITHUB_STEP_SUMMARY"
       - name: Reserve isolated incoming directory
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
@@ -148,7 +150,7 @@ jobs:
           script: |
             set -euo pipefail
             umask 077
-            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|ingress)$ ]] || exit 1
             [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             base="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT"
             mkdir -p -m 700 "$base"
@@ -182,7 +184,7 @@ jobs:
           command_timeout: 110m
           script: |
             set -euo pipefail
-            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|ingress)$ ]] || exit 1
             incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
             [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install the toolkit runner with: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             chmod 600 "$incoming/release.env" "$incoming/registry/config.json"
@@ -211,7 +213,7 @@ jobs:
           command_timeout: 5m
           script: |
             set -euo pipefail
-            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|monitoring|ingress)$ ]] || exit 1
+            [[ "$INCOMING_ID" =~ ^[1-9][0-9]*-[1-9][0-9]*$ && "$TARGET_ENVIRONMENT" =~ ^(production|development|ingress)$ ]] || exit 1
             incoming="$HOME/kreditozrouti/incoming/$TARGET_ENVIRONMENT/$INCOMING_ID"
             [[ ! -L "$incoming" ]] || exit 1
             rm -rf -- "$incoming"
@@ -222,3 +224,13 @@ jobs:
       - name: Remove runner registry credentials
         if: always()
         run: rm -rf -- "$GITHUB_WORKSPACE/incoming"
+      - name: Alert on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.ALERT_DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          [[ -n "$WEBHOOK" ]] || exit 0
+          curl -fsS -m 10 -H 'Content-Type: application/json' \
+            --data "{\"content\":\":rotating_light: **${GITHUB_REPOSITORY}** ${TARGET_ENVIRONMENT} ${GITHUB_WORKFLOW} failed (the toolkit restores the running release on a failed health gate): ${RUN_URL}\"}" "$WEBHOOK" >/dev/null || true
