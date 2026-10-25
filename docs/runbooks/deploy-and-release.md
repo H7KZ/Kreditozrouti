@@ -132,6 +132,10 @@ Docker resolves the digest. The version is also the release ID (a rerun attempt 
 version of the development build, so promoting the same build twice is refused (`release ID already exists`): activate it
 with Rollback instead. Builds run on GitHub-hosted runners (the VPS is too small to build) and use the GitHub token only.
 
+After a successful production `deploy`, job `release` tags the source commit `v<version>` and publishes a GitHub Release whose
+notes `deployment/release-notes.py` groups from the Conventional Commits since the previous `v*` tag (only that job has
+`contents: write`). A staged release activated later through Rollback gets no tag. `/api/health` and `/mcp/health` reports the running version and commit.
+
 **Cleanup Registry** keeps the newest `keep_newest` (6) tagged versions, anything younger than `min_age_days` (7), floating
 tags and untagged manifests, every digest in `protected_digests`, and every digest a snapshot retained on the VPS
 references (read over SSH; if that read fails nothing is deleted). Scheduled runs delete; a manual run is a dry run unless

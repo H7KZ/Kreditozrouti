@@ -207,6 +207,39 @@ jobs:
       scraper_digest: ${{ needs.resolve.outputs.scraper_digest || needs.build-scraper.outputs.image_digest }}
       mcp_digest: ${{ needs.resolve.outputs.mcp_digest || needs.build-mcp.outputs.image_digest }}
     secrets: inherit
+  release:
+    name: Tag and publish GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    needs:
+      - resolve
+      - deploy
+    if: ${{ !cancelled() && needs.deploy.result == 'success' && inputs.environment == 'production' && inputs.operation == 'deploy' }}
+    steps:
+      - name: Checkout controller with history and tags
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Create tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.resolve.outputs.version }}
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.source_commit }}
+        run: |
+          set -euo pipefail
+          tag="v$VERSION"
+          if tagged=$(git rev-parse -q --verify "refs/tags/$tag^{commit}"); then
+            [[ "$tagged" == "$SOURCE_COMMIT" ]] || { echo "::error::$tag already tags $tagged, not $SOURCE_COMMIT"; exit 1; }
+          fi
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "::notice::$tag is already released"
+            exit 0
+          fi
+          python3 deployment/release-notes.py "$VERSION" "$SOURCE_COMMIT" >"$RUNNER_TEMP/release-notes.md"
+          gh release create "$tag" --target "$SOURCE_COMMIT" --title "$tag" --notes-file "$RUNNER_TEMP/release-notes.md" --latest
+          echo "GitHub Release: \`$tag\`" >>"$GITHUB_STEP_SUMMARY"
   publish-qualified-development-release:
     name: Publish qualified development release
     runs-on: ubuntu-latest
