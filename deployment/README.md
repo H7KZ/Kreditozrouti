@@ -11,7 +11,6 @@ only maps the directory.
 | `ingress/`                                                  | Standalone-mode Traefik + CrowdSec stack, its hooks and the Cloudflare origin firewall script         |
 | `backup/components.sh`                                      | What the toolkit backs up and how it drills it                                                        |
 | `render-env.sh`, `package-release.py`, `resolve-release.py` | CI helpers: dotenv rendering, release archive and manifest, source and image resolution               |
-| `lib.sh`                                                    | File validation and short logging names over the vendored `log.sh`                                    |
 
 Read first: [Deploy and release](../docs/runbooks/deploy-and-release.md), [Rollback and recovery](../docs/runbooks/rollback-and-recovery.md),
 [Fresh server](../docs/runbooks/fresh-server.md). Toolkit mechanics: [consumer guide](https://github.com/H7KZ/Toolkit/tree/main/docs/consumers.md),

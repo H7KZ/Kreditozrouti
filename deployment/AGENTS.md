@@ -21,7 +21,7 @@ exported values. Registry and release cleanup remain deferred until recovery ref
 - Monitoring redacts before storage; this project's alert rules, dashboards and Alloy module live in Infrastructure
   (`monitoring/`). Keep `prometheus.io/scrape` / `prometheus.io/port` labels.
 - Keep database image/volume layout compatible: PostgreSQL18 mounts `/var/lib/postgresql`.
-- `lib.sh` contains file validation and short names over the vendored `vendor/toolkit/log.sh`; new scripts source `log.sh` directly.
+- Shell scripts source the vendored `vendor/toolkit/log.sh` for logging.
 - Host Sync (`host-sync.yml`) installs and enables what `toolkit.conf` declares; only a fresh server's first install is manual.
   Web runs two replicas (no `container_name`); api and mcp stay single with readiness healthchecks. Migrations are
   expand-only (`scripts/migration-lint.mjs`). New source is not evidence of a live deployment.

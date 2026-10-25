@@ -8,9 +8,8 @@
 #          image_digest (immutable registry manifest digest)
 # Also publishes the full source SHA tag for guarded manual production promotion.
 #
-# Runs on a GitHub-hosted runner (ubuntu-latest), NOT the self-hosted runner - the
-# VPS is 2vCPU/4GB and a Docker build there crashes the host. GHCR push uses
-# GITHUB_TOKEN, so this needs no extra secrets on a GitHub-hosted runner.
+# Runs on a GitHub-hosted runner (ubuntu-latest), never on the VPS: a Docker build there
+# would starve the stacks it serves. GHCR push uses GITHUB_TOKEN, so it needs no extra secrets.
 # Deploy jobs also use GitHub-hosted runners and verify the pinned host fingerprint.
 # ==============================================================================
 
