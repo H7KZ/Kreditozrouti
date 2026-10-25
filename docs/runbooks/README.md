@@ -7,7 +7,7 @@ repository follows are the [repository standard](https://github.com/H7KZ/Toolkit
 | Runbook                                           | Use it to                                                                                                                    |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Fresh server](fresh-server.md)                   | Take a clean Ubuntu VPS to a running system (shared or standalone ingress), restore data, cut over, decommission the old VPS |
-| [Deploy and release](deploy-and-release.md)       | Ship code: workflows, inputs, promote, stage and activate, monitoring, ingress                                               |
+| [Deploy and release](deploy-and-release.md)       | Ship code: workflows, inputs, promote, stage and activate, Host Sync, ingress                                                |
 | [Rollback and recovery](rollback-and-recovery.md) | Roll back a release, reconcile after a reboot, recover from data loss                                                        |
 | [Backups](backups.md)                             | Set up, verify, drill and restore the encrypted B2 backups                                                                   |
 | [Add a service](add-a-service.md)                 | Add a container service, a setting or an environment                                                                         |

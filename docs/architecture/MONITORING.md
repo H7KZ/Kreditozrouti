@@ -1,28 +1,29 @@
 # Monitoring
 
-The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://kreditozrouti.cz/grafana/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
+> **Superseded in part** (2026-10-25, [production hardening plan D5](https://github.com/H7KZ/Toolkit/tree/main/docs/plans/2026-10-production-hardening.md)): this repository no longer ships its own monitoring stack. One stack per host, owned and deployed by Infrastructure ([`monitoring/`](https://github.com/H7KZ/Infrastructure/tree/main/monitoring)), serves every repository on it; Kreditožrouti's rules, promtool tests, dashboards and Alloy module moved there unchanged. The collection contract below stands.
+
+The [shared monitoring stack](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/docker-compose.monitoring.yml) runs on the same VPS. Alloy (this project's module: [`alloy/kreditozrouti.alloy`](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/alloy/kreditozrouti.alloy)) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://monitoring.jankominek.com`; Alertmanager sends this project's alerts to its own Discord webhook (`DISCORD_WEBHOOK_URL_KREDITOZROUTI` in Infrastructure) and one host-wide Watchdog ping to healthchecks.io. Umami (one instance for every site, admin at `https://umami.jankominek.com`) provides product analytics through `/stats` on app domains.
 
 Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitoring stack has no OTLP receiver or Tempo.
 
 ## Components and retention
 
-| Component    | Current image                        | Role                                                |
-| ------------ | ------------------------------------ | --------------------------------------------------- |
-| Alloy        | `grafana/alloy:v1.19.2`              | Collection, probes, Faro receiver                   |
-| Prometheus   | `prom/prometheus:v3.14.0`            | Metrics, 15-day and 2 GB retention cap, alert rules |
-| Alertmanager | `prom/alertmanager:v0.34.0`          | Notification routing                                |
-| Loki         | `grafana/loki:3.7.7`                 | Logs, seven-day retention; Traefik logs three days  |
-| Grafana      | `grafana/grafana:13.2.1`             | Dashboards                                          |
-| Umami        | `ghcr.io/umami-software/umami:3.3.1` | Analytics                                           |
-| Umami DB     | `postgres:18.6-alpine`               | Analytics storage                                   |
+| Component    | Role                                                |
+| ------------ | --------------------------------------------------- |
+| Alloy        | Collection, probes, Faro receiver                   |
+| Prometheus   | Metrics, 15-day and 2 GB retention cap, alert rules |
+| Alertmanager | Notification routing                                |
+| Loki         | Logs, seven-day retention; Traefik logs three days  |
+| Grafana      | Dashboards                                          |
+| Umami        | Analytics (PostgreSQL storage)                      |
 
-Umami retention is the `umami-retention` toolkit job (`deployment/monitoring/umami/retain.sh`, declared in `deployment/toolkit.conf`). `deployment/toolkit install` generates its disabled timer; run `sudo deployment/toolkit job umami-retention` and validate before separate owner activation. The scheduled GitHub workflow is removed.
+Image versions and retention settings live in Infrastructure's compose and config files. Umami retention (13 months) is Infrastructure's `umami-retention` toolkit job.
 
 ## Collection contract
 
-Alloy keeps only the `kreditozrouti`, `kreditozrouti-dev`, and `kreditozrouti-monitoring` Compose projects. It derives `project`, `env`, `service`, `instance`, and `job` from Compose metadata. To expose metrics, a container joins `kreditozrouti-monitoring-network` and sets `prometheus.io/scrape=true` and `prometheus.io/port=<port>`. API serves `/metrics` on port 80; each scraper replica serves it on port 9101. Web and MCP do not expose metrics endpoints; Traefik metrics and probes cover their routes.
+This project's Alloy module keeps only the `kreditozrouti` and `kreditozrouti-dev` Compose projects. It derives `project`, `env`, `service`, `instance`, and `job` from Compose metadata. To expose metrics, a container joins `kreditozrouti-monitoring-network` and sets `prometheus.io/scrape=true` and `prometheus.io/port=<port>`. API serves `/metrics` on port 80; each scraper replica serves it on port 9101. Web and MCP do not expose metrics endpoints; Traefik metrics and probes cover their routes.
 
-Traefik routers for the app use names matching `kreditozrouti-(api|web|mcp)-<suffix>` so Alloy can select their metrics and access logs. Changing those names requires a matching [Alloy configuration](../../deployment/monitoring/alloy/config.alloy) change.
+Traefik routers for the app use names matching `kreditozrouti-(api|web|mcp)-<suffix>` so Alloy can select their metrics and access logs. Changing those names requires a matching [Alloy module](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/alloy/kreditozrouti.alloy) change in Infrastructure.
 
 Alloy removes client IPs, query strings, and private share or calendar path segments before storing logs. The web app strips sensitive URL parts before Faro and Umami send them. Container health and metrics request logs are dropped. Faro Web Vitals become `faro_web_vitals_*` metrics.
 
@@ -42,14 +43,14 @@ Application metrics include HTTP request duration, BullMQ job counts and outcome
 
 ## Alerts and dashboards
 
-Prometheus rules are in [`prometheus/rules`](../../deployment/monitoring/prometheus/rules); Loki rules are in [`loki/rules`](../../deployment/monitoring/loki/rules). Alertmanager [routes](../../deployment/monitoring/alertmanager/alertmanager.yml) incidents to Discord. `Watchdog` pings healthchecks.io so a stopped alert pipeline becomes visible. Grafana-managed alerts are no longer used.
+Prometheus rules are Infrastructure's [`prometheus/rules/kreditozrouti-*.yml`](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/prometheus/rules) with promtool tests in [`prometheus/tests/kreditozrouti.test.yml`](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/prometheus/tests); Loki rules are in [`loki/rules`](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/loki/rules). Alertmanager [routes](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/alertmanager/alertmanager.yml) this project's incidents to its Discord webhook. `Watchdog` pings healthchecks.io so a stopped alert pipeline becomes visible. Grafana-managed alerts are no longer used.
 
-Provisioned [dashboards](../../deployment/monitoring/grafana/dashboards/Kreditozrouti) cover the overview, API, scraper, web, MCP, host, and monitoring stack. The web dashboard includes Faro and Umami data.
+Provisioned [dashboards](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/grafana/dashboards/Kreditozrouti) cover the overview, API, scraper, web, MCP, host, and monitoring stack. The web dashboard includes Faro and Umami data.
 
-Run `bash deployment/monitoring/validate.sh` from a checkout after changing Alloy, Loki, Alertmanager, or Prometheus rules. The repository's reusable verification workflow runs it as well.
+Run `bash monitoring/validate.sh` from an Infrastructure checkout after changing Alloy, Loki, Alertmanager, or Prometheus rules; its checks workflow runs it as well. A metric rename here must land together with the matching rule and dashboard change there.
 
 ## Deployment, secrets and troubleshooting
 
-Deploying the stack, its secrets and recovery are operational procedures: [Deploy and release](../runbooks/deploy-and-release.md#deploy-monitoring),
-[Secrets and config](../runbooks/secrets-and-config.md#monitoring-monitoring) and [Troubleshooting](../runbooks/troubleshooting.md#monitoring).
-Moving monitoring to another host is a [draft](../runbooks/split-to-own-server.md#monitoring-on-a-separate-host-not-implemented).
+Deploying the stack, its secrets and recovery are Infrastructure's runbooks (deploy-and-release, secrets-and-config).
+This repository's side: [Secrets and config](../runbooks/secrets-and-config.md#monitoring) and
+[Troubleshooting](../runbooks/troubleshooting.md#monitoring).

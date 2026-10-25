@@ -11,7 +11,8 @@ moves back onto a shared host. The mode decision itself is explained in
 | `public-network`                                | created by Infrastructure | created by the ingress hook                                |
 | Cloudflare origin firewall (`RECONCILE_BEFORE`) | Infrastructure            | this repository (commented out until enabled)              |
 | Host updates (`MAINTENANCE_AT`)                 | Infrastructure            | this repository (commented out until enabled)              |
-| App, monitoring, backups                        | this repository           | this repository                                            |
+| Monitoring (shared stack)                       | Infrastructure            | none, unless Infrastructure's stack is deployed there      |
+| App, backups                                    | this repository           | this repository                                            |
 
 Exactly one repository per host declares each host-wide singleton. If two do, the host gets two maintenance timers or two
 competing firewall tables.
@@ -37,22 +38,21 @@ Only on a server where no other repository declares them. In `deployment/toolkit
 # JOB_CLOUDFLARE_FIREWALL_HOST_WINDOW=true
 ```
 
-1. **Local:** uncomment them and extend `JOBS=umami-retention` to `JOBS=umami-retention cloudflare-firewall`. Commit on a branch
+1. **Local:** uncomment them and add `JOBS=cloudflare-firewall`. Commit on a branch
    and let **Verify Code** pass. (`npm run check:consumers` in the Toolkit repository flags the singletons while they are
    active in an app repository; that is expected only on a repository that deliberately owns a server.)
-2. **VPS as root:** pull the revision in `/home/deploy/kreditozrouti-checkout` and reinstall so the units are generated:
+2. Merge to `main`: **Host Sync** installs and enables the firewall and maintenance timers. Then **VPS as root**, from an
+   up-to-date checkout, preview and apply the rules once:
 
     ```bash
     cd /home/deploy/kreditozrouti-checkout && git pull
-    sudo deployment/toolkit install --deploy-user deploy
     sudo bash deployment/ingress/cloudflare-firewall.sh --dry-run
     sudo deployment/toolkit job cloudflare-firewall
-    sudo systemctl enable --now toolkit-kreditozrouti-cloudflare-firewall.timer toolkit-maintenance.timer
     ```
 
 The firewall restricts ports 80/443 to Cloudflare ranges (SSH is untouched). Run `--dry-run` first and check that nothing
 else needs direct access (add monitors to `EXTRA_ALLOWED_V4` / `EXTRA_ALLOWED_V6`). Maintenance runs `apt dist-upgrade`
-under every repository lock; set `AUTO_REBOOT` deliberately in the host config. Log rotation for the Traefik access log:
+under every repository lock and holds the Docker engine packages; set `MAINTENANCE_REBOOT=true` only after a reboot drill. Log rotation for the Traefik access log:
 `sudo install -m 0644 -o root -g root /home/deploy/kreditozrouti/versions/ingress/current/ingress/logrotate/traefik /etc/logrotate.d/traefik`.
 
 ## Move back onto a shared host (standalone to shared)
@@ -60,26 +60,17 @@ under every repository lock; set `AUTO_REBOOT` deliberately in the host config. 
 Causes a short ingress outage. Do it only when Infrastructure's Traefik is ready to take over: it uses the same volume and
 network names, so certificates and CrowdSec state carry over.
 
-1. **Local:** comment the singleton lines out again, commit, merge.
-2. **VPS as root:** reinstall to remove the generated firewall and maintenance units, then free the ports:
+1. **Local:** comment the singleton lines out again, commit, merge: **Host Sync** disables and removes the firewall and
+   maintenance units.
+2. **VPS as root:** free the ports:
 
     ```bash
-    cd /home/deploy/kreditozrouti-checkout && git pull
-    sudo deployment/toolkit install --deploy-user deploy
     docker rm -f traefik crowdsec socket-proxy
     sudo -u deploy rm -f /home/deploy/kreditozrouti/versions/ingress/current /home/deploy/kreditozrouti/versions/ingress/previous   # reconcile must not restart it
     ```
 
 3. **GitHub:** run Infrastructure's **Deploy** for `traefik`. Check `docker ps --filter label=com.docker.compose.project=global`.
 4. Check the application routes and delete the `ingress` GitHub Environment secrets.
-
-## Monitoring on a separate host (not implemented)
-
-Proposal only. Alloy currently reads the local Docker socket and Traefik log volume, discovers app containers, receives Faro
-and pushes to local Prometheus and Loki. A split needs an app-host agent that keeps those links and ships metrics and logs to
-the remote Prometheus/Loki over private networking, a Faro receiver reachable from the ingress, proxy routes for Grafana and
-Umami, and a backed-up Umami database migration. Prometheus and Loki must stay private. Define authentication, firewall rules,
-volume backup, failure behaviour and a rollback before changing any Compose file.
 
 ## Verify
 

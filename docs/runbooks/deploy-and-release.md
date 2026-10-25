@@ -6,22 +6,24 @@ clean server starts at [Fresh server](fresh-server.md). Undoing a release: [Roll
 
 ## Workflows
 
-| Workflow          | File                                       | Trigger                    | Does                                                                             |
-| ----------------- | ------------------------------------------ | -------------------------- | -------------------------------------------------------------------------------- |
-| Verify Code       | `verify.yml`                               | pull request, manual, call | Lint, boundaries, tests, type-check and builds (`_verify.yml`), plus toolkit pin |
-| Deploy            | `deploy.yml`                               | push to `main`, manual     | Resolve source and images, verify, build, deploy a complete app environment      |
-| Deploy Monitoring | `deploy-monitoring.yml`                    | manual                     | Deploy the monitoring stack (Prometheus, Loki, Alloy, Grafana, Umami)            |
-| Deploy Ingress    | `deploy-ingress.yml`                       | manual                     | Deploy this repository's own Traefik. **Standalone servers only**                |
-| Rollback          | `rollback.yml`                             | manual                     | Restore, activate or reconcile a saved snapshot of any environment               |
-| Backup Verify     | `backup-verify.yml`                        | daily and weekly, manual   | Off-VPS proof that backups are fresh and restore                                 |
-| Cleanup Registry  | `registry-cleanup.yml`                     | weekly dry run, manual     | Prune old GHCR image versions                                                    |
-| (reusable)        | `_build.yml`, `_deploy.yml`, `_verify.yml` | `workflow_call`            | One image build; one complete environment deploy; the verification steps         |
+| Workflow         | File                                       | Trigger                                      | Does                                                                                                    |
+| ---------------- | ------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Verify Code      | `verify.yml`                               | pull request, manual, call                   | Lint, boundaries, tests, type-check, builds, migration lint, plus toolkit pin                           |
+| Deploy           | `deploy.yml`                               | push to `main`, manual                       | Resolve source and images, verify, build, Host Sync, deploy a complete app environment                  |
+| Host Sync        | `host-sync.yml`                            | push to `main` (toolkit files), manual, call | Install the pinned toolkit, units and `/etc/toolkit/kreditozrouti.env` on the VPS ([below](#host-sync)) |
+| Deploy Ingress   | `deploy-ingress.yml`                       | manual                                       | Deploy this repository's own Traefik. **Standalone servers only**                                       |
+| Rollback         | `rollback.yml`                             | manual                                       | Restore, activate or reconcile a saved snapshot of any environment                                      |
+| Backup Verify    | `backup-verify.yml`                        | daily and weekly, manual                     | Off-VPS proof that backups are fresh and restore                                                        |
+| Cleanup Registry | `registry-cleanup.yml`                     | weekly, manual (dry run)                     | Prune old GHCR image versions; digests retained on the VPS are protected                                |
+| (reusable)       | `_build.yml`, `_deploy.yml`, `_verify.yml` | `workflow_call`                              | One image build; one complete environment deploy; the verification steps                                |
 
 Each deploying workflow runs `bash deployment/toolkit verify` before it opens an SSH connection, and deploys of one
-environment queue behind each other (`deploy-<environment>` concurrency group, never cancelled).
+environment queue behind each other (`deploy-<environment>` concurrency group, never cancelled). Deploy, Host Sync and
+Rollback post to `ALERT_DISCORD_WEBHOOK_URL` when they fail.
 
-Environments (GitHub Environments and toolkit release targets): `production`, `development`, `monitoring`, `ingress`.
-Compose projects: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`, and `global` for ingress.
+Environments (GitHub Environments and toolkit release targets): `production`, `development`, `ingress`.
+Compose projects: `kreditozrouti`, `kreditozrouti-dev`, and `global` for ingress. Monitoring (Grafana, Prometheus, Loki,
+Alloy, Alertmanager, Umami) is the host's shared stack, deployed from Infrastructure: [Monitoring](../architecture/MONITORING.md).
 
 ## Deploy the app
 
@@ -68,20 +70,21 @@ Prepare, switch later              -> Deploy: operation=stage, then Rollback: op
 
 ### Stage and activate
 
-`operation=stage` verifies the source, pins every image to a digest and saves the snapshot as
-`<fullSHA>-<run>-<attempt>` without touching running containers. Activate it later with **Rollback**
+`operation=stage` verifies the source, pins every image to a digest and saves the snapshot under its release version
+without touching running containers. Activate it later with **Rollback**
 (`operation=activate`, that `release_id`). The release ID is printed in the run summary. Staging never counts as a
 qualification.
 
-## Deploy monitoring
+## Host Sync
 
-Dispatch **Deploy Monitoring** with `ref` (empty = workflow ref) and `operation=deploy` or `stage`. The monitoring
-GitHub Environment supplies the secrets ([Secrets and config](secrets-and-config.md)). Toolkit writes the webhook files
-into private runtime storage, starts the stack, checks readiness inside the Docker network and grants Grafana read access
-to the Umami database before moving `current`. What the stack collects: [Monitoring](../architecture/MONITORING.md).
-
-Validate config changes first: `bash deployment/monitoring/validate.sh` (needs Docker; Verify Code runs it when
-`deployment/monitoring/` changes).
+`host-sync.yml` keeps the VPS in line with this repository's toolkit integration: it packs the pinned toolkit, `toolkit.conf`
+and `deployment/backup/`, renders `/etc/toolkit/kreditozrouti.env` from GitHub secrets (`BACKUP_BUCKET` variable,
+`BACKUP_B2_KEY_ID`, `BACKUP_B2_KEY`, `BACKUP_AGE_RECIPIENT`, `HC_PING_KEY`, `ALERT_DISCORD_WEBHOOK_URL`) and runs
+`deployment/toolkit install --env-file` on the host, then `doctor`. Install refreshes `/opt/toolkit/kreditozrouti`, enables
+the declared units (boot reconcile, backup timer after one successful backup) and removes undeclared ones. It runs as the
+first job of every Deploy, on every push to `main` that touches the pin, `toolkit.conf` or `deployment/backup/`, and by hand
+(`gh workflow run host-sync.yml`). The toolkit refuses a deploy on an unsynced host (`host is not synced`); rollback never
+needs it.
 
 ## Deploy ingress (standalone servers only)
 
@@ -111,18 +114,28 @@ Facts specific to this repository:
   ([Troubleshooting](troubleshooting.md#a-deploy-fails-on-a-data-image-mismatch)).
 - Dotenv values are literal single-quoted: `$`, `#` and backticks stay literal. A single quote, control character or
   trailing backslash in any secret fails the deploy without printing it.
-- Health: production and development need three consecutive `2xx` from `/`, `/api/health` and `/mcp/health` on the
-  public domain, followed from the VPS. Monitoring and ingress are checked on the host by their post-deploy hooks.
+- Health: production and development need three consecutive `2xx` from `/`, `/api/health` and `/mcp/health`, probed
+  through the host's own Traefik (`127.0.0.1:443` with the real hostname), so a release qualifies before DNS points at the
+  host. The api container's healthcheck is `/ready` (MySQL and Redis). When the gate fails the toolkit re-applies `current`
+  and the run fails with `rolled back automatically`. Ingress is checked on the host by its post-deploy hook.
+- `web` runs two replicas, replaced start-first; the other services are single.
+- Images of the newest three snapshots plus `current` and `previous` stay on the host; a rollback pulls nothing.
+- Migrations are expand-only: `scripts/migration-lint.mjs` (CI) rejects a new migration that drops, renames or modifies.
+  A production deploy over a running release takes a backup first.
 
 ## Images and tags
 
-`_build.yml` pushes each service to `ghcr.io/<owner>/<repo>/<service>` with an eight-character SHA tag, the full SHA, an
-`<environment>-<fullSHA>` tag and a floating `latest` (production) or `dev-latest`. The registry digest is what is
-deployed. Builds run on GitHub-hosted runners (the VPS is too small to build) and use the GitHub token only.
+`_build.yml` pushes each service to `ghcr.io/<owner>/<repo>/<service>` tagged with the **release version** (CalVer
+`YYYY.MM.DD-<run number>`, also `APP_VERSION` and the OCI version label), the full SHA, an `<environment>-<fullSHA>` tag and a
+floating `latest` (production) or `dev-latest`. Deploys reference `name:version@sha256:digest`: `docker ps` shows the version,
+Docker resolves the digest. The version is also the release ID (a rerun attempt appends `.<attempt>`); a promotion keeps the
+version of the development build, so promoting the same build twice is refused (`release ID already exists`): activate it
+with Rollback instead. Builds run on GitHub-hosted runners (the VPS is too small to build) and use the GitHub token only.
 
 **Cleanup Registry** keeps the newest `keep_newest` (6) tagged versions, anything younger than `min_age_days` (7), floating
-tags and untagged manifests, and every digest in `protected_digests`. Scheduled runs are always dry runs. Before a live
-run, list every current, previous and retained recovery digest in `protected_digests`: they live on the VPS, not in CI.
+tags and untagged manifests, every digest in `protected_digests`, and every digest a snapshot retained on the VPS
+references (read over SSH; if that read fails nothing is deleted). Scheduled runs delete; a manual run is a dry run unless
+`dry_run` is unticked.
 
 ## Verify
 
@@ -132,7 +145,7 @@ After any deploy:
 curl -fsS https://kreditozrouti.cz/api/health     # local
 curl -fsS https://kreditozrouti.cz/mcp/health
 docker ps --filter label=com.docker.compose.project=kreditozrouti   # VPS as deploy
-ls -l ~/kreditozrouti/versions/production/current                    # points at the new <SHA>-<run>-<attempt>
+ls -l ~/kreditozrouti/versions/production/current                    # points at the new release, e.g. 2026.10.25-87
 ```
 
 The run summary of **Deploy** names the snapshot. For development the publish job must also be green; that is the

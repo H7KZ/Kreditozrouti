@@ -32,12 +32,12 @@ ingress step differs.
 
 - **Cloudflare:** the `kreditozrouti.cz` zone with proxying on. Standalone mode also needs a scoped API token
   (`Zone:DNS:Edit` on that zone) for the DNS-01 certificate challenge, and a hostname for the Traefik dashboard.
-- **Backblaze B2:** the bucket, writer key (for the VPS), reader key (for GitHub verification) and the offline age
-  identity. If they exist already (moving servers) keep them; otherwise follow [Backups](backups.md#set-up-a-new-bucket).
-- **Healthchecks.io:** the four backup checks and the Watchdog check. Reuse the existing URLs.
+- **Backblaze B2 and Healthchecks.io:** the host's bucket, writer and reader keys, the offline age identity and the
+  Healthchecks project. The Toolkit's `scripts/setup-secrets.py --apply` puts them into this repository's secrets and
+  creates the backup checks ([Backups](backups.md#set-up)). If they exist already (moving servers) keep them.
 - **GHCR images:** a deployment reuses already built images. They exist if the old deployment ran
   ([Deploy and release](deploy-and-release.md#modes)).
-- **Recovery kit (offline):** age identity, B2 keys, Healthchecks URLs, and every value listed in
+- **Recovery kit (offline):** age identity, B2 keys, Healthchecks keys, and every value listed in
   [Secrets and config](secrets-and-config.md). Restoring uses the **original** values for secrets the data depends on.
 
 ## 2. Host preparation (VPS as root)
@@ -85,13 +85,14 @@ sudo sshd -t && sudo systemctl reload ssh
 
 Test a new login as `deploy` (and your admin user) before closing the old session.
 
-Optional host tuning (swap, bounded Docker logs) is a Toolkit feature:
-[host configuration](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md#host-configuration-swap-docker-logs).
+Host tuning (swap, Docker `live-restore` and bounded logs, held Docker packages) is a Toolkit feature declared by the
+host's owner (Infrastructure on a shared host):
+[host configuration](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
 
-## 3. Install the pinned toolkit (VPS as deploy, then root)
+## 3. Bootstrap the toolkit (once per server; VPS as deploy, then root)
 
-The repository carries the toolkit release it deploys with. The checkout below is only for this one-time install and
-for later pin changes; deploys never read it.
+The repository carries the toolkit release it deploys with. The checkout below is only for this one-time install;
+deploys never read it.
 
 ```bash
 # VPS as deploy (a private repository needs a read-only deploy key or token for this clone)
@@ -106,18 +107,17 @@ cd /home/deploy/kreditozrouti-checkout
 sudo deployment/toolkit install --deploy-user deploy
 ```
 
-Install places the bundle loader `/usr/local/libexec/toolkit-run-bundle` with the deploy user's only sudo rule, the
-root-owned control copy `/opt/toolkit/kreditozrouti/`, the backup tools, and the systemd units declared in
-[`deployment/toolkit.conf`](../../deployment/toolkit.conf). It enables nothing and touches no containers. Rerun it
-after every toolkit pin change or change to a script `toolkit.conf` references. Mechanics:
-[Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
-
-Create the operator env file for backups now (see [Backups](backups.md#host-setup)) or after the first deploy; nothing
-needs it until a backup runs.
+Install places the bundle loader `/usr/local/libexec/toolkit-run-bundle` with the deploy user's only sudo rule, which
+every workflow needs. From then on the **Host Sync** workflow owns the host side
+([Deploy and release](deploy-and-release.md#host-sync)): the root-owned control copy `/opt/toolkit/kreditozrouti/`,
+`/etc/toolkit/kreditozrouti.env` rendered from GitHub secrets, the units declared in
+[`deployment/toolkit.conf`](../../deployment/toolkit.conf) (enabled), and the first backup that enables the backup timer.
+Mechanics: [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
 
 ## 4. GitHub secrets, variables and environments (GitHub)
 
-1. Create the GitHub Environments `production`, `development`, `monitoring` and, for standalone mode, `ingress`.
+1. Create the GitHub Environments `production`, `development` and, for standalone mode, `ingress`. The backup and alert
+   secrets are repository-scope, set by the Toolkit's `setup-secrets.py`.
 2. Update the connection secrets (`SSH_HOST`, `SSH_PORT`, `SSH_PRIVATE_KEY`, `SSH_HOST_FINGERPRINT`, variable
    `SSH_USER`) to the **new** server.
 3. Fill the per-environment secrets and variables exactly as listed in [Secrets and config](secrets-and-config.md).
@@ -136,23 +136,25 @@ Run each from **Actions**, from the branch you want to ship. Wait for green befo
       for health.
     - Shared: confirm Infrastructure's Traefik is healthy on the host
       (`docker ps --filter label=com.docker.compose.project=global`), and skip.
-2. **Deploy** with `environment=production`, `operation=deploy`, `mode=promote` (leave `ref` and `run_id` empty to
+    - Monitoring is the host's shared stack from Infrastructure (Deploy, `environment=monitoring`); deploy it after
+      the ingress. A standalone server runs without monitoring unless Infrastructure's stack is deployed there too.
+2. **Host Sync** (`gh workflow run host-sync.yml`). Deploy runs it too; alone first, it surfaces missing secrets early.
+3. **Deploy** with `environment=production`, `operation=deploy`, `mode=promote` (leave `ref` and `run_id` empty to
    promote the latest qualified development release). If no qualified release exists, use `mode=reuse` with the `ref`
    whose images exist. Modes: [Deploy and release](deploy-and-release.md#modes).
-3. **Deploy Monitoring**, `operation=deploy`.
 4. **Deploy** with `environment=development` if you want the development environment on this host.
 
 Toolkit creates the missing `kreditozrouti-*` networks and volumes itself during the first deploy of each environment.
 `public-network` comes from the ingress step.
 
-Verify on the host (**VPS as deploy**). While DNS still points at another server the public health check the toolkit
-performs follows DNS, so check this host directly:
+Verify on the host (**VPS as deploy**). The toolkit's health gate already probed this host's own Traefik; check it
+directly as well while DNS still points elsewhere:
 
 ```bash
 docker ps --filter label=com.docker.compose.project=kreditozrouti --format '{{.Names}} {{.Status}}'
 curl -fsS --resolve kreditozrouti.cz:443:127.0.0.1 https://kreditozrouti.cz/api/health
 curl -fsS --resolve kreditozrouti.cz:443:127.0.0.1 https://kreditozrouti.cz/mcp/health
-ls -l ~/kreditozrouti/versions/production/current ~/kreditozrouti/versions/monitoring/current
+ls -l ~/kreditozrouti/versions/production/current
 ```
 
 An empty database is created on first start: the API runs migrations at startup. Continue with the restore in step 7
@@ -164,60 +166,60 @@ In shared mode Infrastructure owns the Cloudflare origin firewall, log rotation 
 In standalone mode this repository does, and the lines are commented out in `deployment/toolkit.conf`:
 
 1. **Local:** in `deployment/toolkit.conf` uncomment `MAINTENANCE_AT`, `RECONCILE_BEFORE` and the
-   `cloudflare-firewall` job lines, set `JOBS=umami-retention cloudflare-firewall`, commit and let CI verify. See
-   [Split to own server](split-to-own-server.md#enable-the-host-wide-singletons).
-2. **VPS as deploy:** pull that revision in the checkout, then **VPS as root** reinstall the units and preview the rules:
+   `cloudflare-firewall` job lines, set `JOBS=cloudflare-firewall`, commit and push; Host Sync installs and enables the
+   units. See [Split to own server](split-to-own-server.md#enable-the-host-wide-singletons).
+2. **VPS as root**, from the checkout (`git pull` first): preview the rules, apply once, install the log rotation:
 
     ```bash
     cd /home/deploy/kreditozrouti-checkout && git pull
-    sudo deployment/toolkit install --deploy-user deploy
     sudo bash deployment/ingress/cloudflare-firewall.sh --dry-run
     sudo deployment/toolkit job cloudflare-firewall
     sudo install -m 0644 -o root -g root /home/deploy/kreditozrouti/versions/ingress/current/ingress/logrotate/traefik /etc/logrotate.d/traefik
-    sudo systemctl enable --now toolkit-kreditozrouti-cloudflare-firewall.timer toolkit-maintenance.timer
     ```
 
 The firewall is re-applied at every boot before containers are reconciled. SSH is not covered by it (only 80/443 are).
 
 ## 7. Restore data from B2 (restoring a previous deployment)
 
-Skip this on a first-ever installation. Otherwise restore MySQL, the Umami database and the durable Redis keys using
-[Backups: restore](backups.md#restore). Do it before DNS cutover, with production running but unannounced.
+Skip this on a first-ever installation. Otherwise restore MySQL and the durable Redis keys using
+[Backups: restore](backups.md#restore) (Umami is restored by Infrastructure). Do it before DNS cutover, with production
+running but unannounced.
 
-## 8. Activate recovery and schedules (VPS as root)
+## 8. Check recovery and schedules (VPS as deploy)
 
-Only after steps 5 and 7 pass. Install never enabled anything; enabling is deliberate.
+Host Sync already enabled the boot reconcile and, after one successful backup, the backup timer. Confirm:
 
 ```bash
-sudo systemctl start toolkit-kreditozrouti-reconcile.service     # manual reconcile first
-sudo systemctl enable toolkit-kreditozrouti-reconcile.service
-sudo deployment/toolkit backup run daily && sudo deployment/toolkit backup list
-sudo systemctl enable --now toolkit-kreditozrouti-backup@4h.timer toolkit-kreditozrouti-backup@daily.timer
-sudo deployment/toolkit job umami-retention
-sudo systemctl enable --now toolkit-kreditozrouti-umami-retention.timer
-deployment/toolkit doctor
+deployment/toolkit doctor                                   # no fail: units enabled, last backup fresh
+systemctl list-timers 'toolkit-kreditozrouti-*'
+sudo systemctl start toolkit-kreditozrouti-reconcile.service  # reconcile once by hand: nothing changes
 ```
 
-Run the commands from `/home/deploy/kreditozrouti-checkout`. Check that Healthchecks received the backup ping.
+Check that Healthchecks received the `kreditozrouti-backup` ping.
 
 ## 9. Cut over and decommission the old VPS
 
 When moving servers, in this order:
 
-1. **Old VPS as root:** take a last backup and stop writers so nothing is captured twice:
+1. **Old VPS as root:** stop writers, take a last pinned copy and stop the timer so nothing is captured twice:
 
     ```bash
-    sudo deployment/toolkit backup run daily
-    sudo systemctl disable --now toolkit-kreditozrouti-backup@4h.timer toolkit-kreditozrouti-backup@daily.timer
+    sudo deployment/toolkit backup run --pinned
+    sudo systemctl disable --now toolkit-kreditozrouti-backup.timer
     ```
 
-2. Restore that backup on the new server (step 7) if it is newer than the one you restored.
-3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz`, `dev.kreditozrouti.cz` and
-   `umami.kreditozrouti.cz` at the new server. Lower the TTL a day earlier.
+2. Restore that copy on the new server (step 7, `--tier pinned`).
+3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz` and `dev.kreditozrouti.cz` at the
+   new server. Lower the TTL a day earlier. Umami and Grafana are served by Infrastructure on `umami.jankominek.com` and
+   `monitoring.jankominek.com`.
 4. Check `https://kreditozrouti.cz/api/health`, `/mcp/health`, a scraper run, Grafana, and that **Backup Verify** is
    green from GitHub (run it manually, `check=both`).
+
 5. Keep the old server stopped, not deleted, for a week. Then delete it and revoke the old deploy key and any old B2
    writer key.
+
+Moving every repository of a shared host at once follows Infrastructure's
+[migrate-host runbook](https://github.com/H7KZ/Infrastructure/tree/main/docs/runbooks/migrate-host.md).
 
 ## Verify the whole thing
 
