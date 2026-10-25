@@ -79,7 +79,8 @@ app.use(LoggerMiddleware)
 app.use(responseTime())
 app.use(metricsMiddleware)
 
-app.use('/health', (req, res) => res.status(200).send('OK'))
+// Liveness plus the running build; the deploy gate and probes need only the 200.
+app.use('/health', (_req, res) => res.status(200).json({ status: 'ok', version: Config.build.version, commit: Config.build.commit }))
 // Readiness for the container healthcheck and the deploy gate: MySQL and Redis must answer.
 app.get('/ready', async (_req, res) => {
 	try {

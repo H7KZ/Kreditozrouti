@@ -32,6 +32,10 @@ RUN apk add --no-cache curl && \
     adduser -S mcp -G mcp
 WORKDIR /app
 COPY --from=builder --chown=mcp:mcp /app/deploy .
+# The running build, reported by /health. Last, so it never busts a cached layer.
+ARG APP_VERSION=unknown
+ARG GIT_SHA=unknown
+ENV APP_VERSION=$APP_VERSION GIT_SHA=$GIT_SHA
 USER mcp
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

@@ -9,6 +9,8 @@ interface Config {
 	baseUrl: string
 	jwtSecret: string
 	allowedRedirectHosts: string[]
+	/** The running build (`APP_VERSION`, `GIT_SHA`), stamped into the image at build time. */
+	build: { version: string; commit: string }
 }
 
 function required(name: string): string {
@@ -36,7 +38,8 @@ const config: Config = {
 	logLevel: process.env.LOG_LEVEL ?? 'info',
 	baseUrl: process.env.MCP_BASE_URL ?? 'http://localhost:3000',
 	jwtSecret: resolveJwtSecret(),
-	allowedRedirectHosts: parseAllowedRedirectHosts(process.env.MCP_ALLOWED_REDIRECT_HOSTS)
+	allowedRedirectHosts: parseAllowedRedirectHosts(process.env.MCP_ALLOWED_REDIRECT_HOSTS),
+	build: { version: process.env.APP_VERSION ?? 'unknown', commit: process.env.GIT_SHA ?? 'unknown' }
 }
 
 export default config
