@@ -17,8 +17,8 @@
 	"devDependencies": {
 		"@grafana/faro-web-sdk": "^2.12.1",
 		"@ianvs/prettier-plugin-sort-imports": "catalog:",
-		"@iconify-json/lucide": "^1.2.144",
-		"@intlify/unplugin-vue-i18n": "^11.2.6",
+		"@iconify-json/lucide": "^1.2.146",
+		"@intlify/unplugin-vue-i18n": "^11.2.7",
 		"@tailwindcss/typography": "^0.5.20",
 		"@tailwindcss/vite": "^4.3.3",
 		"@tsconfig/node22": "^22.0.6",
@@ -61,7 +61,7 @@
 		"vite-plugin-vue-devtools": "^8.2.1",
 		"vitest": "catalog:",
 		"vue": "^3.5.44",
-		"vue-i18n": "^11.4.14",
+		"vue-i18n": "^11.4.16",
 		"vue-router": "^5.4.0",
 		"vue-tsc": "^3.3.13",
 		"zod": "catalog:"
