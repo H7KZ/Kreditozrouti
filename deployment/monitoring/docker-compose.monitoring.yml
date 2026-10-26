@@ -258,7 +258,7 @@ services:
                     cpus: '0.3'
                     memory: 128M
     umami:
-        image: ghcr.io/umami-software/umami:3.4.0
+        image: ghcr.io/umami-software/umami:3.4.1
         restart: unless-stopped
         depends_on:
             umami-db:
