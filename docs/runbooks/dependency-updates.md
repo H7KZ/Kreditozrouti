@@ -48,8 +48,8 @@ An `ignore` entry blocks only the listed update type; minor and patch updates of
 2. Check CI. `Verify Code` runs formatting, lint, type-check, tests, the build, ShellCheck, the monitoring validation and the toolkit pin check.
    It does **not** build the Docker images, start the Compose stack or exercise a database against a new engine version.
 3. A merged bump changes nothing on a server until a deploy runs it: merging to `main` triggers the workflows described in
-   [Deploy and release](deploy-and-release.md); infrastructure images in `deployment/ingress` move only through
-   **Deploy Ingress**, run by hand. Monitoring images are Infrastructure's.
+   [Deploy and release](deploy-and-release.md); infrastructure images in `deployment/ingress` and `deployment/monitoring` move only through
+   **Deploy Ingress** and **Deploy Monitoring**, run by hand.
 4. For an image PR read the upstream release notes for a changed default, a removed environment variable or a migration. For a patch or
    minor bump of a database engine, check that a recent backup exists ([Backups](backups.md)).
 5. Merge minor/patch PRs once green. A PR that fails CI: `@dependabot rebase` once, then fix by hand on its branch or close it with

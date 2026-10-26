@@ -116,7 +116,7 @@ Mechanics: [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/h
 
 ## 4. GitHub secrets, variables and environments (GitHub)
 
-1. Create the GitHub Environments `production`, `development` and, for standalone mode, `ingress`. The backup and alert
+1. Create the GitHub Environments `production`, `development`, `monitoring` and, for standalone mode, `ingress`. The backup and alert
    secrets are repository-scope, set by the Toolkit's `setup-secrets.py`.
 2. Update the connection secrets (`SSH_HOST`, `SSH_PORT`, `SSH_PRIVATE_KEY`, `SSH_HOST_FINGERPRINT`, variable
    `SSH_USER`) to the **new** server.
@@ -136,13 +136,12 @@ Run each from **Actions**, from the branch you want to ship. Wait for green befo
       for health.
     - Shared: confirm Infrastructure's Traefik is healthy on the host
       (`docker ps --filter label=com.docker.compose.project=global`), and skip.
-    - Monitoring is the host's shared stack from Infrastructure (Deploy, `environment=monitoring`); deploy it after
-      the ingress. A standalone server runs without monitoring unless Infrastructure's stack is deployed there too.
 2. **Host Sync** (`gh workflow run host-sync.yml`). Deploy runs it too; alone first, it surfaces missing secrets early.
-3. **Deploy** with `environment=production`, `operation=deploy`, `mode=promote` (leave `ref` and `run_id` empty to
+3. **Deploy Monitoring**, `operation=deploy` (this repository's own stack; it creates `kreditozrouti-monitoring-network`).
+4. **Deploy** with `environment=production`, `operation=deploy`, `mode=promote` (leave `ref` and `run_id` empty to
    promote the latest qualified development release). If no qualified release exists, use `mode=reuse` with the `ref`
    whose images exist. Modes: [Deploy and release](deploy-and-release.md#modes).
-4. **Deploy** with `environment=development` if you want the development environment on this host.
+5. **Deploy** with `environment=development` if you want the development environment on this host.
 
 Toolkit creates the missing `kreditozrouti-*` networks and volumes itself during the first deploy of each environment.
 `public-network` comes from the ingress step.
@@ -154,7 +153,7 @@ directly as well while DNS still points elsewhere:
 docker ps --filter label=com.docker.compose.project=kreditozrouti --format '{{.Names}} {{.Status}}'
 curl -fsS --resolve kreditozrouti.cz:443:127.0.0.1 https://kreditozrouti.cz/api/health
 curl -fsS --resolve kreditozrouti.cz:443:127.0.0.1 https://kreditozrouti.cz/mcp/health
-ls -l ~/kreditozrouti/versions/production/current
+ls -l ~/kreditozrouti/versions/production/current ~/kreditozrouti/versions/monitoring/current
 ```
 
 An empty database is created on first start: the API runs migrations at startup. Continue with the restore in step 7
@@ -166,7 +165,7 @@ In shared mode Infrastructure owns the Cloudflare origin firewall, log rotation 
 In standalone mode this repository does, and the lines are commented out in `deployment/toolkit.conf`:
 
 1. **Local:** in `deployment/toolkit.conf` uncomment `MAINTENANCE_AT`, `RECONCILE_BEFORE` and the
-   `cloudflare-firewall` job lines, set `JOBS=cloudflare-firewall`, commit and push; Host Sync installs and enables the
+   `cloudflare-firewall` job lines, set `JOBS=umami-retention cloudflare-firewall`, commit and push; Host Sync installs and enables the
    units. See [Split to own server](split-to-own-server.md#enable-the-host-wide-singletons).
 2. **VPS as root**, from the checkout (`git pull` first): preview the rules, apply once, install the log rotation:
 
@@ -181,9 +180,8 @@ The firewall is re-applied at every boot before containers are reconciled. SSH i
 
 ## 7. Restore data from B2 (restoring a previous deployment)
 
-Skip this on a first-ever installation. Otherwise restore MySQL and the durable Redis keys using
-[Backups: restore](backups.md#restore) (Umami is restored by Infrastructure). Do it before DNS cutover, with production
-running but unannounced.
+Skip this on a first-ever installation. Otherwise restore MySQL, the Umami database and the durable Redis keys using
+[Backups: restore](backups.md#restore). Do it before DNS cutover, with production running but unannounced.
 
 ## 8. Check recovery and schedules (VPS as deploy)
 
@@ -209,9 +207,8 @@ When moving servers, in this order:
     ```
 
 2. Restore that copy on the new server (step 7, `--tier pinned`).
-3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz` and `dev.kreditozrouti.cz` at the
-   new server. Lower the TTL a day earlier. Umami and Grafana are served by Infrastructure on `umami.jankominek.com` and
-   `monitoring.jankominek.com`.
+3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz`, `dev.kreditozrouti.cz` and
+   `umami.kreditozrouti.cz` at the new server. Lower the TTL a day earlier.
 4. Check `https://kreditozrouti.cz/api/health`, `/mcp/health`, a scraper run, Grafana, and that **Backup Verify** is
    green from GitHub (run it manually, `check=both`).
 

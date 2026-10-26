@@ -8,12 +8,12 @@ gate fails needs none of this: the toolkit already re-applied `current`, and the
 
 Dispatch **Rollback** (`rollback.yml`), from any branch:
 
-| Input         | Values (default first)              | Meaning                                                                                      |
-| ------------- | ----------------------------------- | -------------------------------------------------------------------------------------------- |
-| `environment` | `production`, `development`         | What to act on (monitoring is rolled back from Infrastructure)                               |
-| `ref`         | empty                               | Controller branch, tag or SHA whose pinned toolkit runs the operation                        |
-| `operation`   | `rollback`, `activate`, `reconcile` | Restore a saved snapshot, activate a staged one, or reconcile the current one                |
-| `release_id`  | `previous`                          | `previous`, `current` or a release version such as `2026.10.25-87` (ignored for `reconcile`) |
+| Input         | Values (default first)                    | Meaning                                                                                      |
+| ------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `environment` | `production`, `development`, `monitoring` | What to act on                                                                               |
+| `ref`         | empty                                     | Controller branch, tag or SHA whose pinned toolkit runs the operation                        |
+| `operation`   | `rollback`, `activate`, `reconcile`       | Restore a saved snapshot, activate a staged one, or reconcile the current one                |
+| `release_id`  | `previous`                                | `previous`, `current` or a release version such as `2026.10.25-87` (ignored for `reconcile`) |
 
 - The standalone `ingress` target is rolled back from **Deploy Ingress** with `operation=rollback` (restores `previous`). To activate a specific snapshot, run on the VPS: `bash deployment/toolkit release activate ingress --release-id <id> --registry-config <dir>`.
 - `rollback` with `previous` returns to the snapshot that was current before the last successful deploy.
@@ -68,13 +68,12 @@ Reference: [Toolkit commands](https://github.com/H7KZ/Toolkit/tree/main/docs/com
 
 ## Restore data from backup
 
-Backups are encrypted dumps of MySQL and the whole Redis RDB every four hours, kept in an Object-Locked B2 bucket (Umami is
-backed up by Infrastructure).
+Backups are encrypted dumps of MySQL, the Umami database and the whole Redis RDB every four hours, kept in an Object-Locked B2 bucket.
 Restore steps for every component: [Backups: restore](backups.md#restore). Order for a total loss:
 
 1. Rebuild the host: [Fresh server](fresh-server.md).
-2. Host Sync, then deploy production (Infrastructure brings back the ingress and monitoring on a shared host).
-3. Restore MySQL, then the durable Redis keys.
+2. Host Sync, then deploy monitoring and production (and ingress when standalone).
+3. Restore MySQL, then the Umami database, then the durable Redis keys.
 4. Restart `api`, `mcp` and `scraper`; check `/api/health`, run one scraper job.
 
 Losing the MySQL volume removes the scraped course and study-plan catalog until the next InSIS crawl rebuilds it; user

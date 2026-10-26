@@ -60,7 +60,7 @@ append-only persistence and `noeviction`; retain its volume when redeploying.
     ```
 
     Router names must match `kreditozrouti-(api|web|mcp)-<suffix>` for Alloy to select the service's metrics and access
-    logs; changing the pattern needs a matching change in Infrastructure's `monitoring/alloy/kreditozrouti.alloy`. Add the route to the
+    logs; changing the pattern needs a matching change in `deployment/monitoring/alloy/config.alloy`. Add the route to the
     health URLs in `package-release.py` if it is user-facing, and to [DNS and HTTPS](../setup/DNS.md).
 
 5. **Data.** Give a stateful service its own `kreditozrouti-<engine>-network-{prod,dev}` network and

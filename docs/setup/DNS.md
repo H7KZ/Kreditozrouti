@@ -12,7 +12,7 @@ Point these names at the ingress origin with suitable `A`, `AAAA`, or `CNAME` re
 | `dev.kreditozrouti.cz`   | Web `/`, API `/api`, MCP `/mcp` and OAuth discovery, Faro `/faro`, Umami tracker `/stats`                     |
 | `umami.kreditozrouti.cz` | Umami interface `/`                                                                                           |
 
-App routes come from the [production](../../deployment/production/docker-compose.production.yml) and [development](../../deployment/development/docker-compose.development.yml) Compose files; Faro and Umami `/stats` routes on the app domains come from Infrastructure's [monitoring stack](https://github.com/H7KZ/Infrastructure/tree/main/monitoring/docker-compose.monitoring.yml); Grafana and the Umami admin are on `monitoring.jankominek.com` and `umami.jankominek.com`. Set each app environment's GitHub `DOMAIN` variable to its host. Path routes need no separate DNS records. This repo does not declare a `www` host router.
+App routes come from the [production](../../deployment/production/docker-compose.production.yml) and [development](../../deployment/development/docker-compose.development.yml) Compose files; Faro, Grafana, and Umami routes come from [monitoring Compose](../../deployment/monitoring/docker-compose.monitoring.yml). Set each app environment's GitHub `DOMAIN` variable to its host. Path routes need no separate DNS records. This repo does not declare a `www` host router.
 
 ## TLS
 

@@ -15,8 +15,8 @@ journalctl -u 'toolkit-kreditozrouti-*' -n 100 --no-pager   # as root: boot reco
 ```
 
 Compose services are found by label (`com.docker.compose.project`, `com.docker.compose.service`); container names are not
-fixed. Project names: `kreditozrouti`, `kreditozrouti-dev`, `global` (ingress). Monitoring is Infrastructure's
-`infrastructure-monitoring` project.
+fixed. Project names: `kreditozrouti`, `kreditozrouti-dev`, `global` (ingress). Monitoring is
+`kreditozrouti-monitoring`.
 
 ## Deploy and workflows
 
@@ -60,11 +60,12 @@ Ingress details are in [`deployment/ingress/`](../../deployment/ingress/). Publi
 
 ## Monitoring
 
-Monitoring is Infrastructure's shared stack (`infrastructure-monitoring`); its runbooks cover the stack itself. From this
-side: if dashboards are empty, check the scrape labels (`prometheus.io/scrape`, `prometheus.io/port`) and that the
-containers are on `kreditozrouti-monitoring-network`. If Faro or Umami data is missing, verify the browser's `VITE_*`
-settings and the `/faro/collect` or `/stats/stats.js` route on the relevant app domain
-([Secrets and config](secrets-and-config.md#web-runtime-settings)). What the stack collects:
+If dashboards are empty, inspect `docker ps --filter label=com.docker.compose.project=kreditozrouti-monitoring` and Alloy's logs,
+then check the Docker socket group, the scrape labels, the monitoring network and the Compose project name. If Faro or Umami
+data is missing, verify the browser's `VITE_*` settings and the `/faro/collect` or `/stats/stats.js` route on the relevant app
+domain ([Secrets and config](secrets-and-config.md#web-runtime-settings)). A crash-looping Umami database after an image upgrade
+is a volume-layout problem: diagnose before changing anything
+([Rollback and recovery](rollback-and-recovery.md#database-image-or-volume-problems)). What the stack collects:
 [Monitoring](../architecture/MONITORING.md).
 
 ## Backups and timers

@@ -74,7 +74,7 @@ Commands: `create-consumer`, `create-key`, `list`, `set-origins <prefix> <origin
 
 ## Usage analytics
 
-- Prometheus: `api_consumer_requests_total{consumer,route,status_class}` and `api_quota_store_errors_total`. Alerts `PartnerQuotaStoreUnavailable` and a stale-flush `ScheduledJobStale` are in Infrastructure's `monitoring/prometheus/rules/kreditozrouti-alerts.yml`. `route` is always a template. The contract metrics in [AGENTS.md](../../apps/api/AGENTS.md) are untouched.
+- Prometheus: `api_consumer_requests_total{consumer,route,status_class}` and `api_quota_store_errors_total`. Alerts `PartnerQuotaStoreUnavailable` and a stale-flush `ScheduledJobStale` are in `deployment/monitoring/prometheus/rules/alerts.yml`. `route` is always a template. The contract metrics in [AGENTS.md](../../apps/api/AGENTS.md) are untouched.
 - MySQL: `api_usage_hourly`, one row per consumer, key, hour, route template and status class, with request count and summed latency. Counters live in Redis per hour and an hourly BullMQ job (`partner-usage-flush`, at :05) adds completed hours to MySQL. Bodies, IPs and filter values are never stored. The same job deletes rows older than 13 months (`USAGE_RETENTION_MONTHS`).
 - Logs: the wide event gets `consumer`, `consumer_id` and `key_id`.
 

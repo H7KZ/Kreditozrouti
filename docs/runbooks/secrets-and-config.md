@@ -4,7 +4,7 @@ Use this to find where a setting lives, to set up a new GitHub Environment, or t
 commit or paste values. `.github/workflows/_deploy.yml` (the `Build private incoming packet` step) is the exact mapping from
 GitHub to the application; `deployment/render-env.sh` turns it into the dotenv a release carries.
 
-GitHub Environments: `production`, `development`, `ingress`. A repository-level secret is visible to every
+GitHub Environments: `production`, `development`, `monitoring`, `ingress`. A repository-level secret is visible to every
 environment; an environment-level one overrides it. Use repository level for the connection, backup and alert secrets and
 environment level for everything else.
 
@@ -38,12 +38,19 @@ character or a trailing backslash in a value fails the deploy without printing i
 Settings that must survive a restore unchanged: `MYSQL_*` only matter for the new empty database being created, and a
 restore loads the dump over it, so new values are fine as long as `MYSQL_URI` matches. `REDIS_PASSWORD` can change freely.
 
-## Monitoring
+## Monitoring (`monitoring`)
 
-None here. Grafana, Prometheus, Loki, Alloy, Alertmanager and Umami are the host's shared stack, configured and deployed
-from Infrastructure (its secrets runbook holds `GRAFANA_ADMIN_*`, `UMAMI_*`, `DISCORD_WEBHOOK_URL`,
-`DISCORD_WEBHOOK_URL_KREDITOZROUTI` for this project's alerts, `HEALTHCHECKS_PING_URL`). The retired `monitoring`
-Environment and its secrets can be deleted.
+Read by `_deploy.yml` when `environment=monitoring` (`deploy-monitoring.yml`). The values sit at repository scope today (the
+Environment `monitoring` exists and is empty); an Environment value would win. This repository's set is its own, so the
+repositories on a host stay independent.
+
+| Name                                                             | Kind    | What                                                                                          |
+| ---------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `GRAFANA_ADMIN_USER` (default `admin`), `GRAFANA_ADMIN_PASSWORD` | secrets | Grafana administrator                                                                         |
+| `DISCORD_WEBHOOK_URL`                                            | secret  | Alertmanager notifications; written to a private file, not env                                |
+| `HEALTHCHECKS_PING_URL`                                          | secret  | Watchdog heartbeat (`kreditozrouti-monitoring` check) that proves the alert pipeline is alive |
+| `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`            | secrets | Umami's PostgreSQL database. Changing them on an existing volume does not rename the database |
+| `UMAMI_APP_SECRET`                                               | secret  | Umami hashing salt; also seeds Grafana's read-only database role                              |
 
 ## Ingress (`ingress`, standalone servers only)
 
@@ -83,7 +90,7 @@ current values of `MYSQL_ROOT_PASSWORD`, `API_SESSION_SECRET`, `API_COMMAND_TOKE
 
 1. Change it in GitHub (environment level wins over repository level). Backup and alert values: edit the Toolkit's
    `scripts/.setup-secrets.env`, rerun `setup-secrets.py --apply`, then **Host Sync**.
-2. Dispatch **Deploy** (or **Deploy Ingress**) for that environment. Rollback restores the
+2. Dispatch **Deploy** (or **Deploy Monitoring** / **Deploy Ingress**) for that environment. Rollback restores the
    _saved_ values, so it never picks up a rotation.
 3. SSH keys: add the new public key to the deploy user first, switch `SSH_PRIVATE_KEY`, then remove the old key.
 

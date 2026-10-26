@@ -11,8 +11,7 @@ moves back onto a shared host. The mode decision itself is explained in
 | `public-network`                                | created by Infrastructure | created by the ingress hook                                |
 | Cloudflare origin firewall (`RECONCILE_BEFORE`) | Infrastructure            | this repository (commented out until enabled)              |
 | Host updates (`MAINTENANCE_AT`)                 | Infrastructure            | this repository (commented out until enabled)              |
-| Monitoring (shared stack)                       | Infrastructure            | none, unless Infrastructure's stack is deployed there      |
-| App, backups                                    | this repository           | this repository                                            |
+| App, monitoring, backups                        | this repository           | this repository                                            |
 
 Exactly one repository per host declares each host-wide singleton. If two do, the host gets two maintenance timers or two
 competing firewall tables.
@@ -38,7 +37,7 @@ Only on a server where no other repository declares them. In `deployment/toolkit
 # JOB_CLOUDFLARE_FIREWALL_HOST_WINDOW=true
 ```
 
-1. **Local:** uncomment them and add `JOBS=cloudflare-firewall`. Commit on a branch
+1. **Local:** uncomment them and extend `JOBS=umami-retention` to `JOBS=umami-retention cloudflare-firewall`. Commit on a branch
    and let **Verify Code** pass. (`npm run check:consumers` in the Toolkit repository flags the singletons while they are
    active in an app repository; that is expected only on a repository that deliberately owns a server.)
 2. Merge to `main`: **Host Sync** installs and enables the firewall and maintenance timers. Then **VPS as root**, from an
@@ -71,6 +70,14 @@ network names, so certificates and CrowdSec state carry over.
 
 3. **GitHub:** run Infrastructure's **Deploy** for `traefik`. Check `docker ps --filter label=com.docker.compose.project=global`.
 4. Check the application routes and delete the `ingress` GitHub Environment secrets.
+
+## Monitoring on a separate host (not implemented)
+
+Proposal only. Alloy currently reads the local Docker socket and Traefik log volume, discovers app containers, receives Faro
+and pushes to local Prometheus and Loki. A split needs an app-host agent that keeps those links and ships metrics and logs to
+the remote Prometheus/Loki over private networking, a Faro receiver reachable from the ingress, proxy routes for Grafana and
+Umami, and a backed-up Umami database migration. Prometheus and Loki must stay private. Define authentication, firewall rules,
+volume backup, failure behaviour and a rollback before changing any Compose file.
 
 ## Verify
 

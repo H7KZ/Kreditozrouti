@@ -10,12 +10,11 @@ the schedule is `BACKUP_AT` in [`deployment/toolkit.conf`](../../deployment/tool
 
 ## What is backed up
 
-| Component | Source                     | Drill (`BACKUP_DRILL`)                                         |
-| --------- | -------------------------- | -------------------------------------------------------------- |
-| `mysql`   | `mysqldump --databases`    | `mysql`, image from `production/docker-compose.production.yml` |
-| `redis`   | whole RDB over replication | `redis`, plus a check that counts `share:*` and `ical:*`       |
-
-Umami analytics live in Infrastructure's shared monitoring stack and are backed up there.
+| Component        | Source                     | Drill (`BACKUP_DRILL`)                                            |
+| ---------------- | -------------------------- | ----------------------------------------------------------------- |
+| `mysql`          | `mysqldump --databases`    | `mysql`, image from `production/docker-compose.production.yml`    |
+| `umami-postgres` | `pg_dump --format=custom`  | `postgres`, image from `monitoring/docker-compose.monitoring.yml` |
+| `redis`          | whole RDB over replication | `redis`, plus a check that counts `share:*` and `ical:*`          |
 
 Schedule (UTC, minute :35 so repositories sharing a host do not collide): every component every four hours at 00, 04, 08,
 12, 16 and 20 h into `daily/`; the first run of each UTC Sunday also fills `weekly/`. A capture holds only this repository's lock (waits up to 30
@@ -67,11 +66,12 @@ Restoring is never automatic. Fetch on a trusted machine, then load into the run
 # local: fetch (same environment variables as the drill)
 bash deployment/toolkit backup list mysql
 bash deployment/toolkit backup fetch mysql -o mysql.sql
+bash deployment/toolkit backup fetch umami-postgres -o umami.dump
 bash deployment/toolkit backup fetch redis -o dump.rdb
 bash deployment/toolkit backup fetch mysql --at 2026-10-12T04:00:00Z -o mysql.sql     # newest at or before a time
 bash deployment/toolkit backup fetch redis --tier weekly -o dump.rdb
 bash deployment/toolkit backup fetch mysql --tier pinned -o mysql.sql                # a migration capture (backup run --pinned)
-scp mysql.sql dump.rdb deploy@<host>:/tmp/                                 # data leaves your machine: delete afterwards
+scp mysql.sql umami.dump dump.rdb deploy@<host>:/tmp/                                 # data leaves your machine: delete afterwards
 ```
 
 After an attack on the writer key, read pre-attack object versions with `--version-at <time before the attack>` (inside the
@@ -91,6 +91,18 @@ docker exec -i "$(svc kreditozrouti mysql)" sh -c 'export MYSQL_PWD="$MYSQL_ROOT
 docker start $writers
 ```
 
+### Umami PostgreSQL
+
+```bash
+# VPS as deploy (svc function as above)
+umami="$(svc kreditozrouti-monitoring umami)"
+docker stop $umami
+docker exec -i "$(svc kreditozrouti-monitoring umami-db)" sh -c 'PGPASSWORD="$POSTGRES_PASSWORD" exec pg_restore --clean --if-exists --no-owner --username="$POSTGRES_USER" --dbname="$POSTGRES_DB"' < /tmp/umami.dump
+docker start $umami
+```
+
+Then dispatch **Deploy Monitoring** (`operation=deploy`) once to reapply Grafana's read-only role on the restored tables.
+
 ### Redis: only `share:*` and `ical:*`
 
 The RDB holds everything, including queues, cache and counters, which must not come back. Load it into a scratch Redis on
@@ -106,7 +118,7 @@ for pattern in 'share:*' 'ical:*'; do
     docker exec -i -e REDIS_PASSWORD scratch-redis sh -c 'xargs -r -n 100 redis-cli MIGRATE redis 6379 "" 0 10000 COPY REPLACE AUTH "$REDIS_PASSWORD" KEYS'
 done
 docker rm -f scratch-redis
-shred -u dump.rdb /tmp/mysql.sql 2>/dev/null || rm -f dump.rdb /tmp/mysql.sql
+shred -u dump.rdb /tmp/mysql.sql /tmp/umami.dump 2>/dev/null || rm -f dump.rdb /tmp/mysql.sql /tmp/umami.dump
 ```
 
 Never load the RDB into the production Redis itself.
