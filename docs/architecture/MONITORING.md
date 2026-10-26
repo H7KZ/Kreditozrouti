@@ -1,6 +1,6 @@
 # Monitoring
 
-The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://kreditozrouti.cz/grafana/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
+The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://grafana.kreditozrouti.cz/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
 
 Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitoring stack has no OTLP receiver or Tempo.
 

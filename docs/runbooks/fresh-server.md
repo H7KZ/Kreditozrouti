@@ -207,8 +207,8 @@ When moving servers, in this order:
     ```
 
 2. Restore that copy on the new server (step 7, `--tier pinned`).
-3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz`, `dev.kreditozrouti.cz` and
-   `umami.kreditozrouti.cz` at the new server. Lower the TTL a day earlier.
+3. **Cloudflare:** point the `A` (and `AAAA` if used) records of `kreditozrouti.cz`, `dev.kreditozrouti.cz`,
+   `umami.kreditozrouti.cz` and `grafana.kreditozrouti.cz` at the new server. Lower the TTL a day earlier.
 4. Check `https://kreditozrouti.cz/api/health`, `/mcp/health`, a scraper run, Grafana, and that **Backup Verify** is
    green from GitHub (run it manually, `check=both`).
 

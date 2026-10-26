@@ -11,7 +11,7 @@ exported values. Registry and release cleanup remain deferred until recovery ref
   `bash deployment/toolkit verify` (run by CI) rejects edited copies. Never call a toolkit installed on the server.
 - Scheduled scripts are `JOBS` in `toolkit.conf`, backups are `BACKUP_COMPONENTS`/`BACKUP_AT`; do not add unit files, installers or `libexec` targets.
 - Keep application Compose projects distinct: `kreditozrouti`, `kreditozrouti-dev`, `kreditozrouti-monitoring`; ingress is `global`.
-  Monitoring is this repository's own stack, independent of the other repositories on the host: Grafana is `<domain>/grafana`,
+  Monitoring is this repository's own stack, independent of the other repositories on the host: Grafana is `grafana.<domain>`,
   Umami `umami.<domain>`. Deploy `monitoring` before the first `production`/`development` deploy on a host (they attach to
   `kreditozrouti-monitoring-network`).
 - Ingress is a role: `deployment/ingress/` is deployed only on a standalone server (target `ingress`); on a shared host Infrastructure's Traefik owns `public-network`. Never run both. Apps always use the external network `public-network`. `MAINTENANCE_AT` and `RECONCILE_BEFORE` stay commented out in `toolkit.conf` here.
