@@ -7,7 +7,7 @@ on:
         description: Environment to act on
         required: true
         type: choice
-        options: [production, development]
+        options: [production, development, monitoring]
         default: production
       ref:
         description: Controller branch, tag or SHA whose pinned toolkit runs the operation (empty = the workflow ref)

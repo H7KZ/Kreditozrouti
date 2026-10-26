@@ -4,7 +4,7 @@ import Config from '@api/Config/Config'
 
 /**
  * Prometheus metrics. Names, labels and buckets are the monitoring contract shared with
- * Infrastructure's shared monitoring (`monitoring/`: rules, promtool tests, dashboards) and with Ohlidame, so
+ * deployment/monitoring (rules, promtool tests, dashboards) and with the Ohlidame stack, so
  * renaming one here silently blanks a panel or disarms an alert there. Everything is
  * in-process: nothing is mirrored through Redis.
  */

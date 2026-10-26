@@ -10,14 +10,16 @@
 
 declare -gA BACKUP_EXT BACKUP_PAUSE BACKUP_MIN_BYTES BACKUP_DRILL
 
-# Umami analytics live in Infrastructure's shared monitoring stack and are backed up there.
-BACKUP_COMPONENTS=(mysql redis)
+BACKUP_COMPONENTS=(mysql umami-postgres redis)
 BACKUP_DEFAULT_MIN_BYTES=300
 BACKUP_EXT["mysql"]=sql
+BACKUP_EXT["umami-postgres"]=pgdump
 BACKUP_EXT["redis"]=rdb
 BACKUP_MIN_BYTES["mysql"]=800
+BACKUP_MIN_BYTES["umami-postgres"]=600
 # <kind> <Compose file whose image the drill restores into>
 BACKUP_DRILL["mysql"]="mysql deployment/production/docker-compose.production.yml"
+BACKUP_DRILL["umami-postgres"]="postgres deployment/monitoring/docker-compose.monitoring.yml"
 BACKUP_DRILL["redis"]="redis deployment/production/docker-compose.production.yml"
 
 # Exactly one running container for a Compose project/service, found by label (names are not fixed).
@@ -36,6 +38,12 @@ produce_mysql() {
   local id
   id="$(_container kreditozrouti mysql)" || return 1
   docker exec "$id" sh -ceu 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; exec mysqldump --user=root --single-transaction --routines --events --triggers --hex-blob --no-tablespaces --default-character-set=utf8mb4 --databases "$MYSQL_DATABASE"'
+}
+
+produce_umami_postgres() {
+  local id
+  id="$(_container kreditozrouti-monitoring umami-db)" || return 1
+  docker exec "$id" sh -ceu 'export PGPASSWORD="$POSTGRES_PASSWORD"; exec pg_dump --format=custom --compress=0 --no-owner --no-privileges --username="$POSTGRES_USER" --dbname="$POSTGRES_DB"'
 }
 
 # Whole RDB over the replication protocol. Redis rewrites its process title, so the password is read

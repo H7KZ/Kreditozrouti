@@ -2,7 +2,7 @@
 set -euo pipefail
 set +x
 umask 077
-[[ $# == 2 && "$1" =~ ^(production|development|ingress)$ && "$2" == /* ]] || {
+[[ $# == 2 && "$1" =~ ^(production|development|monitoring|ingress)$ && "$2" == /* ]] || {
   echo 'usage: render-env.sh <environment> <absolute-new-dotenv>' >&2; exit 2;
 }
 target="$1"
@@ -24,7 +24,15 @@ put() {
 }
 temporary="$(mktemp "${output}.XXXXXX")"
 trap 'rm -f -- "$temporary"' EXIT
-if [[ "$target" == ingress ]]; then
+if [[ "$target" == monitoring ]]; then
+  require GRAFANA_ADMIN_PASSWORD DISCORD_WEBHOOK_URL HEALTHCHECKS_PING_URL UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET
+  {
+    put GRAFANA_ADMIN_USER "${GRAFANA_ADMIN_USER:-admin}"
+    for key in GRAFANA_ADMIN_PASSWORD DISCORD_WEBHOOK_URL HEALTHCHECKS_PING_URL UMAMI_DB_NAME UMAMI_DB_USER UMAMI_DB_PASSWORD UMAMI_APP_SECRET; do
+      put "$key" "${!key}"
+    done
+  } > "$temporary"
+elif [[ "$target" == ingress ]]; then
   require TRAEFIK_DOMAIN TRAEFIK_HTPASSWD CF_DNS_API_TOKEN ACME_EMAIL TRAEFIK_DASHBOARD_ALLOWED_IPS
   {
     for key in TRAEFIK_DOMAIN TRAEFIK_HTPASSWD CF_DNS_API_TOKEN ACME_EMAIL TRAEFIK_DASHBOARD_ALLOWED_IPS; do

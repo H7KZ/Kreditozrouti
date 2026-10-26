@@ -1,0 +1,804 @@
+{
+  "timezone": "browser",
+  "editable": false,
+  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 42,
+  "templating": {},
+  "annotations": {
+    "list": [
+      {
+        "name": "Deploys",
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(255, 176, 0, 0.8)",
+        "builtIn": 0,
+        "placement": "inControlsMenu",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [
+            "deploy",
+            "kreditozrouti"
+          ],
+          "type": "tags"
+        }
+      }
+    ]
+  },
+  "title": "Kreditozrouti / Host and containers",
+  "uid": "kreditozrouti-host",
+  "description": "The shared VPS and this project's containers.",
+  "tags": [
+    "kreditozrouti",
+    "host"
+  ],
+  "refresh": "1m",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "Kreditozrouti",
+      "type": "dashboards",
+      "icon": "",
+      "tooltip": "",
+      "tags": [
+        "kreditozrouti"
+      ],
+      "asDropdown": true,
+      "placement": "inControlsMenu",
+      "targetBlank": false,
+      "includeVars": true,
+      "keepTime": true
+    }
+  ],
+  "panels": [
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "VPS",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "CPU",
+      "description": "Share of CPU time per mode (excluding idle).",
+      "targets": [
+        {
+          "expr": "sum by (mode) (rate(node_cpu_seconds_total{project=\"kreditozrouti\", service=\"host\", mode!=\"idle\"}[$__rate_interval])) / scalar(count(node_cpu_seconds_total{project=\"kreditozrouti\", service=\"host\", mode=\"idle\"}))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{mode}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Load",
+      "description": "1/5/15 minute load average. The VPS has as many cores as the \"cores\" line.",
+      "targets": [
+        {
+          "expr": "node_load1{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "load1",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "node_load5{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "load5",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "node_load15{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "load15",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "count(node_cpu_seconds_total{project=\"kreditozrouti\", service=\"host\", mode=\"idle\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "cores",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Memory",
+      "description": "Available RAM and used swap.",
+      "targets": [
+        {
+          "expr": "node_memory_MemAvailable_bytes{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "available",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "total",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "node_memory_SwapTotal_bytes{project=\"kreditozrouti\", service=\"host\"} - node_memory_SwapFree_bytes{project=\"kreditozrouti\", service=\"host\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "swap used",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Root disk",
+      "description": "Free space and a 24 h linear forecast.",
+      "targets": [
+        {
+          "expr": "node_filesystem_avail_bytes{project=\"kreditozrouti\", service=\"host\", mountpoint=\"/\"}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "free",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "predict_linear(node_filesystem_avail_bytes{project=\"kreditozrouti\", service=\"host\", mountpoint=\"/\"}[6h], 86400)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "free in 24h (forecast)",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 9
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "Bps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Disk I/O",
+      "description": "Bytes read and written per second.",
+      "targets": [
+        {
+          "expr": "sum(rate(node_disk_read_bytes_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "read",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "sum(rate(node_disk_written_bytes_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "write",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 9
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "Bps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Network",
+      "description": "Bytes received and sent per second (physical interfaces).",
+      "targets": [
+        {
+          "expr": "sum(rate(node_network_receive_bytes_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "in",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "sum(rate(node_network_transmit_bytes_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "out",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 9
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Pressure (PSI)",
+      "description": "Share of time tasks were stalled waiting for CPU, memory or I/O. Memory pressure above a few percent means swapping hurts.",
+      "targets": [
+        {
+          "expr": "rate(node_pressure_cpu_waiting_seconds_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "cpu",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "rate(node_pressure_memory_waiting_seconds_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "memory",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "rate(node_pressure_io_waiting_seconds_total{project=\"kreditozrouti\", service=\"host\"}[$__rate_interval])",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "io",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Kreditozrouti containers",
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Memory by service",
+      "description": "Working set per service and environment (includes the monitoring stack as env=ops).",
+      "targets": [
+        {
+          "expr": "sum by (service, env) (container_memory_working_set_bytes{project=\"kreditozrouti\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{service}} ({{env}})",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "short",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "CPU by service",
+      "description": "CPU cores used per service and environment.",
+      "targets": [
+        {
+          "expr": "sum by (service, env) (rate(container_cpu_usage_seconds_total{project=\"kreditozrouti\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{service}} ({{env}})",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "title": "Restarts and OOM kills (range)",
+      "description": "Per container over the selected range.",
+      "targets": [
+        {
+          "expr": "sum by (name) (changes(container_start_time_seconds{project=\"kreditozrouti\"}[$__range]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        },
+        {
+          "expr": "sum by (name) (increase(container_oom_events_total{project=\"kreditozrouti\"}[$__range]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "Value #A": "restarts",
+              "Value #B": "OOM kills"
+            }
+          }
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      }
+    }
+  ]
+}

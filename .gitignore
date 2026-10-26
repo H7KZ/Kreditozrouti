@@ -28,4 +28,5 @@ docs/superpowers/
 .gemini/files/
 
 # Toolkit-linked private runtime directories (never commit)
+deployment/monitoring/.secrets/
 deployment/ingress/.rendered/

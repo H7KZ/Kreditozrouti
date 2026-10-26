@@ -1,0 +1,1293 @@
+{
+  "timezone": "browser",
+  "editable": false,
+  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "schemaVersion": 42,
+  "templating": {
+    "list": [
+      {
+        "type": "custom",
+        "name": "env",
+        "skipUrlSync": false,
+        "multi": false,
+        "allowCustomValue": true,
+        "includeAll": false,
+        "auto": false,
+        "auto_min": "10s",
+        "auto_count": 30,
+        "label": "Environment",
+        "query": "production,development",
+        "current": {
+          "text": "production",
+          "value": "production"
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "name": "Deploys",
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(255, 176, 0, 0.8)",
+        "builtIn": 0,
+        "placement": "inControlsMenu",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [
+            "deploy",
+            "kreditozrouti"
+          ],
+          "type": "tags"
+        }
+      }
+    ]
+  },
+  "title": "Kreditozrouti / Service: scraper",
+  "uid": "kreditozrouti-service-scraper",
+  "description": "worker service scraper: status, requests, saturation and logs.",
+  "tags": [
+    "kreditozrouti",
+    "service",
+    "scraper"
+  ],
+  "refresh": "1m",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "links": [
+    {
+      "title": "Kreditozrouti",
+      "type": "dashboards",
+      "icon": "",
+      "tooltip": "",
+      "tags": [
+        "kreditozrouti"
+      ],
+      "asDropdown": true,
+      "placement": "inControlsMenu",
+      "targetBlank": false,
+      "includeVars": true,
+      "keepTime": true
+    }
+  ],
+  "panels": [
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Status",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "background",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Up",
+      "description": "Every scraper container in $env is being scraped.",
+      "targets": [
+        {
+          "expr": "min(up{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "up",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "red"
+              },
+              {
+                "value": 1,
+                "color": "green"
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Replicas",
+      "description": "Containers currently scraped.",
+      "targets": [
+        {
+          "expr": "count(up{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"} == 1)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "replicas",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Uptime",
+      "description": "Time since the oldest running process started.",
+      "targets": [
+        {
+          "expr": "time() - max(process_start_time_seconds{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "uptime",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "title": "Build",
+      "description": "Running image version per container.",
+      "targets": [
+        {
+          "expr": "max by (instance, version, commit) (app_build_info{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true
+            }
+          }
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 12,
+        "y": 1
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Queues and jobs",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Jobs by state",
+      "description": "bullmq_job_count per state (max across whichever services report it; they all read the same Redis counts). completed/failed depend on removeOnComplete/removeOnFail retention.",
+      "targets": [
+        {
+          "expr": "max by (queue, state) (bullmq_job_count{project=\"kreditozrouti\", env=\"$env\", queue=~\"ScraperRequestQueue\", state=~\"waiting|active|delayed|prioritized|waiting-children\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{queue}} {{state}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Throughput",
+      "description": "Jobs finished per minute by outcome, from worker events.",
+      "targets": [
+        {
+          "expr": "sum by (queue, outcome) (rate(worker_jobs_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\"}[$__rate_interval])) * 60",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{queue}} {{outcome}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Failure ratio",
+      "description": "Share of finished jobs that failed over the selected range. Old failures kept in the failed set do not count.",
+      "targets": [
+        {
+          "expr": "(sum(increase(worker_jobs_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\", outcome=\"failure\"}[$__range])) or vector(0)) / (sum(increase(worker_jobs_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\"}[$__range])) > 0)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "failure ratio",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 14
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "decimals": 1,
+          "noValue": "no jobs",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 0.01,
+                "color": "orange"
+              },
+              {
+                "value": 0.05,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "graphMode": "none",
+        "colorMode": "value",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "percentChangeColorMode": "standard",
+        "orientation": "auto"
+      },
+      "title": "Waiting now",
+      "description": "Jobs waiting to be picked up.",
+      "targets": [
+        {
+          "expr": "sum(max by (queue) (bullmq_job_count{project=\"kreditozrouti\", env=\"$env\", queue=~\"ScraperRequestQueue\", state=\"waiting\"}))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "waiting",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 14
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Job duration",
+      "description": "p50 and p95 processing time per job name.",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by (job_name, le) (rate(worker_job_duration_seconds_bucket{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\"}[$__rate_interval])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "p50 {{job_name}}",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (job_name, le) (rate(worker_job_duration_seconds_bucket{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\"}[$__rate_interval])))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "p95 {{job_name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      }
+    },
+    {
+      "type": "table",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "showTypeIcons": false,
+        "footer": {
+          "show": false,
+          "reducer": [],
+          "countRows": false
+        },
+        "cellHeight": "sm"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "inspect": false
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "title": "Last success",
+      "description": "Time since each job name last completed successfully (resets when the worker restarts).",
+      "targets": [
+        {
+          "expr": "time() - max by (job_name) (worker_last_success_timestamp_seconds{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", queue=~\"ScraperRequestQueue\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "Value": "since last success"
+            }
+          }
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Saturation",
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Container memory",
+      "description": "Working set per container (cAdvisor), what the OOM killer compares against the limit.",
+      "targets": [
+        {
+          "expr": "sum by (name) (container_memory_working_set_bytes{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 31
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "short",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Container CPU",
+      "description": "CPU cores used per container (cAdvisor).",
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 31
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Restarts and OOM kills",
+      "description": "Container starts and OOM events per container.",
+      "targets": [
+        {
+          "expr": "sum by (name) (changes(container_start_time_seconds{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "restart {{name}}",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "sum by (name) (increase(container_oom_events_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "OOM {{name}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 31
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Event loop lag p99",
+      "description": "Node.js event loop delay; sustained values above ~100 ms mean the process is CPU-bound.",
+      "targets": [
+        {
+          "expr": "max by (instance) (nodejs_eventloop_lag_p99_seconds{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 39
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "bytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Heap",
+      "description": "V8 heap used and total per instance.",
+      "targets": [
+        {
+          "expr": "sum by (instance) (nodejs_heap_size_used_bytes{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "used {{instance}}",
+          "range": true,
+          "instant": false
+        },
+        {
+          "expr": "sum by (instance) (nodejs_heap_size_total_bytes{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"})",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "total {{instance}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 39
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "GC time",
+      "description": "Seconds spent in garbage collection per second, by kind.",
+      "targets": [
+        {
+          "expr": "sum by (kind) (rate(nodejs_gc_duration_seconds_sum{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{kind}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 39
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Domain",
+      "gridPos": {
+        "x": 0,
+        "y": 47,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "scraper_silent_failures_total",
+      "description": "Caught acquisition errors that did not fail the job",
+      "targets": [
+        {
+          "expr": "sum by (job_type) (increase(scraper_silent_failures_total{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\"}[$__rate_interval]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "legendFormat": "{{job_type}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      }
+    },
+    {
+      "type": "row",
+      "collapsed": false,
+      "id": 0,
+      "panels": [],
+      "title": "Logs",
+      "gridPos": {
+        "x": 0,
+        "y": 56,
+        "h": 1,
+        "w": 24
+      }
+    },
+    {
+      "type": "timeseries",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 60,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "mode": "normal"
+            },
+            "drawStyle": "bars"
+          },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "title": "Log volume by level",
+      "description": "Lines per interval. Lines without a JSON level are shown as \"unknown\".",
+      "targets": [
+        {
+          "expr": "sum by (level) (count_over_time({project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", source=\"docker\"} [$__auto]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "{{level}}",
+          "queryType": "range",
+          "range": true
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      }
+    },
+    {
+      "type": "logs",
+      "transparent": false,
+      "repeatDirection": "h",
+      "options": {
+        "showLabels": false,
+        "showCommonLabels": false,
+        "showTime": true,
+        "showLogContextToggle": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none"
+      },
+      "title": "Errors",
+      "description": "ERROR and FATAL lines. Open a line for request_id links; use Explore > Logs Drilldown for patterns.",
+      "targets": [
+        {
+          "expr": "{project=\"kreditozrouti\", service=\"scraper\", env=\"$env\", source=\"docker\", level=~\"ERROR|FATAL\"}",
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "legendFormat": "",
+          "queryType": "range",
+          "range": true,
+          "maxLines": 500
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 63
+      }
+    }
+  ]
+}
