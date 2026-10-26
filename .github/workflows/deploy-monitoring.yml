@@ -1,3 +1,13 @@
+# ==============================================================================
+# Workflow: Deploy Monitoring
+# Description: Deploys this repository's own observability + analytics stack (deployment/monitoring:
+#              Grafana, Prometheus, Loki, Alloy, Alertmanager, Umami) as the `monitoring` target.
+#              Host Sync runs first; a failed run posts to ALERT_DISCORD_WEBHOOK_URL (in _deploy.yml).
+#              Deploy it before the first production/development deploy on a host: those stacks
+#              attach to the <project>-monitoring-network it creates.
+# Trigger: manual
+# ==============================================================================
+
 name: Deploy Monitoring
 run-name: Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}
 on:
@@ -36,9 +46,18 @@ jobs:
       - name: Resolve commit
         id: source
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  host-sync:
+    name: Sync host
+    needs: resolve
+    uses: ./.github/workflows/host-sync.yml
+    permissions:
+      contents: read
+    with:
+      ref: ${{ needs.resolve.outputs.source_commit }}
+    secrets: inherit
   deploy:
     name: Deploy monitoring snapshot
-    needs: resolve
+    needs: [resolve, host-sync]
     uses: ./.github/workflows/_deploy.yml
     with:
       environment: monitoring

@@ -13,7 +13,7 @@ For stdio, configure an MCP client with the absolute path to `apps/mcp/dist/inde
 
 HTTP mode requires a Bearer token from this server's OAuth flow. Discovery is at `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`; registration, authorization, and token endpoints are under `/mcp/oauth/`. Registration is automatic for allowed redirect URIs. HTTPS redirects must use a host in `MCP_ALLOWED_REDIRECT_HOSTS` (default `claude.ai,claude.com`, including subdomains); HTTP loopback callbacks are also allowed. The OAuth store is in memory with size and TTL bounds. Stdio mode does not use OAuth.
 
-`GET /health` and `GET /mcp/health` are unauthenticated checks. The latter works through the production `/mcp` proxy route.
+`GET /health` and `GET /mcp/health` are unauthenticated checks returning `{status, version, commit}`. The latter works through the production `/mcp` proxy route.
 
 ## Tools
 

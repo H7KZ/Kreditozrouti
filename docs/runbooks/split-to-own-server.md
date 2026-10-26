@@ -40,19 +40,18 @@ Only on a server where no other repository declares them. In `deployment/toolkit
 1. **Local:** uncomment them and extend `JOBS=umami-retention` to `JOBS=umami-retention cloudflare-firewall`. Commit on a branch
    and let **Verify Code** pass. (`npm run check:consumers` in the Toolkit repository flags the singletons while they are
    active in an app repository; that is expected only on a repository that deliberately owns a server.)
-2. **VPS as root:** pull the revision in `/home/deploy/kreditozrouti-checkout` and reinstall so the units are generated:
+2. Merge to `main`: **Host Sync** installs and enables the firewall and maintenance timers. Then **VPS as root**, from an
+   up-to-date checkout, preview and apply the rules once:
 
     ```bash
     cd /home/deploy/kreditozrouti-checkout && git pull
-    sudo deployment/toolkit install --deploy-user deploy
     sudo bash deployment/ingress/cloudflare-firewall.sh --dry-run
     sudo deployment/toolkit job cloudflare-firewall
-    sudo systemctl enable --now toolkit-kreditozrouti-cloudflare-firewall.timer toolkit-maintenance.timer
     ```
 
 The firewall restricts ports 80/443 to Cloudflare ranges (SSH is untouched). Run `--dry-run` first and check that nothing
 else needs direct access (add monitors to `EXTRA_ALLOWED_V4` / `EXTRA_ALLOWED_V6`). Maintenance runs `apt dist-upgrade`
-under every repository lock; set `AUTO_REBOOT` deliberately in the host config. Log rotation for the Traefik access log:
+under every repository lock and holds the Docker engine packages; set `MAINTENANCE_REBOOT=true` only after a reboot drill. Log rotation for the Traefik access log:
 `sudo install -m 0644 -o root -g root /home/deploy/kreditozrouti/versions/ingress/current/ingress/logrotate/traefik /etc/logrotate.d/traefik`.
 
 ## Move back onto a shared host (standalone to shared)
@@ -60,12 +59,11 @@ under every repository lock; set `AUTO_REBOOT` deliberately in the host config. 
 Causes a short ingress outage. Do it only when Infrastructure's Traefik is ready to take over: it uses the same volume and
 network names, so certificates and CrowdSec state carry over.
 
-1. **Local:** comment the singleton lines out again, commit, merge.
-2. **VPS as root:** reinstall to remove the generated firewall and maintenance units, then free the ports:
+1. **Local:** comment the singleton lines out again, commit, merge: **Host Sync** disables and removes the firewall and
+   maintenance units.
+2. **VPS as root:** free the ports:
 
     ```bash
-    cd /home/deploy/kreditozrouti-checkout && git pull
-    sudo deployment/toolkit install --deploy-user deploy
     docker rm -f traefik crowdsec socket-proxy
     sudo -u deploy rm -f /home/deploy/kreditozrouti/versions/ingress/current /home/deploy/kreditozrouti/versions/ingress/previous   # reconcile must not restart it
     ```

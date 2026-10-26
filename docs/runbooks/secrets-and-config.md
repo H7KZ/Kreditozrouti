@@ -5,8 +5,8 @@ commit or paste values. `.github/workflows/_deploy.yml` (the `Build private inco
 GitHub to the application; `deployment/render-env.sh` turns it into the dotenv a release carries.
 
 GitHub Environments: `production`, `development`, `monitoring`, `ingress`. A repository-level secret is visible to every
-environment; an environment-level one overrides it. Use repository level for the connection secrets and environment level
-for everything else.
+environment; an environment-level one overrides it. Use repository level for the connection, backup and alert secrets and
+environment level for everything else.
 
 ## Connection (repository level)
 
@@ -40,11 +40,15 @@ restore loads the dump over it, so new values are fine as long as `MYSQL_URI` ma
 
 ## Monitoring (`monitoring`)
 
+Read by `_deploy.yml` when `environment=monitoring` (`deploy-monitoring.yml`). The values sit at repository scope today (the
+Environment `monitoring` exists and is empty); an Environment value would win. This repository's set is its own, so the
+repositories on a host stay independent.
+
 | Name                                                             | Kind    | What                                                                                          |
 | ---------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
 | `GRAFANA_ADMIN_USER` (default `admin`), `GRAFANA_ADMIN_PASSWORD` | secrets | Grafana administrator                                                                         |
 | `DISCORD_WEBHOOK_URL`                                            | secret  | Alertmanager notifications; written to a private file, not env                                |
-| `HEALTHCHECKS_PING_URL`                                          | secret  | Watchdog heartbeat that proves the alert pipeline is alive                                    |
+| `HEALTHCHECKS_PING_URL`                                          | secret  | Watchdog heartbeat (`kreditozrouti-monitoring` check) that proves the alert pipeline is alive |
 | `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`            | secrets | Umami's PostgreSQL database. Changing them on an existing volume does not rename the database |
 | `UMAMI_APP_SECRET`                                               | secret  | Umami hashing salt; also seeds Grafana's read-only database role                              |
 
@@ -59,21 +63,33 @@ restore loads the dump over it, so new values are fine as long as `MYSQL_URI` ma
 | `CF_DNS_API_TOKEN`              | secret   | Cloudflare token scoped to `Zone:DNS:Edit` on the zone, for the DNS-01 challenge |
 | `CROWDSEC_ENROLL_KEY`           | secret   | Optional enrolment key for app.crowdsec.net                                      |
 
-## Backups
+## Backups and alerts (repository level)
 
-Repository level, for **Backup Verify**: variable `BACKUP_BUCKET`; secrets `BACKUP_B2_READER_KEY_ID`, `BACKUP_B2_READER_KEY`
-(read-only), `BACKUP_AGE_IDENTITY` (private key contents), `BACKUP_HC_FRESHNESS_URL`, `BACKUP_HC_DRILL_URL`.
-On the VPS (never in GitHub): `/etc/toolkit/kreditozrouti.env`, see [Backups](backups.md#host-setup).
+Set for every repository at once by the Toolkit's `python3 scripts/setup-secrets.py --apply` (laptop); never by hand.
+
+| Name                                              | Kind     | What                                                                                |
+| ------------------------------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `BACKUP_BUCKET`                                   | variable | The host's bucket, shared by every repository (objects under `kreditozrouti/`)      |
+| `BACKUP_B2_KEY_ID`, `BACKUP_B2_KEY`               | secrets  | Writer key (`listBuckets,writeFiles`), rendered onto the VPS only                   |
+| `BACKUP_B2_READER_KEY_ID`, `BACKUP_B2_READER_KEY` | secrets  | Reader key for **Backup Verify**                                                    |
+| `BACKUP_AGE_RECIPIENT`                            | secret   | age public key (`age1...`); the VPS encrypts with it                                |
+| `BACKUP_AGE_IDENTITY`                             | secret   | age private key contents, for the drill. Never on the VPS                           |
+| `HC_PING_KEY`                                     | secret   | Healthchecks ping key: `kreditozrouti-backup`, `-backup-freshness`, `-backup-drill` |
+| `ALERT_DISCORD_WEBHOOK_URL`                       | secret   | Failed deploys, rollbacks, Host Sync and failed toolkit units on the VPS            |
+
+Host Sync renders the writer key, the age recipient, `HC_PING_KEY` and `ALERT_DISCORD_WEBHOOK_URL` into
+`/etc/toolkit/kreditozrouti.env` (root, 0600); never edit it by hand.
 
 ## Recovery kit (offline)
 
-Keep outside GitHub and the VPS: the age identity, B2 admin/writer/reader keys, Healthchecks URLs, Cloudflare token, the
+Keep outside GitHub and the VPS: the age identity, B2 admin/writer/reader keys, Healthchecks keys, Cloudflare token, the
 current values of `MYSQL_ROOT_PASSWORD`, `API_SESSION_SECRET`, `API_COMMAND_TOKEN`, `MCP_JWT_SECRET`, and a copy of the
 `TRAEFIK_HTPASSWD` source password.
 
 ## Rotating a secret
 
-1. Change it in GitHub (environment level wins over repository level).
+1. Change it in GitHub (environment level wins over repository level). Backup and alert values: edit the Toolkit's
+   `scripts/.setup-secrets.env`, rerun `setup-secrets.py --apply`, then **Host Sync**.
 2. Dispatch **Deploy** (or **Deploy Monitoring** / **Deploy Ingress**) for that environment. Rollback restores the
    _saved_ values, so it never picks up a rotation.
 3. SSH keys: add the new public key to the deploy user first, switch `SSH_PRIVATE_KEY`, then remove the old key.

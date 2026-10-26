@@ -84,14 +84,16 @@ app.post('/mcp', requireBearer, optimizerLimiter, generalLimiter, async (req, re
 	await transport.handleRequest(req, res, req.body)
 })
 
+const health = { status: 'ok', version: Config.build.version, commit: Config.build.commit }
+
 app.get('/health', (_req, res) => {
-	res.json({ status: 'ok' })
+	res.json(health)
 })
 
 // Traefik only routes PathPrefix(/mcp) to this service, so the monitoring blackbox probe
 // needs a health check under that prefix rather than the container-internal /health above.
 app.get('/mcp/health', (_req, res) => {
-	res.json({ status: 'ok' })
+	res.json(health)
 })
 
 export { app }

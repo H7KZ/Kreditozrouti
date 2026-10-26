@@ -16,8 +16,8 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
 
-# shellcheck source=../lib.sh
-source "$SCRIPT_DIR/../lib.sh"
+# shellcheck source=deployment/vendor/toolkit/log.sh
+source "$SCRIPT_DIR/../vendor/toolkit/log.sh"
 
 image_of() {
     grep -Eo "image: *$1:[^ ]+" "$SCRIPT_DIR/docker-compose.monitoring.yml" | head -1 | sed -E 's/image: *//'
@@ -46,7 +46,7 @@ run() {
     output="$(docker start --attach "$id" 2>&1)" || status=$?
     docker rm --force "$id" >/dev/null
     if [[ $status -eq 0 ]]; then
-        log_success "$name"
+        log_ok "$name"
     else
         log_error "$name"
         echo "$output"
@@ -77,7 +77,7 @@ main() {
         log_error "Failed: ${FAILED[*]}"
         exit 1
     fi
-    log_success "Monitoring config is valid"
+    log_ok "Monitoring config is valid"
 }
 
 main

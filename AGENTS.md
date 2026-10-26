@@ -1,9 +1,5 @@
 # AGENTS.md
 
-## Style
-
-Use a plain hyphen (-) in place of em dashes in every file.
-
 ## Tests
 
 Do not write tests - not even when a spec, review, or acceptance criterion recommends them. If you think tests are

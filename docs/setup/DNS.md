@@ -6,13 +6,14 @@ This repo defines app and monitoring routes. Traefik, `public-network` and the C
 
 Point these names at the ingress origin with suitable `A`, `AAAA`, or `CNAME` records. Proxy HTTP and HTTPS traffic through Cloudflare. Add an `AAAA` record only if the origin serves IPv6. [Cloudflare proxy status](https://developers.cloudflare.com/dns/proxy-status/)
 
-| Host                     | Routes declared here                                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `kreditozrouti.cz`       | Web `/`, API `/api`, MCP `/mcp` and OAuth discovery, Faro `/faro`, Grafana `/grafana`, Umami tracker `/stats` |
-| `dev.kreditozrouti.cz`   | Web `/`, API `/api`, MCP `/mcp` and OAuth discovery, Faro `/faro`, Umami tracker `/stats`                     |
-| `umami.kreditozrouti.cz` | Umami interface `/`                                                                                           |
+| Host                       | Routes declared here                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| `kreditozrouti.cz`         | Web `/`, API `/api`, MCP `/mcp` and OAuth discovery, Faro `/faro`, Umami tracker `/stats` |
+| `dev.kreditozrouti.cz`     | Web `/`, API `/api`, MCP `/mcp` and OAuth discovery, Faro `/faro`, Umami tracker `/stats` |
+| `umami.kreditozrouti.cz`   | Umami interface `/`                                                                       |
+| `grafana.kreditozrouti.cz` | Grafana `/`                                                                               |
 
-App routes come from the [production](../../deployment/production/docker-compose.production.yml) and [development](../../deployment/development/docker-compose.development.yml) Compose files; Faro, Grafana, and Umami routes come from [monitoring Compose](../../deployment/monitoring/docker-compose.monitoring.yml). Set each app environment's GitHub `DOMAIN` variable to its host. Path routes need no separate DNS records. This repo does not declare a `www` host router.
+App routes come from the [production](../../deployment/production/docker-compose.production.yml) and [development](../../deployment/development/docker-compose.development.yml) Compose files; Faro, Grafana (`grafana.kreditozrouti.cz`) and Umami routes come from [monitoring Compose](../../deployment/monitoring/docker-compose.monitoring.yml). Set each app environment's GitHub `DOMAIN` variable to its host. Path routes need no separate DNS records. This repo does not declare a `www` host router.
 
 ## TLS
 

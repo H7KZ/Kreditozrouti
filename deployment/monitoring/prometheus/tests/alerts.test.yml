@@ -33,7 +33,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is down
                       description: No production api container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'ServiceDown: api container gone'
       interval: 1m
       input_series:
@@ -53,7 +53,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is down
                       description: No production api container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'ServiceDown: scraper healthy'
       interval: 1m
       input_series:
@@ -84,7 +84,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti scraper is down
                       description: No production scraper container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'ServiceDown: scraper container gone'
       interval: 1m
       input_series:
@@ -104,7 +104,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti scraper is down
                       description: No production scraper container has been scrapeable for 5 minutes (stopped, crash-looping, or its /metrics endpoint is failing).
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'OriginProbeFailing: api probe ok'
       interval: 1m
       input_series:
@@ -135,7 +135,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is not serving through Traefik
                       description: The internal probe of https://kreditozrouti.cz/api/health via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'OriginProbeFailing: web probe ok'
       interval: 1m
       input_series:
@@ -166,7 +166,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti web is not serving through Traefik
                       description: The internal probe of https://kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'OriginProbeFailing: mcp probe ok'
       interval: 1m
       input_series:
@@ -197,7 +197,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti mcp is not serving through Traefik
                       description: The internal probe of https://kreditozrouti.cz/mcp/health via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-mcp
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-mcp
     - name: 'OriginProbeFailing: umami probe ok'
       interval: 1m
       input_series:
@@ -224,7 +224,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti umami is not serving through Traefik
                       description: The internal probe of https://umami.kreditozrouti.cz/ via Traefik has failed for 3 minutes. Cloudflare edge outages are not visible here.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-frontend
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-frontend
     - name: 'EdgeErrorBudgetBurnFast: healthy traffic'
       interval: 1m
       input_series:
@@ -253,7 +253,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is burning its error budget fast
                       description: More than 14.4% of requests through Traefik failed with 5xx over both the last hour and the last 5 minutes. At this rate the monthly 99% budget is gone in about two days.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'EdgeErrorBudgetBurnFast: too little traffic to judge'
       interval: 1m
       input_series:
@@ -291,7 +291,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is steadily burning its error budget
                       description: More than 6% of requests through Traefik failed with 5xx over the last 6 hours and 30 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-overview
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-overview
     - name: 'ApiSlowRequests: fast'
       interval: 1m
       input_series:
@@ -322,7 +322,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api is slow
                       description: More than 5% of api requests took longer than 1 s over 10 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-api
     - name: 'WorkerJobsFailing: old failures only'
       interval: 1m
       input_series:
@@ -352,7 +352,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti ScraperResponseQueue jobs are failing
                       description: More than 3 ScraperResponseQueue jobs failed in the last 15 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-api
     - name: 'QueueBacklog: short spike'
       interval: 1m
       input_series:
@@ -380,7 +380,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti ScraperResponseQueue queue is backing up
                       description: More than 50 jobs have been waiting in ScraperResponseQueue for 15 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-api
     - name: 'ScheduledJobStale: InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) running on time'
       interval: 1m
       input_series:
@@ -416,7 +416,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti scheduled job InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) has not succeeded
                       description: InSIS Gap Sweep (at 0:00, 4:00, 8:00, 12:00, 16:00, 20:00) runs every 4 h but has not completed successfully in 8 h.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-api
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-api
     - name: 'WorkerJobsFailing: old failures only'
       interval: 1m
       input_series:
@@ -446,7 +446,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti ScraperRequestQueue jobs are failing
                       description: More than 3 ScraperRequestQueue jobs failed in the last 15 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-scraper
     - name: 'QueueBacklog: short spike'
       interval: 1m
       input_series:
@@ -474,7 +474,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti ScraperRequestQueue queue is backing up
                       description: More than 50 jobs have been waiting in ScraperRequestQueue for 50 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-scraper
     - name: 'ScheduledJobStale: InSIS Academic Schedules Request (daily at 1 AM) running on time'
       interval: 1m
       input_series:
@@ -510,7 +510,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti scheduled job InSIS Academic Schedules Request (daily at 1 AM) has not succeeded
                       description: InSIS Academic Schedules Request (daily at 1 AM) runs every 1 d but has not completed successfully in 2 d.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-service-scraper
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-service-scraper
     - name: 'HostDiskWillFill: stable disk'
       interval: 1m
       input_series:
@@ -545,7 +545,7 @@ tests:
                   exp_annotations:
                       summary: VPS root disk will fill within 24 hours
                       description: At the growth rate of the last 6 hours the root filesystem runs out of space within a day.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'HostDiskLow: almost full'
       interval: 1m
       input_series:
@@ -569,7 +569,7 @@ tests:
                   exp_annotations:
                       summary: VPS root disk below 10% free
                       description: Less than 10% of the root filesystem is free.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'HostMemoryLow: memory pressure'
       interval: 1m
       input_series:
@@ -590,7 +590,7 @@ tests:
                   exp_annotations:
                       summary: VPS memory below 10% available
                       description: Less than 10% of RAM has been available for 10 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'HostSwapExhausted: swap full'
       interval: 1m
       input_series:
@@ -611,7 +611,7 @@ tests:
                   exp_annotations:
                       summary: VPS swap more than 90% used
                       description: 'Swap has been more than 90% used for 30 minutes: the host is overcommitted and everything on it is slower. Add RAM or reduce memory limits.'
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'HostSwapExhausted: no swap'
       interval: 1m
       input_series:
@@ -641,7 +641,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api (production) was OOM-killed
                       description: The container hit its memory limit and was killed by the kernel in the last 10 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'ContainerRestartLoop: single deploy restart'
       interval: 1m
       input_series:
@@ -669,7 +669,7 @@ tests:
                   exp_annotations:
                       summary: Kreditozrouti api (production) keeps restarting
                       description: The container restarted at least 3 times in 15 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-host
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-host
     - name: 'MonitoringComponentDown: prometheus gone'
       interval: 1m
       input_series:
@@ -695,7 +695,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: prometheus is down'
                       description: prometheus in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'MonitoringComponentDown: alertmanager gone'
       interval: 1m
       input_series:
@@ -721,7 +721,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: alertmanager is down'
                       description: alertmanager in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'MonitoringComponentDown: loki gone'
       interval: 1m
       input_series:
@@ -747,7 +747,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: loki is down'
                       description: loki in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'MonitoringComponentDown: alloy gone'
       interval: 1m
       input_series:
@@ -773,7 +773,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: alloy is down'
                       description: alloy in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'MonitoringComponentDown: grafana gone'
       interval: 1m
       input_series:
@@ -799,7 +799,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: grafana is down'
                       description: grafana in the kreditozrouti-monitoring stack has not been scrapeable for 5 minutes.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'RuleEvaluationFailing: failing rule group'
       interval: 1m
       input_series:
@@ -819,7 +819,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: alert rules are failing to evaluate'
                       description: Some recording or alerting rules errored in the last 10 minutes; affected alerts cannot fire.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'AlertDeliveryFailing: discord rejecting'
       interval: 1m
       input_series:
@@ -840,7 +840,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: Discord notifications are failing'
                       description: Alertmanager cannot deliver to Discord. This alert silences the Watchdog heartbeat, so healthchecks.io reports the stack as down by e-mail.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'MetricsDeliveryFailing: remote write failing'
       interval: 1m
       input_series:
@@ -860,7 +860,7 @@ tests:
                   exp_annotations:
                       summary: 'Kreditozrouti monitoring: Alloy cannot write metrics to Prometheus'
                       description: Samples are being dropped between Alloy and Prometheus; dashboards and alerts are running on partial data.
-                      dashboard: https://kreditozrouti.cz/grafana/d/kreditozrouti-monitoring
+                      dashboard: https://grafana.kreditozrouti.cz/d/kreditozrouti-monitoring
     - name: 'Watchdog: always firing'
       interval: 1m
       input_series: []

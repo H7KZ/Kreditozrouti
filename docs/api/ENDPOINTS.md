@@ -16,7 +16,7 @@ The route declarations in `apps/api/src/Routes/` and schemas beside their contro
 | `GET /share/:id`                 | Load selected units                           | `{ units }`                                               |
 | `POST /ical`                     | Save units, slot settings, and semester dates | `201 { id }`                                              |
 | `GET /ical/:id`                  | Download calendar                             | `text/calendar`                                           |
-| `GET /health`                    | Health check                                  | `200 OK`                                                  |
+| `GET /health`                    | Health check                                  | `200` `{status, version, commit}`                         |
 
 The three search routes use a 300-second Redis cache. Search filters use `limit` and `offset`, not page numbers. The course filter supports text, faculty, period, language, lecturer, study plan, ECTS, delivery/completion mode, assessment, and included/excluded times. See [`packages/types/src/http.ts`](../../packages/types/src/http.ts) for exact fields. Times are minutes from midnight.
 

@@ -14,9 +14,17 @@ async function main() {
 		// stdio — keep alive until stdin closes
 		await new Promise<void>(resolve => process.stdin.on('close', resolve))
 	} else {
-		app.listen(Config.port, () => {
+		const server = app.listen(Config.port, () => {
 			logger.info({ port: Config.port }, 'MCP server listening')
 		})
+		// Docker stops with SIGTERM: stop accepting, close open streams after 10 s, then exit.
+		const shutdown = (): void => {
+			logger.info('mcp.shutdown')
+			setTimeout(() => server.closeAllConnections(), 10_000).unref()
+			server.close(() => process.exit(0))
+		}
+		process.on('SIGTERM', shutdown)
+		process.on('SIGINT', shutdown)
 	}
 }
 

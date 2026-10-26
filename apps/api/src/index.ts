@@ -64,6 +64,7 @@ async function startWorker(): Promise<void> {
 
 		const shutdown = () => {
 			logger.info('api.shutdown')
+			setTimeout(() => server.closeAllConnections(), 10_000).unref()
 			server.close(async () => {
 				await mysql.destroy()
 				await closeCacheInvalidationSubscriber()

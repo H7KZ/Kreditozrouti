@@ -2,6 +2,7 @@
 """Resolve one immutable source and complete image set for a manual release."""
 
 import base64
+from datetime import datetime, timezone
 import hashlib
 import io
 import json
@@ -13,6 +14,14 @@ import zipfile
 
 SERVICES = ("api", "web", "scraper", "mcp") if os.environ.get("GITHUB_REPOSITORY", "").lower().endswith("/kreditozrouti") else ("api", "web", "scraper")
 DIGEST = re.compile(r"sha256:[a-f0-9]{64}")
+VERSION = re.compile(r"\d{4}\.\d{2}\.\d{2}-[1-9][0-9]*")
+
+
+def calver(created_at, run_number):
+    """Release version: UTC date of the building run plus its run number, e.g. 2026.10.25-142."""
+    version = f"{created_at[:10].replace('-', '.')}-{run_number}"
+    require(VERSION.fullmatch(version), "invalid release version")
+    return version
 
 
 def require(condition, message):
@@ -90,7 +99,8 @@ def promotion(repository, selected, run_id):
         require(resolve(source) == source, "qualification source absent from repository")
         validate_images(document.get("services"))
         require(not selected or source == selected, "qualification source does not match selected ref")
-        return source, document["services"], raw
+        # Production carries the version of the development build it promotes.
+        return source, document["services"], raw, calver(str(run.get("created_at", "")), run.get("run_number", ""))
 
     if run_id:
         require(re.fullmatch(r"[1-9][0-9]*", run_id), "run_id must be a positive integer")
@@ -126,8 +136,9 @@ def main():
     require(env.get("NO_CACHE", "false") != "true" or mode in ("build", "reuse"), "no_cache requires build/reuse")
     source = resolve(selected_ref or env["GITHUB_SHA"]) if mode != "promote" or selected_ref else ""
     images, raw = {}, b""
+    version = calver(datetime.now(timezone.utc).strftime("%Y-%m-%d"), env["GITHUB_RUN_NUMBER"])
     if mode == "promote":
-        source, images, raw = promotion(repository, source, run_id)
+        source, images, raw, version = promotion(repository, source, run_id)
         tag = f"{target}-{source}"
     else:
         tag = tag or f"{target}-{source}"
@@ -144,14 +155,14 @@ def main():
                     images[service] = value
                 elif mode == "existing":
                     raise SystemExit(f"existing mode requires a published {service} image at {tag}")
-    outputs = {"source_commit": source, "mode": mode, "image_tag": tag, "manifest_b64": base64.b64encode(raw).decode(), "manifest_sha256": hashlib.sha256(raw).hexdigest() if raw else ""}
+    outputs = {"source_commit": source, "mode": mode, "image_tag": tag, "version": version, "manifest_b64": base64.b64encode(raw).decode(), "manifest_sha256": hashlib.sha256(raw).hexdigest() if raw else ""}
     outputs.update({service.replace("-", "_") + "_digest": images.get(service, "") for service in services})
     with open(env["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
         for key, value in outputs.items():
             output.write(f"{key}={value}\n")
     if env.get("GITHUB_STEP_SUMMARY"):
         with open(env["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-            summary.write(f"Source: `{source}`\n\nTarget: `{target}`; mode: `{mode}`; lookup tag: `{tag}`\n\n")
+            summary.write(f"Version: `{version}`\n\nSource: `{source}`\n\nTarget: `{target}`; mode: `{mode}`; lookup tag: `{tag}`\n\n")
             if raw:
                 qualification = json.loads(raw)
                 summary.write(f"Qualified run: {qualification['workflow_run_id']} attempt {qualification['workflow_run_attempt']}\n\n")

@@ -10,6 +10,9 @@ set -Eeuo pipefail
 #
 # Usage:       sudo ./clone-db.sh <dev-to-prod|prod-to-dev>
 #
+# Standalone: no toolkit lock and no repo files needed. Do not start a GitHub
+#             deploy while it runs.
+#
 # Safety:
 #   - Backs up the target DB (gzipped dump) before any destructive action
 #   - Requires the operator to type the target environment's project name
@@ -18,20 +21,21 @@ set -Eeuo pipefail
 # Requirements:
 #   - Must be run on the VPS where both Compose projects run: `kreditozrouti-dev`
 #     (development) and `kreditozrouti` (production)
-#   - Both stacks' `.env` files must exist at
-#     $HOME/kreditozrouti/versions/<environment>/current/.env  (same convention as CI deploys)
+#   - Both stacks' MySQL containers must be running: credentials are read from them
 #
 # Log File: none (stdout only; redirect to a file yourself if needed)
 # ==============================================================================
 
 SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_NAME
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly SCRIPT_DIR
-readonly BACKUP_DIR="${DEPLOY_HOME:-$HOME}/backups/db-clones"
+DEPLOY_HOME="${DEPLOY_HOME:-/home/deploy}"
+readonly DEPLOY_HOME
+readonly BACKUP_DIR="$DEPLOY_HOME/backups/db-clones"
 
-# shellcheck source=lib.sh
-source "$SCRIPT_DIR/lib.sh"
+log() { echo "[$SCRIPT_NAME] $*"; }
+log_success() { echo "[$SCRIPT_NAME] OK: $*"; }
+log_warning() { echo "[$SCRIPT_NAME] WARNING: $*" >&2; }
+log_error() { echo "[$SCRIPT_NAME] ERROR: $*" >&2; }
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
@@ -61,27 +65,13 @@ EOF
 }
 
 load_credentials() {
-    local env_name="$1"
-    local env_file="$DEPLOY_HOME/kreditozrouti/versions/$env_name/current/.env"
-    local release
-    release="$(realpath -e "$DEPLOY_HOME/kreditozrouti/versions/$env_name/current")"
-    [[ "$(dirname -- "$release")" == "$DEPLOY_HOME/kreditozrouti/versions/$env_name" && -f "$release/.toolkit-release.json" && ! -L "$release/.toolkit-release.json" && -f "$release/.toolkit-inventory.json" ]] || { log_error "Legacy/incomplete snapshot: stage a complete release first"; exit 1; }
-
-    [[ -f "$env_file" ]] || {
-        log_error "Missing .env for '$env_name' at: $env_file"
-        exit 1
-    }
-
-    # Extract just the two vars we need without sourcing the whole file
-    # (the deployed .env also carries image tags, registry creds, etc.)
-    # Strip a single layer of surrounding quotes in case the .env uses KEY="value" or KEY='value'
-    local strip_quotes='s/^"(.*)"$/\1/; s/^'"'"'(.*)'"'"'$/\1/'
-    local root_pw db_name
-    root_pw="$(grep -E '^MYSQL_ROOT_PASSWORD=' "$env_file" | head -n1 | cut -d'=' -f2- | sed -E "$strip_quotes")"
-    db_name="$(grep -E '^MYSQL_DATABASE=' "$env_file" | head -n1 | cut -d'=' -f2- | sed -E "$strip_quotes")"
+    # Reads the running MySQL container's env, so it does not depend on release files on disk.
+    local container="$1" root_pw db_name
+    root_pw="$(docker exec "$container" printenv MYSQL_ROOT_PASSWORD 2>/dev/null)" || root_pw=""
+    db_name="$(docker exec "$container" printenv MYSQL_DATABASE 2>/dev/null)" || db_name=""
 
     [[ -n "$root_pw" && -n "$db_name" ]] || {
-        log_error "Could not read MYSQL_ROOT_PASSWORD / MYSQL_DATABASE from: $env_file"
+        log_error "Could not read MYSQL_ROOT_PASSWORD / MYSQL_DATABASE from container '$container' (is it running?)"
         exit 1
     }
 
@@ -121,7 +111,9 @@ confirm_clone() {
 }
 
 backup_target() {
-    mkdir -p "$BACKUP_DIR"
+    # Dumps hold the full DB, including password hashes: owner-only dir and files.
+    umask 077
+    install -d -m 0700 "$BACKUP_DIR"
 
     local timestamp backup_file
     timestamp="$(date -u +'%Y%m%dT%H%M%SZ')"
@@ -134,7 +126,7 @@ backup_target() {
     # clean up the partial file on any failure so the backup dir stays trustworthy.
     set +e
     docker exec "$TARGET_CONTAINER" \
-        mysqldump --single-transaction --routines --triggers \
+        mysqldump --single-transaction --set-gtid-purged=OFF --routines --triggers \
             -u root -p"$TARGET_ROOT_PW" "$TARGET_DB" \
         | gzip > "$backup_file"
     local dump_status="${PIPESTATUS[0]}"
@@ -164,7 +156,7 @@ clone_database() {
     # exit code alone can mask a source-side failure if the target client exits 0.
     set +e
     docker exec "$SOURCE_CONTAINER" \
-        mysqldump --single-transaction --routines --triggers --add-drop-table \
+        mysqldump --single-transaction --set-gtid-purged=OFF --routines --triggers --add-drop-table \
             -u root -p"$SOURCE_ROOT_PW" "$SOURCE_DB" \
         | docker exec -i "$TARGET_CONTAINER" \
             mysql -u root -p"$TARGET_ROOT_PW" "$TARGET_DB"
@@ -224,7 +216,7 @@ resolve_projects() {
     esac
 
     # Docker Compose auto-names containers as <project>-<service>-<replica>
-    # (project = the toolkit release's Compose project: kreditozrouti / kreditozrouti-dev)
+    # (Compose project names: kreditozrouti / kreditozrouti-dev)
     SOURCE_CONTAINER="${SOURCE_PROJECT}-mysql-1"
     TARGET_CONTAINER="${TARGET_PROJECT}-mysql-1"
 }
@@ -246,8 +238,10 @@ log "=========================================="
 
 log "Loading credentials..."
 
-IFS=$'\t' read -r SOURCE_ROOT_PW SOURCE_DB <<< "$(load_credentials "$SOURCE_ENV")"
-IFS=$'\t' read -r TARGET_ROOT_PW TARGET_DB <<< "$(load_credentials "$TARGET_ENV")"
+SOURCE_CREDS="$(load_credentials "$SOURCE_CONTAINER")"
+TARGET_CREDS="$(load_credentials "$TARGET_CONTAINER")"
+IFS=$'\t' read -r SOURCE_ROOT_PW SOURCE_DB <<< "$SOURCE_CREDS"
+IFS=$'\t' read -r TARGET_ROOT_PW TARGET_DB <<< "$TARGET_CREDS"
 
 log_success "Credentials loaded for both environments"
 log "Source DB: $SOURCE_DB ($SOURCE_ENV)"
@@ -269,14 +263,4 @@ log "=========================================="
 
 }
 
-# Construct the locked worker from already-loaded functions; no public bypass flag.
-check_root
-[[ $# == 1 && "$DIRECTION" =~ ^(dev-to-prod|prod-to-dev)$ ]] || usage
-[[ -n "${SUDO_USER:-}" && "$SUDO_USER" != root ]] || { log_error 'Run with sudo from the deployment user'; exit 1; }
-deploy_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
-[[ "$deploy_home" == /* && -d "$deploy_home" && ! -L "$deploy_home" ]] || exit 1
-# shellcheck disable=SC2016 # positional arguments expand only inside the locked child
-locked_program="$(declare -f)"$'\n''set -euo pipefail; SCRIPT_DIR="$1"; SCRIPT_NAME=clone-db.sh; LOG_TAG=clone-db.sh; DEPLOY_HOME="$2"; BACKUP_DIR="$DEPLOY_HOME/backups/db-clones"; DIRECTION="$3"; source "$SCRIPT_DIR/lib.sh"; main'
-# The pinned toolkit takes the repository lock and the host window around the whole clone.
-exec bash "$SCRIPT_DIR/../deployment/toolkit" with-lock --repository kreditozrouti --environment production --action maintenance --timeout 1800 --host-window -- \
-  bash -c "$locked_program" _ "$SCRIPT_DIR" "$deploy_home" "$DIRECTION"
+main "$@"

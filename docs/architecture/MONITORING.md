@@ -1,6 +1,6 @@
 # Monitoring
 
-The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://kreditozrouti.cz/grafana/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
+The [monitoring stack](../../deployment/monitoring/docker-compose.monitoring.yml) runs alongside the app on the same VPS. [Alloy](../../deployment/monitoring/alloy/config.alloy) collects container and Traefik logs, API and scraper metrics, host and container metrics, browser Faro events, and route probes. It sends metrics to Prometheus and logs to Loki. Grafana serves dashboards at `https://grafana.kreditozrouti.cz/`; Alertmanager sends alerts to Discord and a Watchdog ping to healthchecks.io. Umami provides product analytics through `/stats` on app domains.
 
 Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitoring stack has no OTLP receiver or Tempo.
 
@@ -8,15 +8,15 @@ Tracing is off unless `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The current monitori
 
 | Component    | Current image                        | Role                                                |
 | ------------ | ------------------------------------ | --------------------------------------------------- |
-| Alloy        | `grafana/alloy:v1.19.2`              | Collection, probes, Faro receiver                   |
-| Prometheus   | `prom/prometheus:v3.14.0`            | Metrics, 15-day and 2 GB retention cap, alert rules |
-| Alertmanager | `prom/alertmanager:v0.34.0`          | Notification routing                                |
-| Loki         | `grafana/loki:3.7.7`                 | Logs, seven-day retention; Traefik logs three days  |
-| Grafana      | `grafana/grafana:13.2.1`             | Dashboards                                          |
-| Umami        | `ghcr.io/umami-software/umami:3.3.1` | Analytics                                           |
+| Alloy        | `grafana/alloy:v1.20.1`              | Collection, probes, Faro receiver                   |
+| Prometheus   | `prom/prometheus:v3.15.0`            | Metrics, 15-day and 2 GB retention cap, alert rules |
+| Alertmanager | `prom/alertmanager:v0.34.1`          | Notification routing                                |
+| Loki         | `grafana/loki:3.7.8`                 | Logs, seven-day retention; Traefik logs three days  |
+| Grafana      | `grafana/grafana:13.2.4`             | Dashboards                                          |
+| Umami        | `ghcr.io/umami-software/umami:3.4.0` | Analytics                                           |
 | Umami DB     | `postgres:18.6-alpine`               | Analytics storage                                   |
 
-Umami retention is the `umami-retention` toolkit job (`deployment/monitoring/umami/retain.sh`, declared in `deployment/toolkit.conf`). `deployment/toolkit install` generates its disabled timer; run `sudo deployment/toolkit job umami-retention` and validate before separate owner activation. The scheduled GitHub workflow is removed.
+Umami retention is the `umami-retention` toolkit job (`deployment/monitoring/umami/retain.sh`, declared in `deployment/toolkit.conf`). Host Sync installs and enables its timer (daily 03:17 Europe/Prague); run `sudo deployment/toolkit job umami-retention` once by hand to validate it.
 
 ## Collection contract
 

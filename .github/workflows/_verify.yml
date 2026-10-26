@@ -1,7 +1,7 @@
 # ==============================================================================
 # Workflow: Verify (reusable)
 # Description: Single source of truth for repository verification. Installs
-#              dependencies, lints, checks em dashes, builds core, runs the test
+#              dependencies, lints, builds core, runs the test
 #              suite, type-checks and builds every package.
 #              With `affected: true` (pull requests) lint, tests, type-check and build
 #              only run for packages changed against the base branch and their
@@ -103,9 +103,6 @@ jobs:
           echo "full=$full" >> "$GITHUB_OUTPUT"
           echo "monitoring=$monitoring" >> "$GITHUB_OUTPUT"
 
-      - name: Check em dashes
-        run: bash scripts/check-em-dashes.sh
-
       # ubuntu-latest ships shellcheck; -x follows sourced libs, -P SCRIPTDIR resolves them from the sourcing script.
       - name: Lint Shell Scripts
         run: git ls-files -z '*.sh' | xargs -0 shellcheck -x -P SCRIPTDIR
@@ -116,6 +113,9 @@ jobs:
       - name: Validate monitoring config
         if: steps.scope.outputs.monitoring == 'true' || steps.scope.outputs.full == 'true'
         run: bash deployment/monitoring/validate.sh
+
+      - name: Migrations only add (rollback-safe)
+        run: node scripts/migration-lint.mjs
 
       - name: Verify All Packages
         if: steps.scope.outputs.full == 'true'

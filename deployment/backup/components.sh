@@ -8,14 +8,10 @@
 # adds a repository-specific check. See https://github.com/H7KZ/Toolkit/tree/main/docs/backups.md
 # shellcheck disable=SC2034 # arrays are read by the toolkit
 
-declare -gA BACKUP_CADENCE BACKUP_EXT BACKUP_PAUSE BACKUP_MIN_BYTES BACKUP_DRILL
+declare -gA BACKUP_EXT BACKUP_PAUSE BACKUP_MIN_BYTES BACKUP_DRILL
 
 BACKUP_COMPONENTS=(mysql umami-postgres redis)
 BACKUP_DEFAULT_MIN_BYTES=300
-for _component in "${BACKUP_COMPONENTS[@]}"; do
-  BACKUP_CADENCE[$_component]=4h
-done
-unset _component
 BACKUP_EXT["mysql"]=sql
 BACKUP_EXT["umami-postgres"]=pgdump
 BACKUP_EXT["redis"]=rdb

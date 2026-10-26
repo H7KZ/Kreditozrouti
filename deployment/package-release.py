@@ -29,6 +29,9 @@ def main():
     require(re.fullmatch(r"[a-f0-9]{40}", commit), "source_commit must be a full SHA")
     run, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     require(all(re.fullmatch(r"[1-9][0-9]*", value) for value in (run, attempt)), "invalid workflow identity")
+    # CalVer (YYYY.MM.DD-<run number>): image tag shown by `docker ps`, APP_VERSION and release ID.
+    version = os.environ["RELEASE_VERSION"]
+    require(re.fullmatch(r"\d{4}\.\d{2}\.\d{2}-[1-9][0-9]*", version), "RELEASE_VERSION must be YYYY.MM.DD-<run number>")
     lock = (source / "toolkit.lock").read_text(encoding="utf-8")
     versions = re.findall(r"^TOOLKIT_VERSION=([0-9]+\.[0-9]+\.[0-9]+)$", lock, re.M)
     require(len(versions) == 1, "invalid toolkit version pin")
@@ -46,10 +49,11 @@ def main():
             digest = os.environ.get(key + "_DIGEST", "")
             require(re.fullmatch(r"sha256:[a-f0-9]{64}", digest), f"complete release requires {service} digest")
             digests[service] = digest
-            images[service] = f"ghcr.io/{prefix}/{service}@{digest}"
+            # The tag is for people (`docker ps`); Docker resolves the digest.
+            images[service] = f"ghcr.io/{prefix}/{service}:{version}@{digest}"
             # Existing Compose files concatenate the reference suffix to repository/service.
-            variables[key + "_IMAGE_REFERENCE"] = "@" + digest
-            variables[key + "_IMAGE_TAG"] = commit
+            variables[key + "_IMAGE_REFERENCE"] = f":{version}@{digest}"
+            variables[key + "_IMAGE_TAG"] = version
         domain = os.environ["APP_DOMAIN"]
         require(re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?", domain), "DOMAIN must be a hostname")
         health = [f"https://{domain}/", f"https://{domain}/api/health"]
@@ -63,7 +67,8 @@ def main():
         "schema_version": 1,
         "repository": slug,
         "environment": "infrastructure" if target == "ingress" else target,
-        "release_id": f"{commit}-{run}-{attempt}",
+        # A rerun attempt of the same workflow run gets its own snapshot.
+        "release_id": version if attempt == "1" else f"{version}.{attempt}",
         "source_commit": commit,
         "project": project,
         "compose_files": [f"{target}/networks.yml", f"{target}/volumes.yml", f"{target}/docker-compose.{target}.yml"],

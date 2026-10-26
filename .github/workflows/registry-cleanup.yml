@@ -6,17 +6,14 @@
 #              in the protected_digests input. Untagged versions (attestations,
 #              child manifests) are never deleted.
 #
-#              Scheduled runs are ALWAYS dry-run. Deletion needs a manual
-#              dispatch with dry_run=false.
-#
-#              DEPLOYED DIGESTS ARE NOT READABLE FROM CI: current/previous
-#              releases live on the VPS (~/<project>/releases). Before a live run,
-#              pass every current/previous/retained-rollback digest in
-#              protected_digests.
+#              Every digest a release retained on the VPS references (current, previous and
+#              the newest snapshots the toolkit keeps) is read over SSH and protected; if that
+#              read fails, nothing is deleted. Scheduled runs delete; a manual dispatch is a
+#              dry run unless dry_run is unticked.
 # ==============================================================================
 
 name: Cleanup Registry
-run-name: Cleanup Registry · ${{ inputs.dry_run == false && github.event_name == 'workflow_dispatch' && 'delete' || 'dry-run' }}
+run-name: Cleanup Registry · ${{ (github.event_name == 'schedule' || inputs.dry_run == false) && 'delete' || 'dry-run' }}
 
 on:
   schedule:
@@ -39,7 +36,7 @@ on:
         type: string
         default: ''
       dry_run:
-        description: Only log what would be deleted; scheduled runs are always dry runs
+        description: Only log what would be deleted (manual runs; scheduled runs delete)
         required: true
         type: boolean
         default: true
@@ -86,8 +83,56 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('packages=' + json.dumps(['kreditozrouti/' + name for name in services]) + '\n')
           PY
-  cleanup:
+  deployed:
+    name: Read retained release digests
     needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      digests: ${{ steps.digests.outputs.digests }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Verify toolkit pin
+        run: bash deployment/toolkit verify
+      - name: List digests of retained releases on the VPS
+        id: read
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          command_timeout: 2m
+          capture_stdout: true
+          script: |
+            set -euo pipefail
+            python3 - <<'PY'
+            import glob, json, os
+            seen = set()
+            for path in glob.glob(os.path.expanduser("~/kreditozrouti/versions/*/*/image-digests.json")):
+                with open(path, encoding="utf-8") as handle:
+                    seen.update(json.load(handle)["services"].values())
+            print("DIGESTS " + " ".join(sorted(seen)))
+            PY
+      - name: Validate digests
+        id: digests
+        env:
+          STDOUT: ${{ steps.read.outputs.stdout }}
+        run: |
+          set -euo pipefail
+          line="$(grep '^DIGESTS ' <<<"$STDOUT" | tail -1)"
+          digests="${line#DIGESTS }"
+          for digest in $digests; do
+            [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo "::error::unexpected digest $digest"; exit 1; }
+          done
+          [[ -n "$digests" ]] || echo '::warning::no retained releases found on the VPS'
+          echo "digests=$digests" >>"$GITHUB_OUTPUT"
+          echo "Protected from the VPS: ${digests:-none}" >>"$GITHUB_STEP_SUMMARY"
+  cleanup:
+    needs: [validate, deployed]
     name: Cleanup ${{ matrix.package }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -104,8 +149,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE: ${{ matrix.package }}
           OWNER: ${{ github.repository_owner }}
-          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
-          PROTECTED: ${{ inputs.protected_digests }}
+          DRY_RUN: ${{ (github.event_name == 'schedule' || inputs.dry_run == false) && 'false' || 'true' }}
+          PROTECTED: ${{ format('{0} {1}', inputs.protected_digests, needs.deployed.outputs.digests) }}
           KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.keep_newest) || '6' }}
           MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.min_age_days) || '7' }}
         run: |

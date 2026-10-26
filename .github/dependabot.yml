@@ -92,6 +92,9 @@ updates:
     commit-message:
       prefix: 'build(deps)'
     groups:
+      monitoring-stack:
+        patterns: ['grafana/*', 'prom/*']
+        update-types: ['minor', 'patch']
       images-minor-patch:
         patterns: ['*']
         update-types: ['minor', 'patch']
@@ -125,9 +128,6 @@ updates:
     commit-message:
       prefix: 'chore(deps)'
     groups:
-      monitoring-stack:
-        patterns: ['grafana/*', 'prom/*']
-        update-types: ['minor', 'patch']
       images-minor-patch:
         patterns: ['*']
         exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*']
