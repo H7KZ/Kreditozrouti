@@ -6,7 +6,7 @@ order: 1
 
 # Privacy policy
 
-_Updated October 25, 2026_
+_Updated October 27, 2026_
 
 Kreditožrouti is a student project. You can use it without an account. It reads VŠE's public InSIS catalog, including lecturer names associated with courses. Names are personal data even when publicly available. The app does not access your InSIS account, grades, or enrollment record.
 
@@ -23,7 +23,7 @@ Kreditožrouti is a student project. You can use it without an account. It reads
 
 Feedback comments are free text. Please do not include personal details. A comment may itself contain personal data even though the form asks you to avoid it. We send feedback only when you submit it. A share link lets anyone holding it view the selected timetable; share it accordingly.
 
-Umami uses no analytics cookies. The app removes share-link IDs, query strings, and fragments from page addresses sent to Umami and Faro. Faro session tracking and console capture are disabled. Technical request information, including your IP address, is processed when you access the service. Cloudflare delivers and protects the site and may process data outside the EEA under its [data processing terms](https://www.cloudflare.com/cloudflare-customer-dpa/); application services run on Contabo infrastructure in France.
+Umami uses no analytics cookies. For a sample of visits, Umami also records click positions and scroll depth for a heatmap, with the window and page size; page content, typed text and mouse movement are not recorded, and the app never sends a session replay. The app removes share-link IDs, query strings, and fragments from page addresses sent to Umami and Faro. Faro session tracking and console capture are disabled. Technical request information, including your IP address, is processed when you access the service. Cloudflare delivers and protects the site and may process data outside the EEA under its [data processing terms](https://www.cloudflare.com/cloudflare-customer-dpa/); application services run on Contabo infrastructure in France.
 
 We rely on legitimate interests to operate, secure, and improve the service and on your choice to submit optional feedback. Browser storage is used for the planning features you choose. You can stop using the service and clear local data at any time. For access, correction, or deletion requests about server-side information, [contact the project](https://github.com/H7KZ/Kreditozrouti/issues) with enough context to locate it. Some analytics events have no user identifier, which may limit our ability to identify an individual record.
 

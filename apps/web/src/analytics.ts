@@ -65,6 +65,51 @@ function init(): void {
 	script.setAttribute('data-exclude-hash', 'true')
 	script.setAttribute('data-before-send', '__kreditozroutiUmamiBeforeSend')
 	document.head.appendChild(script)
+	initRecorder(websiteId)
+}
+
+const RECORD_PATH = '/stats/api/record'
+
+/**
+ * Umami's recorder (rrweb) can send two payloads to `/stats/api/record`: `heatmap` (click points and
+ * scroll depth) and `record` (a session replay: the page's DOM). Only heatmaps leave the browser,
+ * whatever the Umami UI enables, and each of their URLs passes `redactUrl` (the recorder itself
+ * sends raw `location.href`, share links included). Returns the body to send, or `null` to drop it.
+ */
+export function filterRecorderBody(body: string): string | null {
+	let parsed: { type?: unknown; payload?: { events?: unknown } }
+	try {
+		parsed = JSON.parse(body) as typeof parsed
+	} catch {
+		return null
+	}
+	if (parsed.type !== 'heatmap' || !Array.isArray(parsed.payload?.events)) return null
+	const events = parsed.payload.events.map((event: unknown) => {
+		if (typeof event !== 'object' || event === null) return event
+		const url = (event as { url?: unknown }).url
+		return typeof url === 'string' ? { ...event, url: redactUrl(url) } : event
+	})
+	return JSON.stringify({ ...parsed, payload: { ...parsed.payload, events } })
+}
+
+/** Loads Umami's heatmap recorder first-party after wrapping `fetch` so every recorder request passes `filterRecorderBody`. */
+function initRecorder(websiteId: string): void {
+	if (document.querySelector('script[src="/stats/recorder.js"]')) return
+
+	const send = window.fetch.bind(window)
+	window.fetch = (input, init) => {
+		const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+		if (new URL(url, window.location.href).pathname !== RECORD_PATH) return send(input, init)
+		const body = typeof init?.body === 'string' ? filterRecorderBody(init.body) : null
+		return body === null ? Promise.resolve(new Response(null, { status: 204 })) : send(input, { ...init, body })
+	}
+
+	const script = document.createElement('script')
+	script.defer = true
+	script.src = '/stats/recorder.js'
+	script.setAttribute('data-website-id', websiteId)
+	script.setAttribute('data-host-url', `${window.location.origin}/stats`)
+	document.head.appendChild(script)
 }
 
 const analytics = {
