@@ -25,7 +25,7 @@ exported values. Registry and release cleanup remain deferred until recovery ref
 - Keep database image/volume layout compatible: PostgreSQL18 mounts `/var/lib/postgresql`.
 - Shell scripts source the vendored `vendor/toolkit/log.sh` for logging.
 - Host Sync (`host-sync.yml`) installs and enables what `toolkit.conf` declares; only a fresh server's first install is manual.
-  Web runs two replicas (no `container_name`); api and mcp stay single with readiness healthchecks. Migrations are
+  Web and api run two replicas (no `container_name`); mcp stays single (in-process OAuth store) with a readiness healthcheck. Migrations are
   expand-only (`scripts/migration-lint.mjs`). New source is not evidence of a live deployment.
 - Redis uses AOF/noeviction; backup restore allowlists `share:*` / `ical:*`, never whole production Redis. See [backups](../docs/runbooks/backups.md).
 - Data migrations (naming, PostgreSQL major versions) need a reviewed owner procedure under the toolkit lock; see [rollback and recovery](../docs/runbooks/rollback-and-recovery.md#database-image-or-volume-problems).
