@@ -97,9 +97,12 @@ services:
                 max-size: '10m'
                 max-file: '3'
 
+        # Two replicas behind Traefik: a crash or a deploy (start-first) never drops the api. Shared state is in
+        # MySQL/Redis: BullMQ schedulers are upserted, SSE and cache invalidation go over Redis pub/sub, and the
+        # partner-key cache lives 15 s per replica by design.
         deploy:
             mode: replicated
-            replicas: 1
+            replicas: 2
             resources:
                 limits:
                     cpus: '1'
@@ -305,6 +308,8 @@ services:
 
         deploy:
             mode: replicated
+            # One replica: the OAuth clients and authorization codes live in this process (src/OAuth/OAuthStore.ts),
+            # so a code issued by one replica would be unknown to another.
             replicas: 1
             resources:
                 limits:
