@@ -1,4 +1,4 @@
-# Toolkit 0.12.1 (vendored)
+# Toolkit 0.12.3 (vendored)
 
 Pinned copy of the Toolkit release this repository runs. Every file here plus
 `deployment/toolkit` and `deployment/toolkit.lock` is managed: never edit them by hand.
@@ -8,8 +8,8 @@ Repin from a Toolkit checkout, then commit here:
 npm run vendor -- ../<this-repository>
 ```
 
-- `toolkit-0.12.1.tar.gz`: release archive, the `toolkit/` source plus `MANIFEST`
-- `toolkit-0.12.1.tar.gz.sha256`: archive checksum; detects corruption, not authorship
+- `toolkit-0.12.3.tar.gz`: release archive, the `toolkit/` source plus `MANIFEST`
+- `toolkit-0.12.3.tar.gz.sha256`: archive checksum; detects corruption, not authorship
 - `toolkit.lock`: the pin (version, source commit, archive digest, contract versions)
 - `validate-lock.sh`: checks an archive against a pin; used by `deployment/toolkit`
 - `log.sh`: shared logging for this repository's scripts (`source` it)
