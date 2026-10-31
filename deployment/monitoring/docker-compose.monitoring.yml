@@ -107,7 +107,7 @@ services:
                     cpus: '0.5'
                     memory: 256M
     alloy:
-        image: grafana/alloy:v1.20.1
+        image: grafana/alloy:v1.21.0
         restart: unless-stopped
         group_add:
             - ${DOCKER_GID:-988}
@@ -258,7 +258,7 @@ services:
                     cpus: '0.3'
                     memory: 128M
     umami:
-        image: ghcr.io/umami-software/umami:3.4.0
+        image: ghcr.io/umami-software/umami:3.4.1
         restart: unless-stopped
         depends_on:
             umami-db:
