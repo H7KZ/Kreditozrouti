@@ -20,6 +20,7 @@ export interface MCPCourseUnitSlot {
 export interface MCPCourseUnit {
 	id: number
 	course_id: number
+	lecturer: string | null
 	capacity: number | null
 	note: string | null
 	slots: MCPCourseUnitSlot[]

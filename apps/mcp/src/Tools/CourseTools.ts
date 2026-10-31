@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import CourseService from '@kreditozrouti/core/services/CourseService'
-import { defineTool, registerTool } from '@mcp/tools'
+import { defineTool, registerTool, toMcpJson } from '@mcp/tools'
 
 /** Two-letter codes the tool has always documented, mapped to the language values the search filters on. */
 const LANGUAGE_CODES: Record<string, string> = {
@@ -42,7 +42,7 @@ export default class CourseTools {
 				if (input.semester && input.semester !== 'Both') filter.semesters = [input.semester]
 				if (input.language) filter.languages = [LANGUAGE_CODES[input.language.toUpperCase()] ?? input.language.toLowerCase()]
 				const { courses, total } = await CourseService.search(db, filter, input.limit, input.offset)
-				return { content: [{ type: 'text', text: JSON.stringify({ courses, total }, null, 2) }] }
+				return { content: [{ type: 'text', text: toMcpJson({ courses, total }) }] }
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
@@ -65,7 +65,7 @@ export default class CourseTools {
 			try {
 				const course = await CourseService.getById(db, input.id)
 				if (!course) return { content: [{ type: 'text', text: 'Course not found' }], isError: true }
-				return { content: [{ type: 'text', text: JSON.stringify(course, null, 2) }] }
+				return { content: [{ type: 'text', text: toMcpJson(course) }] }
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],

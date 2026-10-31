@@ -6,6 +6,14 @@ import type { Kysely } from 'kysely'
 import type { ZodRawShape } from 'zod'
 import { z } from 'zod'
 
+/**
+ * Serializes a payload for an MCP response. MCP output can reach AI models outside our control, so
+ * lecturer names (personal data) are dropped here; the shared services still return them to the web app.
+ */
+export function toMcpJson(value: unknown): string {
+	return JSON.stringify(value, (key, v: unknown) => (key === 'lecturer' ? undefined : v), 2)
+}
+
 export function defineTool<S extends ZodRawShape>(def: {
 	name: string
 	title: string

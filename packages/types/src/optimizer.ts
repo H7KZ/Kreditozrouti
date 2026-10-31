@@ -31,6 +31,7 @@ export interface SelectedCourseUnitDTO {
 	timeFrom: number
 	timeTo: number
 	location?: string
+	lecturer?: string
 	ects?: number
 	snapshotAvailableTypes?: CourseUnitType[]
 }

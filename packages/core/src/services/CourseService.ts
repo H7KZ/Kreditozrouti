@@ -139,6 +139,7 @@ export default class CourseService {
 		return {
 			id: unit.id,
 			course_id: unit.course_id,
+			lecturer: unit.lecturer ?? null,
 			capacity: unit.capacity ?? null,
 			note: unit.note ?? null,
 			slots: unit.slots.map((slot): MCPCourseUnitSlot => ({
