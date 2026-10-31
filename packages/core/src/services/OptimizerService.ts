@@ -105,7 +105,6 @@ export default class OptimizerService {
 
 	private static toSelectedCourseUnitDTO(candidate: SolverSlotCandidate, courseById: Map<number, MCPCourse>): SelectedCourseUnitDTO {
 		const course = courseById.get(candidate.courseId)
-		const unit = course?.units.find(u => u.id === candidate.unitId)
 		return {
 			courseId: candidate.courseId,
 			courseIdent: course?.ident ?? '',
@@ -120,7 +119,6 @@ export default class OptimizerService {
 			timeFrom: candidate.timeFrom,
 			timeTo: candidate.timeTo,
 			location: candidate.location,
-			lecturer: unit?.lecturer ?? undefined,
 			ects: course?.ects ?? undefined,
 			snapshotAvailableTypes: course ? OptimizerService.snapshotAvailableTypes(course) : undefined
 		}

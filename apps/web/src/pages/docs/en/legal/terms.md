@@ -6,7 +6,7 @@ order: 2
 
 # Terms of Use
 
-_Last updated: September 24, 2026_
+_Last updated: October 31, 2026_
 
 ## About this service
 
@@ -40,10 +40,27 @@ presented.
 - You are responsible for verifying all course information in InSIS before enrollment
 - You are responsible for meeting all VŠE enrollment deadlines and academic requirements
 - Do not use this service for any purpose other than personal academic planning
+- Do not overload the service, bypass its rate limits, or attempt to access data or systems you are not authorized to
+  use
+- Do not put personal details of other people in feedback comments
 
-## University rules
+## Shared links and exports
 
-The app reads public InSIS pages and limits automated request load. This repository does not document approval for automated InSIS access.
+A share link or calendar link lets anyone who holds it view the selected timetable, including lecturer names. Share it
+only with people you trust. Links expire after 180 days without a view. See the [privacy policy](privacy.md).
+
+## Programmatic access
+
+The public website is for personal use by people. The catalogue API is available only to approved partners with an
+API key, and the MCP server is meant for AI assistants acting for an individual user. Automated access outside these
+channels, such as scraping the site, is not permitted. Rate limits apply and access may be blocked to protect the
+service.
+
+## University data
+
+The app reads public InSIS pages and limits automated request load. Kreditožrouti is not operated by VŠE, and VŠE has
+not endorsed or approved this tool. If VŠE or a rights holder asks us to stop or change how this data is used, we may
+do so without notice.
 
 ## Intellectual property
 
@@ -55,14 +72,30 @@ application itself is not permitted without explicit permission from the authors
 ## Availability
 
 Kreditožrouti is provided on a best-effort basis. We do not guarantee continuous availability. The service may be
-temporarily unavailable during maintenance or due to changes in InSIS.
+temporarily unavailable during maintenance or due to changes in InSIS. We may change or discontinue features at any
+time.
+
+## Limitation of liability
+
+To the extent permitted by law, the maintainers are not liable for any loss caused by using the service, including a
+missed enrollment, a wrong schedule, or unavailability. Nothing in these terms limits liability that cannot be limited
+under applicable law.
+
+## Privacy
+
+How personal data is handled is described in the [privacy policy](privacy.md).
+
+## Governing law
+
+These terms are governed by the law of the Czech Republic. Mandatory consumer rights in your country of residence are
+not affected.
 
 ## Changes to these terms
 
-These terms may be updated at any time. Continued use of the service after changes are posted constitutes acceptance of
-the updated terms.
+These terms may be updated at any time. The date at the top shows the latest revision. Continued use of the service
+after changes are posted constitutes acceptance of the updated terms.
 
 ## Contact
 
-This is a student project. For questions or concerns, open an issue on the project repository or use the feedback form
-in the application.
+This is a student project. For questions or concerns, open an issue on the
+[project repository](https://github.com/H7KZ/Kreditozrouti/issues) or use the feedback form in the application.

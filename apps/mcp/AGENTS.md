@@ -27,6 +27,7 @@ apps/mcp/src/
 
 ## Critical Invariants
 
+- **No personal data**: MCP output goes to third-party AI models, so it never carries lecturer names. `MCPCourseUnit` and the optimizer's `SelectedCourseUnitDTO` have no `lecturer` field; do not add lecturer, guarantor, or other person names to tool or resource payloads.
 - **Shared imports**: use `@kreditozrouti/core` and `@kreditozrouti/types`, never `@api/*`, `@scraper/*`, or `web/`.
 - **Stateless HA**: `createServer()` factory called fresh per HTTP request; `sessionIdGenerator: undefined`
 - **Dual transport**: `--stdio` flag → StdioServerTransport; else → Streamable HTTP on `POST /mcp`
