@@ -3,13 +3,14 @@ import type { CourseWithRelationsDTO } from '@kreditozrouti/types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CourseRefreshButton from '@web/components/courses/CourseRefreshButton.vue'
-import { useCourseLabels } from '@web/composables'
+import { useCourseLabels, useStudologStats } from '@web/composables'
 import { useCompletedCoursesStore, useCoursesStore, useFiltersStore } from '@web/stores'
 import { formatRelativeAge, isCourseStale } from '@web/utils/freshness'
 import { renderMarkdown } from '@web/utils/markdown'
 import IconCircleCheck from '~icons/lucide/circle-check'
 import IconClock from '~icons/lucide/clock'
 import IconExternalLink from '~icons/lucide/external-link'
+import IconStar from '~icons/lucide/star'
 
 interface Props {
 	course: CourseWithRelationsDTO
@@ -23,6 +24,8 @@ const filtersStore = useFiltersStore()
 
 const { locale, t } = useI18n()
 const { getCompletionLabel, getFacultyLabel, getLanguagesLabel, getCategoryLabel, getCourseTitle, getCategoryBadgeClass } = useCourseLabels()
+
+const { scoreLabel, difficultyLabel } = useStudologStats(() => props.course.ident)
 
 const isMarkedCompleted = computed(() => completedCoursesStore.isCourseCompleted(props.course.ident))
 const formattedAge = computed(() => formatRelativeAge(props.course.updated_at, locale.value))
@@ -132,6 +135,30 @@ function handleToggleCompleted() {
 			>
 				{{ getLanguagesLabel(course.languages) }}
 			</span>
+		</div>
+
+		<!-- Student ratings, attributed to Studolog -->
+		<div v-if="scoreLabel || difficultyLabel" class="mb-3 flex flex-wrap items-center gap-1.5">
+			<span
+				v-if="scoreLabel"
+				class="inline-flex items-center gap-1 rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs font-semibold text-(--insis-gray-700)"
+				:title="$t('components.courses.CourseRowExpanded.studologScore')"
+			>
+				<IconStar class="h-3 w-3" aria-hidden="true" />
+				{{ scoreLabel }}
+			</span>
+			<span v-if="difficultyLabel" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">
+				{{ difficultyLabel }}
+			</span>
+			<a
+				href="https://studolog.cz"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-1 text-xs text-(--insis-blue) hover:text-(--insis-blue-dark)"
+			>
+				{{ $t('components.courses.CourseRowExpanded.studologSource') }}
+				<IconExternalLink class="h-3 w-3" aria-hidden="true" />
+			</a>
 		</div>
 
 		<!-- Mark as completed — promoted above the fold -->

@@ -28,6 +28,7 @@ environment level for everything else.
 | `REDIS_PASSWORD`, `REDIS_URI`                                                        | secrets          | Redis password and connection string                                                                    |
 | `API_SESSION_SECRET`, `API_COMMAND_TOKEN`, `MCP_JWT_SECRET`                          | secrets          | Application authentication. Rotating them logs users out / invalidates tokens                           |
 | `GOOGLE_USER`, `GOOGLE_APP_PASSWORD`                                                 | secrets          | Optional Gmail SMTP, production only (development always gets empty values). [Setup](../setup/GMAIL.md) |
+| `API_STUDOLOG_KEY`                                                                   | secret           | Optional Studolog partner key, server-side only. Empty hides the course ratings                         |
 | `UMAMI_WEBSITE_ID`, `UMAMI_SRC`                                                      | secret, variable | Optional web analytics, baked into the web container's runtime config                                   |
 | `PHPMYADMIN_BASIC_AUTH`                                                              | secret           | htpasswd line gating `/phpmyadmin` on development. Empty = every request rejected                       |
 

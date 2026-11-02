@@ -364,6 +364,14 @@
 				}
 			},
 			"CourseRowExpanded": {
+				"studologScore": "Průměrné hodnocení studentů",
+				"studologSource": "Hodnocení ze Studologu",
+				"studologDifficulty": {
+					"giveaway": "Dávačka",
+					"easy": "Lehké",
+					"medium": "Střední",
+					"hard": "Těžké"
+				},
 				"faculty": "Fakulta",
 				"ectsCredits": "ECTS kredity",
 				"completion": "Dokončení",

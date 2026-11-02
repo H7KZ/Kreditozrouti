@@ -50,6 +50,7 @@ services:
             - API_ALLOWED_ORIGINS=https://${DOMAIN}
             - API_SESSION_SECRET=${API_SESSION_SECRET}
             - API_COMMAND_TOKEN=${API_COMMAND_TOKEN}
+            - API_STUDOLOG_KEY=${API_STUDOLOG_KEY:-}
             - GOOGLE_USER=${GOOGLE_USER}
             - GOOGLE_APP_PASSWORD=${GOOGLE_APP_PASSWORD}
             - WEB_URI=https://${DOMAIN}

@@ -62,6 +62,10 @@ Aplikace čte veřejné stránky InSIS a omezuje zátěž automatizovaných pož
 nástroj neschválila ani nepodporuje. Pokud nás VŠE nebo držitel práv požádá, abychom přestali data používat nebo způsob
 jejich použití změnili, můžeme tak učinit bez předchozího upozornění.
 
+## Hodnocení ze Studologu
+
+Hodnocení a obtížnost předmětů pocházejí od studentů na platformě Studolog, kterou provozuje Studolog s.r.o. Jsou to názory uživatelů, ne stanovisko Kreditožroutů ani VŠE, a neručíme za jejich správnost.
+
 ## Duševní vlastnictví
 
 Popisy předmětů a související obsah pocházejí z veřejného katalogu InSIS VŠE. Práva k obsahu zůstávají jejich příslušným držitelům. Kreditožrouti jej zobrazuje pro nekomerční plánování studia.

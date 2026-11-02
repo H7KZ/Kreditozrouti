@@ -42,7 +42,7 @@ Projekt nabízí MCP server, přes který tebou zvolení AI asistenti vyhledáva
 
 ## Příjemci a předávání
 
-Cloudflare zajišťuje doručování a ochranu webu a může zpracovávat data mimo EHP podle svých [podmínek zpracování údajů](https://www.cloudflare.com/cloudflare-customer-dpa/). Aplikační služby běží na infrastruktuře Contabo ve Francii. Analytika, diagnostika chyb a logy jsou provozovány vlastními silami; údaje neprodáváme ani nepoužíváme k reklamě či profilování.
+Cloudflare zajišťuje doručování a ochranu webu a může zpracovávat data mimo EHP podle svých [podmínek zpracování údajů](https://www.cloudflare.com/cloudflare-customer-dpa/). Aplikační služby běží na infrastruktuře Contabo ve Francii. Hodnocení předmětů načítá náš server ze Studologu a posílá mu jen kód předmětu, nikoli údaje o tobě. Analytika, diagnostika chyb a logy jsou provozovány vlastními silami; údaje neprodáváme ani nepoužíváme k reklamě či profilování.
 
 ## Právní základ
 

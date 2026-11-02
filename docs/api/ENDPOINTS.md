@@ -10,6 +10,7 @@ The route declarations in `apps/api/src/Routes/` and schemas beside their contro
 | `POST /study_plans`              | Search plans and return facets                | `StudyPlansFilter` to `StudyPlansResponseDTO`             |
 | `POST /study_plans/courses`      | Courses in selected plans                     | `StudyPlanCoursesFilter` to `StudyPlanCoursesResponseDTO` |
 | `POST /optimize`                 | Solve a timetable                             | `OptimizeRequest` to `OptimizeResponseDTO`                |
+| `GET /courses/:ident/studolog`   | Student ratings from Studolog                 | `StudologStatsResponseDTO`                                |
 | `POST /courses/:id/scrape`       | Queue a course refresh                        | `202 { jobId }`                                           |
 | `GET /courses/:id/scrape/status` | Watch refresh status                          | Server-sent events                                        |
 | `POST /share`                    | Save 1-50 selected units                      | `201 { id }`                                              |
@@ -21,6 +22,8 @@ The route declarations in `apps/api/src/Routes/` and schemas beside their contro
 The three search routes use a 300-second Redis cache. Search filters use `limit` and `offset`, not page numbers. The course filter supports text, faculty, period, language, lecturer, study plan, ECTS, delivery/completion mode, assessment, and included/excluded times. See [`packages/types/src/http.ts`](../../packages/types/src/http.ts) for exact fields. Times are minutes from midnight.
 
 `POST /optimize` accepts `course_ids`, `constraints`, and `mode: "build" | "explore"` (default `build`). Explore mode also accepts `explore_course_ids`. The response has `full_candidates`, `removal_candidates`, `partial`, `pool_truncated`, and optional `explore_results`. Request limits are 30 base courses and 20 explored courses. See [`packages/types/src/optimizer.ts`](../../packages/types/src/optimizer.ts). The route allows 50 requests per 10 minutes per IP.
+
+`GET /courses/:ident/studolog` proxies `https://api.studolog.cz/api/v1/subjects/:ident/stats` so the partner key stays on the server and visitors' IP addresses never reach Studolog. It answers `{ stats: null }` when `API_STUDOLOG_KEY` is empty, the subject is unknown or unrated, or Studolog fails or takes longer than 3 seconds. Answers are cached for 300 seconds, matching Studolog's `Cache-Control`, and the route allows 60 requests per minute per IP. Studolog has no bulk endpoint, so ratings are read on demand and never stored, sorted, or filtered on.
 
 The scrape trigger allows 3 requests per 10 minutes per IP and 1 per course. Its status stream sends `progress`, then `complete` after the database update or `error` after a five-minute timeout. Share and iCal records expire after 180 days of inactivity; reading a record renews its expiry.
 

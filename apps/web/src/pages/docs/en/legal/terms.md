@@ -62,6 +62,10 @@ The app reads public InSIS pages and limits automated request load. Kreditožrou
 not endorsed or approved this tool. If VŠE or a rights holder asks us to stop or change how this data is used, we may
 do so without notice.
 
+## Studolog ratings
+
+Course ratings and difficulty come from students on the Studolog platform, operated by Studolog s.r.o. They are users' opinions, not the position of Kreditožrouti or VŠE, and we do not guarantee that they are accurate.
+
 ## Intellectual property
 
 Course descriptions and related content come from VŠE's public InSIS catalog. Rights in that content remain with their respective holders. Kreditožrouti displays it for non-commercial student planning.

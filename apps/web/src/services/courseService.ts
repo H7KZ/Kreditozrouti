@@ -1,9 +1,15 @@
-import type { CoursesFilter, CoursesResponseDTO } from '@kreditozrouti/types'
+import type { CoursesFilter, CoursesResponseDTO, StudologStatsDTO, StudologStatsResponseDTO } from '@kreditozrouti/types'
 import api from '@web/api'
 
 export async function fetchCourses(filters: Partial<CoursesFilter>): Promise<CoursesResponseDTO> {
 	const response = await api.post<CoursesResponseDTO>('/courses', filters)
 	return response.data
+}
+
+export async function fetchStudologStats(ident: string): Promise<StudologStatsDTO | null> {
+	// Ratings are optional, so a failure must not reach the global alert interceptor.
+	const response = await api.get<StudologStatsResponseDTO>(`/courses/${encodeURIComponent(ident)}/studolog`, { validateStatus: () => true })
+	return response.status === 200 ? response.data.stats : null
 }
 
 export class RateLimitedError extends Error {

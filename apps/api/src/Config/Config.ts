@@ -45,6 +45,11 @@ interface Config {
 
 	cacheDisabled: boolean
 
+	studolog: {
+		/** Partner key for api.studolog.cz. Empty disables the ratings. */
+		apiKey: string
+	}
+
 	/** The running build, stamped into the image at build time; reported as app_build_info. */
 	build: {
 		version: string
@@ -106,6 +111,10 @@ const config: Config = {
 	},
 
 	cacheDisabled: process.env.API_CACHE_DISABLED === 'true',
+
+	studolog: {
+		apiKey: process.env.API_STUDOLOG_KEY ?? ''
+	},
 
 	build: {
 		version: process.env.APP_VERSION ?? 'unknown',

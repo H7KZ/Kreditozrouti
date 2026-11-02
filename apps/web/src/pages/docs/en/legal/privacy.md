@@ -42,7 +42,7 @@ The project offers an MCP server that lets AI assistants you choose search cours
 
 ## Recipients and transfers
 
-Cloudflare delivers and protects the site and may process data outside the EEA under its [data processing terms](https://www.cloudflare.com/cloudflare-customer-dpa/). Application services run on Contabo infrastructure in France. Analytics, error diagnosis, and logs are self-hosted; we do not sell data or use it for advertising or profiling.
+Cloudflare delivers and protects the site and may process data outside the EEA under its [data processing terms](https://www.cloudflare.com/cloudflare-customer-dpa/). Application services run on Contabo infrastructure in France. Our server loads course ratings from Studolog and sends it only the course code, never data about you. Analytics, error diagnosis, and logs are self-hosted; we do not sell data or use it for advertising or profiling.
 
 ## Legal basis
 

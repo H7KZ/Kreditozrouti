@@ -54,6 +54,10 @@ Expand a course and use its refresh icon to request current information from InS
 
 When InSIS provides prerequisite data, the expanded course row groups it as required, incompatible after completion, incompatible in the same semester, or recommended. Click a linked course code to search for it. Filtering based on completed courses also uses applicable prerequisite information.
 
+## Student ratings
+
+The expanded course row shows a course's rating and difficulty from [Studolog](https://studolog.cz) when students have rated it there. Students write the ratings on Studolog; Kreditožrouti only displays them.
+
 ## Mark as completed
 
 Use **Mark as completed** in an expanded course row, or mark several courses in step 4 of the setup wizard. Completed courses can be hidden from the list. Turn on **Show completed courses** to find and unmark one.
