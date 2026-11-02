@@ -16,7 +16,8 @@ const CoursesRoutes = Router()
 
 CoursesRoutes.post('/', ParserJSONMiddleware, LoggerMiddleware, withCache(300), CoursesController)
 
-CoursesRoutes.get('/:ident/studolog', studologRateLimit, withCache(300), (req, res) => StudologController.stats(req, res))
+// The limiter protects Studolog, so it sits behind the cache: cached answers cost a visitor nothing.
+CoursesRoutes.get('/:ident/studolog', withCache(300), studologRateLimit, (req, res) => StudologController.stats(req, res))
 
 CoursesRoutes.post('/:id/scrape', scraperRateLimit(), (req, res) => CourseScraperController.trigger(req, res))
 CoursesRoutes.get('/:id/scrape/status', (req, res) => CourseScraperController.status(req, res))

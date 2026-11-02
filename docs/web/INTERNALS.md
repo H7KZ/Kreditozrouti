@@ -2,7 +2,7 @@
 
 ## API and shared code
 
-`apps/web/src/api.ts` creates the Axios client. Its base URL is `VITE_API_URL` or `/api`, and its response interceptor reports errors through `alerts.store.ts`. `apps/web/src/services/` wraps course, study-plan, optimizer, and calendar requests. UI code should use these services through stores or composables.
+`apps/web/src/api.ts` creates the Axios client. Its base URL is `VITE_API_URL` or `/api`, and its response interceptor reports errors through `alerts.store.ts`. `quietApi` is the same client without the interceptor, for optional data such as Studolog ratings. `apps/web/src/services/` wraps course, study-plan, optimizer, and calendar requests. UI code should use these services through stores or composables.
 
 The web app imports DTOs and domain types from `@kreditozrouti/types`. Browser-safe runtime functions come from `@kreditozrouti/core`. It must not import API runtime modules, core database or service modules, or the Node-only logger.
 

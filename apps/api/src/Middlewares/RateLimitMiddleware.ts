@@ -60,7 +60,7 @@ export function optimizeRateLimit() {
 
 export const studologRateLimit = ipRateLimit({
 	keyPrefix: 'studolog:ip',
-	points: 60,
+	points: 30,
 	duration: 60,
 	message: 'Too many rating requests. Please wait.'
 })

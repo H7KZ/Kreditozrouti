@@ -145,6 +145,7 @@ function handleToggleCompleted() {
 				:title="$t('components.courses.CourseRowExpanded.studologScore')"
 			>
 				<IconStar class="h-3 w-3" aria-hidden="true" />
+				<span class="sr-only">{{ $t('components.courses.CourseRowExpanded.studologScore') }}:</span>
 				{{ scoreLabel }}
 			</span>
 			<span v-if="difficultyLabel" class="inline-flex items-center rounded-full bg-(--insis-gray-100) px-2.5 py-0.5 text-xs text-(--insis-gray-700)">

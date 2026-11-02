@@ -89,6 +89,7 @@ services:
             API_ALLOWED_ORIGINS: http://localhost
             API_SESSION_SECRET: ${API_SESSION_SECRET:-local}
             API_COMMAND_TOKEN: ${API_COMMAND_TOKEN:-local}
+            API_STUDOLOG_KEY: ${API_STUDOLOG_KEY:-}
             WEB_URI: http://localhost
             MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}
             REDIS_URI: redis://redis:6379
