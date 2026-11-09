@@ -474,7 +474,7 @@ services:
     redis:
         # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
         # major bump from a floating tag would be a persistence format change nobody reviewed.
-        image: redis:8.10.1-alpine
+        image: redis:8.10.2-alpine
         restart: unless-stopped
 
         command:
