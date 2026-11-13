@@ -4,7 +4,7 @@
 name: kreditozrouti-monitoring
 services:
     prometheus:
-        image: prom/prometheus:v3.15.1
+        image: prom/prometheus:v3.16.0
         restart: unless-stopped
         command:
             - --config.file=/etc/prometheus/prometheus.yml
@@ -258,7 +258,7 @@ services:
                     cpus: '0.3'
                     memory: 128M
     umami:
-        image: ghcr.io/umami-software/umami:3.4.1
+        image: ghcr.io/umami-software/umami:3.5.0
         restart: unless-stopped
         depends_on:
             umami-db:
