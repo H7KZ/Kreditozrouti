@@ -26,6 +26,7 @@ Shared HTTP, database, and queue types live in `@kreditozrouti/types`. Pure doma
 
 - [Endpoints](ENDPOINTS.md) - routes, payloads, and errors
 - [Partner API](PUBLIC_API.md) - `/v1`, API keys, quotas, usage analytics, operating it
+- [Partner terms](PARTNER_TERMS.md) - what a partner accepts in writing before getting a key
 - [Services](SERVICES.md) - queries, facets, scraping, and optimization
 - [Response jobs](JOBS.md) - persistence and schedules
 - [Database](DATABASE.md) - tables, time encoding, and migrations

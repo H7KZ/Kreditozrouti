@@ -29,6 +29,19 @@ All must pass before the first key is issued. No timed fallback was agreed.
 4. Quotas, the key script and `GET /v1/usage` work, and a fail-open drill passes ([ADR 0003](0003-partner-api-rate-limit-fails-open.md)).
 5. VŠE or InSIS permission to redistribute scraped data.
 
+## Gate status (2026-11-13)
+
+Gate 1 is amended: the terms may be drafted by us, as long as Studolog accepts them in writing before a key is
+issued. Studolog had not sent a draft after the October call, and waiting on them blocked nothing else.
+
+| Gate                | Status                                                                                                                                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Partner terms    | Drafted by us in [PARTNER_TERMS.md](../api/PARTNER_TERMS.md). Passes when Studolog replies in writing that it accepts them.                                                                                                            |
+| 2. Privacy notice   | Passed. The privacy page names lecturers as personal data, lists the partner API as a recipient and gives a takedown contact.                                                                                                          |
+| 3. Visibility       | Passed. Verified locally: hidden and unconfirmed faculties return nothing on every endpoint, including lecturer course lists and course detail by id.                                                                                  |
+| 4. Quotas and drill | Passed. Per-minute and daily limits, the key CLI, revocation (under 15 seconds) and `GET /v1/usage` verified locally. Fail-open drill with Redis paused and stopped: `/v1` kept answering and `partner.quota_store_failed` was logged. |
+| 5. VŠE permission   | Passed on a verbal, informal OK from the InSIS administrator, recorded by the maintainer on 2026-11-13. Follow-up: get it in writing, and revisit this ADR if the permission is withdrawn.                                             |
+
 ## Considered options
 
 - Open self-serve API from day one. Rejected: no second consumer exists, and it multiplies the redistribution
