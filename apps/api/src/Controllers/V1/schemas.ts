@@ -26,6 +26,8 @@ export const CoursesQuerySchema = z
 		year: z.coerce.number().int().min(2000).max(2100).optional(),
 		semester: SemesterSchema.optional(),
 		faculty: list(z.string().min(1).max(32)),
+		/** Exact course idents (`4IT101`), case-insensitive. `q` is full-text over titles and syllabus and does not match idents. */
+		ident: list(z.string().regex(/^[\w-]{2,16}$/, 'Expected a course ident such as 4IT101')),
 		level: list(z.string().min(1).max(64)),
 		language: list(z.string().min(1).max(32)),
 		ects_min: z.coerce.number().int().min(0).max(60).optional(),

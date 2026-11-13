@@ -91,10 +91,27 @@ export const CatalogueV1Service = {
 			]
 		}
 
+		// Exact ident match, resolved to ids: the shared `idents` filter is a substring match meant for the web app.
+		if (query.ident.length) {
+			const rows = await mysql
+				.selectFrom(CourseTable._table)
+				.select('id')
+				.where(
+					'ident',
+					'in',
+					query.ident.map(ident => ident.toUpperCase())
+				)
+				.execute()
+			if (rows.length === 0) return empty
+			filters.ids = rows.map(r => r.id)
+		}
+
 		if (query.lecturer_id) {
 			const rows = await mysql.selectFrom(CourseLecturerTable._table).select('course_id').where('lecturer_id', '=', query.lecturer_id).execute()
-			if (rows.length === 0) return empty
-			filters.ids = rows.map(r => r.course_id)
+			const lecturerCourseIds = rows.map(r => r.course_id)
+			const ids = filters.ids ? lecturerCourseIds.filter(id => filters.ids!.includes(id)) : lecturerCourseIds
+			if (ids.length === 0) return empty
+			filters.ids = ids
 		}
 
 		filters.sort_by = query.sort
@@ -130,7 +147,8 @@ export const CatalogueV1Service = {
 			.innerJoin(`${CourseLecturerTable._table} as cl`, 'cl.lecturer_id', 'l.id')
 			.innerJoin(`${CourseTable._table} as c`, 'c.id', 'cl.course_id')
 			.where('c.faculty_id', 'in', facultyIds)
-			.$if(!!query.q, qb => qb.where('l.name', 'like', `%${query.q}%`))
+			// Escape LIKE wildcards so `q=%` or `q=__` searches for those characters instead of matching everyone.
+			.$if(!!query.q, qb => qb.where('l.name', 'like', `%${query.q!.replace(/[\\%_]/g, '\\$&')}%`))
 
 		const [totalRow, rows] = await Promise.all([
 			base.select(eb => eb.fn.count<number>('l.id').distinct().as('total')).executeTakeFirst(),

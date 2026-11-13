@@ -40,7 +40,8 @@ export const PublicMapper = {
 	unit(unit: Unit, includeLecturers: boolean): PublicUnit {
 		return {
 			id: unit.id,
-			...(includeLecturers ? { lecturer: unit.lecturer } : {}),
+			// InSIS prints "-" when a unit has no lecturer; partners get null instead of a fake name.
+			...(includeLecturers ? { lecturer: unit.lecturer && unit.lecturer.trim() !== '-' ? unit.lecturer : null } : {}),
 			capacity: unit.capacity,
 			note: unit.note,
 			slots: unit.slots.map(slot => PublicMapper.slot(slot))
