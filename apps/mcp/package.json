@@ -9,7 +9,7 @@
 	},
 	"main": "./dist/index.js",
 	"scripts": {
-		"dev": "dotenv run -f ../../.env -- tsx --watch src/index.ts",
+		"dev": "dotenv -e ../../.env -- tsx --watch src/index.ts",
 		"build": "tsup",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
