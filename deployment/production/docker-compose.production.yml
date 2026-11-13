@@ -324,7 +324,7 @@ services:
     # Database (MySQL)
     # ============================================================================
     mysql:
-        image: mysql:26.7.0@sha256:625f74ddf93652d9d0f8d4ea7d741b9189554a5e96d27bb770abd0902d89c6e3
+        image: mysql:26.7.0@sha256:9d48c42f8341068f199116dfccb919b607c99765b5c61e549a548a43033471a4
         restart: unless-stopped
 
         volumes:
@@ -445,7 +445,7 @@ services:
     redis:
         # Pinned to major 8. The AOF file in the named volume survives restarts, so an unnoticed
         # major bump from a floating tag would be a persistence format change nobody reviewed.
-        image: redis:8.10.2-alpine
+        image: redis:8.10.1-alpine@sha256:ef216d85ec44f4fdf7c0e6df2d1757a4734ed32fbb278cabd3181b5a27353b79
         restart: unless-stopped
 
         command:
