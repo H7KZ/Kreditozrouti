@@ -2,11 +2,14 @@
 # Rationale and review procedure: docs/runbooks/dependency-updates.md.
 #
 # Rules shared by every entry:
-#   - weekly, Monday 06:00 Europe/Prague
+#   - monthly (1st), 06:00 Europe/Prague
 #   - cooldown: a release must be 7 days old (14 for npm majors) before a version-update PR opens;
 #     security updates ignore the cooldown
-#   - minor and patch updates are grouped per ecosystem; a major update is never grouped, so it
-#     gets its own PR and is reviewed on its own
+#   - minor and patch updates are grouped per ecosystem (npm: ONE group for prod + dev, since several
+#     npm PRs all rewrite pnpm-lock.yaml and conflict once one merges); a major update is never grouped,
+#     so it gets its own PR and is reviewed on its own
+#   - only the npm and github-actions minor/patch groups are auto-merged after Verify Code passes
+#     (.github/workflows/dependabot-auto-merge.yml); every docker and compose PR is merged by hand
 #   - managed toolkit files (deployment/toolkit, deployment/vendor/**) are not listed here on
 #     purpose: the pin moves only through `npm run repin` in the Toolkit repository
 
@@ -20,13 +23,12 @@ updates:
     directory: /
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - dependencies
       - github_actions
@@ -42,27 +44,22 @@ updates:
     directory: /
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
       semver-major-days: 14
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     labels:
       - dependencies
       - javascript
     commit-message:
       prefix: 'build(deps)'
-      prefix-development: 'build(deps-dev)'
     groups:
-      production-minor-patch:
-        dependency-type: production
-        patterns: ['*']
-        update-types: ['minor', 'patch']
-      development-minor-patch:
-        dependency-type: development
+      # One group for production and development: a single PR, a single lockfile rewrite. The auto-merge
+      # workflow matches this group name in the PR title.
+      npm-minor-patch:
         patterns: ['*']
         update-types: ['minor', 'patch']
     ignore:
@@ -79,8 +76,7 @@ updates:
       - '/apps/*'
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
@@ -104,8 +100,9 @@ updates:
         update-types: ['version-update:semver-major']
 
   # Third-party images in the compose files. Images whose tag is a ${VAR} (the app images built here) are not
-  # resolvable and are skipped. Traefik, CrowdSec and the socket proxy and the stateful images below are
-  # never batched: each gets its own PR. Grafana, Loki, Alloy, Prometheus and Alertmanager move together.
+  # resolvable and are skipped. Traefik, CrowdSec, the socket proxy and Umami (migrates its database on
+  # start) are never batched: each gets its own reviewed PR. mysql, redis and postgres are ignored
+  # entirely (see below). Grafana, Loki, Alloy, Prometheus and Alertmanager move together.
   - package-ecosystem: docker-compose
     directories:
       - '/'
@@ -115,13 +112,12 @@ updates:
       - '/deployment/production'
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     labels:
       - dependencies
       - docker
@@ -130,15 +126,14 @@ updates:
     groups:
       images-minor-patch:
         patterns: ['*']
-        exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*']
+        exclude-patterns: ['traefik', 'crowdsecurity/*', 'tecnativa/*', 'ghcr.io/umami-software/*']
         update-types: ['minor', 'patch']
     ignore:
-      # mysql: a new major (release year) changes the on-disk format and needs a dump/restore or upgrade plan.
+      # Stateful images: ignored for EVERY version, not only majors. Deploys pin them by digest and refuse to
+      # replace a running MySQL/Redis container whose resolved image differs (data-image guard), so even a
+      # patch tag bump trips the deploy. A change is a reviewed manual edit with a fresh backup; see
+      # docs/runbooks/dependency-updates.md and rollback-and-recovery.md.
       - dependency-name: mysql
-        update-types: ['version-update:semver-major']
-      # redis: a new major can change the persisted format and command behaviour; verify before bumping.
       - dependency-name: redis
-        update-types: ['version-update:semver-major']
-      # postgres: a new major cannot read the old data directory; it needs pg_dump/restore or pg_upgrade.
+      # postgres backs Umami (deployment/monitoring); a major cannot read the old data directory.
       - dependency-name: postgres
-        update-types: ['version-update:semver-major']
