@@ -18,7 +18,7 @@ Verze 1, 13. 11. 2026
    fakulty, období, studijní plány) a se jmény vyučujících. Popis je v `GET /v1/openapi.json`.
 2. API klíče vydáváme my. Klíč pro server (bez origin) je tajný. Klíč pro prohlížeč je vázaný na registrované
    originy (`https://studolog.cz`, `https://studolog.com`), smí jen číst katalog a je ze své podstaty veřejný.
-3. Limit je společný pro všechny klíče partnera: 300 požadavků za minutu a 50 000 za den (UTC). Limity můžeme po
+3. Limit je společný pro všechny klíče partnera: 500 požadavků za minutu a 150 000 za den (UTC). Limity můžeme po
    dohodě upravit.
 
 ## 2. Jak partner data používá

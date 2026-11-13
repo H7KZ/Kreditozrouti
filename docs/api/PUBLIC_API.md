@@ -16,7 +16,7 @@ Send `Authorization: Bearer kz_live_...`. A missing, malformed, unknown, revoked
 
 Quota belongs to the Consumer, not the key, so extra keys never add quota. A Plan sets a per-minute burst limit and a daily cap (UTC buckets). Responses carry `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset` for the window that will run out first. These follow an IETF Internet-Draft, so treat them as optional. A 429 always carries `Retry-After` and a problem document with `window` (`minute` or `day`). If Redis is unavailable the request is let through unmetered (immediately when the connection is not ready, and after 300 ms when it is slow; the shared client retries forever, so every partner Redis call goes through `guardedRedis`), `api_quota_store_errors_total` increases and the wide event gets `quota_degraded: true`.
 
-The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a starting guess: tune it from `api_usage_hourly`.
+The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a starting guess: tune it from `api_usage_hourly`. Studolog has its own `studolog` Plan, 500 per minute and 150,000 per day (`create-plan studolog 500 150000`, then `create-consumer ... --plan studolog`).
 
 ## Browser use
 
