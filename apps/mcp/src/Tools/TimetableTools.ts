@@ -4,7 +4,7 @@ import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import { unitsConflict } from '@kreditozrouti/core/domain'
 import CourseService from '@kreditozrouti/core/services/CourseService'
-import { defineTool, registerTool } from '@mcp/tools'
+import { defineTool, registerTool, toMcpJson } from '@mcp/tools'
 
 interface SlotWithCourse {
 	course_id: number
@@ -88,7 +88,7 @@ export default class TimetableTools {
 					content: [
 						{
 							type: 'text',
-							text: JSON.stringify({ has_conflicts: conflicts.length > 0, conflicts }, null, 2)
+							text: toMcpJson({ has_conflicts: conflicts.length > 0, conflicts })
 						}
 					]
 				}

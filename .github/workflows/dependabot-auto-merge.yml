@@ -1,0 +1,102 @@
+# ==============================================================================
+# Workflow: Dependabot Auto-merge
+# Description: Squash-merges a Dependabot PR for the npm or github-actions
+#              minor/patch group once Verify Code has passed for its head commit.
+#              Docker and compose PRs, majors and every other group are never
+#              merged here: CI does not build images or start the stack.
+#              Gated in this workflow, not by a required-status-check rule, so
+#              direct pushes to develop stay possible.
+# Trigger: workflow_run of "Verify Code" (completed). GitHub runs workflow_run
+#          workflows from the DEFAULT branch only, so this file takes effect
+#          once it is on main.
+#
+# Required Secrets: none - the workflow GITHUB_TOKEN
+# ==============================================================================
+
+name: Dependabot Auto-merge
+run-name: Dependabot Auto-merge · ${{ github.event.workflow_run.head_branch }}
+
+on:
+  workflow_run:
+    workflows: ['Verify Code']
+    types: [completed]
+
+permissions: {}
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    name: Merge Dependabot group
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Find the pull request
+        id: pr
+        run: |
+          set -euo pipefail
+          # Same repository, authored by Dependabot, head commit == the commit that was verified,
+          # title is the npm or actions minor/patch group. Anything else is left for a human.
+          number="$(gh pr list --state open --author 'app/dependabot' --limit 100 \
+            --json number,title,headRefOid,isCrossRepository \
+            | jq -r --arg sha "$HEAD_SHA" '
+                [ .[]
+                  | select(.headRefOid == $sha and (.isCrossRepository | not))
+                  | select(.title | test("^(build\\(deps\\)|ci\\(deps\\)): bump the (npm|actions)-minor-patch group"))
+                ] | if length == 1 then .[0].number else empty end')"
+          if [[ -z "$number" ]]; then
+            echo "::notice::No eligible Dependabot group PR for $HEAD_SHA; nothing to merge"
+            echo "number=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      - name: Require every check finished and not failed
+        id: gate
+        if: steps.pr.outputs.number != ''
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          rollup="$(gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup')"
+          # Skipped and neutral are fine. Unfinished, failed, cancelled, timed-out etc. are not.
+          bad="$(jq -r '
+            .[]
+            | if .__typename == "CheckRun"
+              then select(.status != "COMPLETED" or (.conclusion | IN("SUCCESS","SKIPPED","NEUTRAL") | not))
+                   | "\(.name): \(.status)/\(.conclusion)"
+              else select(.state != "SUCCESS")
+                   | "\(.context): \(.state)"
+              end' <<<"$rollup")"
+          if [[ -n "$bad" ]]; then
+            echo "::warning::Not merging #$PR_NUMBER, checks not green:"
+            echo "$bad"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! jq -e 'any(.[]; .name == "Verify Code / Verify Code" and .conclusion == "SUCCESS")' <<<"$rollup" >/dev/null; then
+            echo "::warning::Not merging #$PR_NUMBER, 'Verify Code / Verify Code' did not report success"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Squash-merge
+        if: steps.pr.outputs.number != '' && steps.gate.outputs.ok == 'true'
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: gh pr merge "$PR_NUMBER" --squash --match-head-commit "$HEAD_SHA"

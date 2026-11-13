@@ -254,4 +254,10 @@ main()
 		console.error(error instanceof Error ? error.message : error)
 		process.exitCode = 1
 	})
-	.finally(() => mysql.destroy())
+	.finally(async () => {
+		await mysql.destroy().catch(() => {
+			/* exiting anyway */
+		})
+		// Imported clients (Redis) keep the event loop alive, which left the CLI hanging after an argument error.
+		process.exit()
+	})

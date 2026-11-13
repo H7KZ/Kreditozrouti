@@ -58,6 +58,13 @@ export function optimizeRateLimit() {
 	})
 }
 
+export const studologRateLimit = ipRateLimit({
+	keyPrefix: 'studolog:ip',
+	points: 30,
+	duration: 60,
+	message: 'Too many rating requests. Please wait.'
+})
+
 const scrapeMessage = 'Too many scrape requests. Please wait before trying again.'
 
 const scrapeIpLimiter = new RateLimiterRedis({ storeClient: redis, keyPrefix: 'scrape:ip', points: 3, duration: 600 })

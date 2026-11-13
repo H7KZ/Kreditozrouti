@@ -364,6 +364,14 @@
 				}
 			},
 			"CourseRowExpanded": {
+				"studologScore": "Average student rating",
+				"studologSource": "Ratings from Studolog",
+				"studologDifficulty": {
+					"giveaway": "Giveaway",
+					"easy": "Easy",
+					"medium": "Medium",
+					"hard": "Hard"
+				},
 				"faculty": "Faculty",
 				"ectsCredits": "ECTS credits",
 				"completion": "Completion",

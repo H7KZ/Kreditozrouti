@@ -9,14 +9,19 @@ interface ErrorResponse {
 	message?: string
 }
 
-const api: AxiosInstance = axios.create({
+const clientConfig = {
 	baseURL: import.meta.env.VITE_API_URL ?? '/api',
 	headers: {
 		'Content-Type': 'application/json',
 		Accept: 'application/json'
 	},
 	timeout: 10000
-})
+}
+
+const api: AxiosInstance = axios.create(clientConfig)
+
+/** For optional data: no global alert interceptor, so callers handle every failure themselves. */
+export const quietApi: AxiosInstance = axios.create(clientConfig)
 
 api.interceptors.response.use(
 	response => response,

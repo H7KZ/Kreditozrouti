@@ -18,7 +18,9 @@ function parametersFrom(schema: z.ZodType): JsonSchema[] {
 		return {
 			name,
 			in: 'query',
-			required: json.required?.includes(name) ?? false,
+			// A list parameter is never required: its preprocess turns an absent value into []. The input schema
+			// cannot see through the preprocess and lists it as required anyway.
+			required: !isList && (json.required?.includes(name) ?? false),
 			style: isList ? 'form' : undefined,
 			explode: isList ? false : undefined,
 			schema: isList ? { type: 'array', items: { type: 'string' } } : raw
@@ -82,7 +84,8 @@ function buildSpec(): JsonSchema {
 				get: {
 					summary: 'Search courses',
 					description:
-						'Needs `catalogue:read`. `lecturer_id` and the `lecturers` fields need `lecturers:read`. `day` with `time_from`/`time_to` matches courses that have a slot overlapping that window.',
+						'Needs `catalogue:read`. `lecturer_id` and the `lecturers` fields need `lecturers:read`. `day` with `time_from`/`time_to` matches courses that have a slot overlapping that window. ' +
+						'`ident` matches exact course idents (`4IT101`, case-insensitive, comma-separated or repeated); `q` is full-text over titles and syllabus text and does not match idents.',
 					parameters: parametersFrom(CoursesQuerySchema),
 					responses: { '200': ok(page('Course')), ...problemRefs }
 				}

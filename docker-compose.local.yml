@@ -7,7 +7,7 @@
 
 services:
     traefik:
-        image: traefik:v3.7.14
+        image: traefik:v3.7.16
         container_name: kreditozrouti-traefik-local
         command:
             - --api.insecure=true
@@ -61,7 +61,7 @@ services:
             - kreditozrouti-local
 
     redis:
-        image: redis:8.10.1-alpine
+        image: redis:8.10.2-alpine
         container_name: kreditozrouti-redis
         command: ['redis-server', '--save', '20', '1', '--appendonly', 'yes', '--loglevel', 'warning']
         ports:
@@ -89,6 +89,7 @@ services:
             API_ALLOWED_ORIGINS: http://localhost
             API_SESSION_SECRET: ${API_SESSION_SECRET:-local}
             API_COMMAND_TOKEN: ${API_COMMAND_TOKEN:-local}
+            API_STUDOLOG_KEY: ${API_STUDOLOG_KEY:-}
             WEB_URI: http://localhost
             MYSQL_URI: mysql://root:${MYSQL_ROOT_PASSWORD:-root}@mysql:3306/${MYSQL_DATABASE:-kreditozrouti}
             REDIS_URI: redis://redis:6379

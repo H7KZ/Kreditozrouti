@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js'
 import CourseService from '@kreditozrouti/core/services/CourseService'
-import { registerResourceTemplate } from '@mcp/tools'
+import { registerResourceTemplate, toMcpJson } from '@mcp/tools'
 
 export default class CourseResources {
 	static register(server: McpServer, db: Kysely<Database>): void {
@@ -47,7 +47,7 @@ export default class CourseResources {
 						{
 							uri: uri.toString(),
 							mimeType: 'application/json',
-							text: JSON.stringify(course, null, 2)
+							text: toMcpJson(course)
 						}
 					]
 				}

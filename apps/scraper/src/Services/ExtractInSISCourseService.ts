@@ -139,7 +139,9 @@ export default class ExtractInSISCourseService {
 	}
 
 	private static extractFaculty($: CheerioAPI): ScraperInSISFaculty {
-		const headerText = $('#titulek h1').text() || ''
+		// InSIS dropped the `#titulek` heading in November 2026; the page <title> carries the same
+		// "Sylabus předmětu 4IT101 - Title (FIS - ZS 2026/2027)" text, so it is the fallback.
+		const headerText = ($('#titulek h1').text() || $('title').first().text() || '').trim()
 		const bracketMatch = /\(([^)]+)\)\s*$/.exec(headerText)
 
 		if (!bracketMatch) return { ident: null, title: null }

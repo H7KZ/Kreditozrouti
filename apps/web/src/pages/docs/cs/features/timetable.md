@@ -54,6 +54,10 @@ Rozbal předmět a ikonou obnovení si vyžádej aktuální údaje z InSISu. Po 
 
 Pokud InSIS uvádí předpoklady, detail předmětu je rozděluje na povinné, vylučující po absolvování, vylučující souběžné studium a doporučené. Kliknutím na propojený kód předmět vyhledáš. Filtrování podle splněných předmětů používá i odpovídající údaje o předpokladech.
 
+## Hodnocení studentů
+
+Rozbalený řádek ukazuje hodnocení a obtížnost předmětu ze [Studologu](https://studolog.cz), pokud je předmět na Studologu hodnocený. Hodnocení přidávají studenti na Studologu, Kreditožrouti je jen zobrazují.
+
 ## Označit jako splněný
 
 Použij **Označit jako splněný** v rozbaleném řádku nebo označ více předmětů ve čtvrtém kroku průvodce. Splněné předměty lze v seznamu skrýt. Přepínačem **Zobrazit splněné předměty** je najdeš a můžeš označení zrušit.

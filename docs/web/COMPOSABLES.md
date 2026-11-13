@@ -6,7 +6,7 @@ Composable source lives in `apps/web/src/composables/`. Import from the barrel a
 | ------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | Time and slots     | `useTimeUtils`, `useSlotSorting`, `useSlotFormatting`, `useSlotMerging`, `useScheduleSummary`        | Convert and display timetable data                |
 | Grid interaction   | `useTimetableGrid`, `useTimetableDrag`, `usePopover`, `useClickOutside`                              | Position blocks and handle pointer UI             |
-| Course selection   | `useCourseUnitSelection`, `useCourseRefresh`, `useCourseLabels`                                      | Select or refresh slots and display labels        |
+| Course selection   | `useCourseUnitSelection`, `useCourseRefresh`, `useCourseLabels`, `useStudologStats`                  | Select or refresh slots and display labels        |
 | Filters            | `useTimeFilterMatching`, `useFacetFiltering`, `useCourseStatusFilter`, `useSharedCourseStatusFilter` | Match time windows, facets, and status categories |
 | Optimizer          | `useOptimizer`, `useOptimizerBasket`, `useFitScore`                                                  | Generate and rank timetable options               |
 | Export and sharing | `useICalExport`, `useScheduleExport`, `useShareTimetable`                                            | Download calendar or image; create share links    |

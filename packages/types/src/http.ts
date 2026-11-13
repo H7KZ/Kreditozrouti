@@ -383,6 +383,16 @@ export interface ErrorMetrics {
 	recent: RecentError[]
 }
 
+/** Student ratings of a course on Studolog. Either field can be null while the course has too few ratings. */
+export interface StudologStatsDTO {
+	score: number | null
+	difficulty: string | null
+}
+
+export interface StudologStatsResponseDTO {
+	stats: StudologStatsDTO | null
+}
+
 export interface AdminStatsResponse {
 	queue: { request: QueueStats }
 	schedulers: SchedulerInfo[]

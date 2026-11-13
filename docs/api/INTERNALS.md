@@ -2,7 +2,7 @@
 
 ## Configuration
 
-`apps/api/src/Config/Config.ts` reads the root or package `.env`. Common settings are `API_PORT` (default 40080), `API_ALLOWED_ORIGINS`, `API_COMMAND_TOKEN`, `API_SESSION_SECRET`, `MYSQL_URI`, and `REDIS_URI`. Production requires `API_SESSION_SECRET`; local runs get an ephemeral secret. `API_CACHE_DISABLED=true` bypasses the response cache. Email also needs `GOOGLE_USER` and `GOOGLE_APP_PASSWORD`.
+`apps/api/src/Config/Config.ts` reads the root or package `.env`. Common settings are `API_PORT` (default 40080), `API_ALLOWED_ORIGINS`, `API_COMMAND_TOKEN`, `API_SESSION_SECRET`, `MYSQL_URI`, and `REDIS_URI`. Production requires `API_SESSION_SECRET`; local runs get an ephemeral secret. `API_CACHE_DISABLED=true` bypasses the response cache. `API_STUDOLOG_KEY` enables the Studolog course ratings. Email also needs `GOOGLE_USER` and `GOOGLE_APP_PASSWORD`.
 
 ## Requests
 

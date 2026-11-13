@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import type { Kysely } from 'kysely'
 import { z } from 'zod'
 import OptimizerService from '@kreditozrouti/core/services/OptimizerService'
-import { defineTool, registerTool } from '@mcp/tools'
+import { defineTool, registerTool, toMcpJson } from '@mcp/tools'
 
 const DaySchema = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 
@@ -49,7 +49,7 @@ export default class OptimizerTools {
 					explore_course_ids: input.explore_course_ids
 				}
 				const result = await OptimizerService.optimize(db, request)
-				return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
+				return { content: [{ type: 'text', text: toMcpJson(result) }] }
 			} catch (err) {
 				return {
 					content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],

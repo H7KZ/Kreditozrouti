@@ -16,7 +16,7 @@ Send `Authorization: Bearer kz_live_...`. A missing, malformed, unknown, revoked
 
 Quota belongs to the Consumer, not the key, so extra keys never add quota. A Plan sets a per-minute burst limit and a daily cap (UTC buckets). Responses carry `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset` for the window that will run out first. These follow an IETF Internet-Draft, so treat them as optional. A 429 always carries `Retry-After` and a problem document with `window` (`minute` or `day`). If Redis is unavailable the request is let through unmetered (immediately when the connection is not ready, and after 300 ms when it is slow; the shared client retries forever, so every partner Redis call goes through `guardedRedis`), `api_quota_store_errors_total` increases and the wide event gets `quota_degraded: true`.
 
-The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a starting guess: tune it from `api_usage_hourly`.
+The seeded `partner` Plan is 300 requests per minute and 50,000 per day. It is a starting guess: tune it from `api_usage_hourly`. Studolog has its own `studolog` Plan, 500 per minute and 150,000 per day (`create-plan studolog 500 150000`, then `create-consumer ... --plan studolog`).
 
 ## Browser use
 
@@ -45,9 +45,9 @@ A key with origins is **public by nature**: anyone can read it from the page, an
 | `GET /v1/usage`                              | `usage:read`     | `?days=1..31`. `today.used` is live; `days` is flushed hourly.    |
 | `GET /v1/openapi.json`                       | none             | The contract                                                      |
 
-`GET /v1/courses` accepts `year`, `semester` (`ZS`/`LS`), `faculty`, `level`, `language` (comma-separated or repeated), `ects_min`, `ects_max`, `lecturer_id`, `study_plan_id`, `q` (full-text, 2+ characters), `day` with optional `time_from`/`time_to` (`HH:MM`; matches courses with a slot overlapping that window), `sort` (`ident`, `title`, `ects`), `order`, `limit` (1-100, default 20) and `offset`. Unknown parameters are rejected with 422. `level` and `language` use the normalised values the web app uses (`bachelor`, `czech`, ...). There are no facets and no conflict-with-my-selection filter in v1.
+`GET /v1/courses` accepts `year`, `semester` (`ZS`/`LS`), `faculty`, `ident` (exact course idents such as `4IT101`, case-insensitive; the way to match a course by its code, because `q` does not search idents), `level`, `language` (comma-separated or repeated), `ects_min`, `ects_max`, `lecturer_id`, `study_plan_id`, `q` (full-text, 2+ characters), `day` with optional `time_from`/`time_to` (`HH:MM`; matches courses with a slot overlapping that window), `sort` (`ident`, `title`, `ects`), `order`, `limit` (1-100, default 20) and `offset`. Unknown parameters are rejected with 422. `level` and `language` use the normalised values the web app uses (`bachelor`, `czech`, ...). There are no facets and no conflict-with-my-selection filter in v1.
 
-Lists return `{ data, meta: { total, limit, offset } }`. Times are `HH:MM`, days are `monday`..`sunday`, lists are arrays. Unit-level lecturers are names only: InSIS publishes no person link for them.
+Lists return `{ data, meta: { total, limit, offset } }`. Times are `HH:MM`, days are `monday`..`sunday`, lists are arrays. Unit-level lecturers are names only: InSIS publishes no person link for them, and a unit with no lecturer (InSIS shows `-`) has `lecturer: null`. The `q` filter on `/lecturers` is a plain substring match; `%` and `_` are literal characters.
 
 Errors are RFC 9457 `application/problem+json` with `type` (a `urn:kreditozrouti:problem:*` URN), `title`, `status`, `detail`, `instance`, `request_id`, plus `errors` for validation (422) and `window`/`retry_after_seconds` for 429. The problem types are `unauthorized`, `forbidden`, `validation`, `not-found`, `rate-limited` and `internal`.
 
@@ -92,4 +92,4 @@ Commands: `create-consumer`, `create-key`, `list`, `set-origins <prefix> <origin
 
 ## Before the first key
 
-All five gates in ADR 0004 must pass. Items still open: Studolog's written terms, the privacy notice for lecturer names, VŠE/InSIS permission to redistribute, and a fail-open drill (stop Redis, confirm `/v1` still answers and `partner.quota_store_failed` is logged).
+All five gates in ADR 0004 must pass; their status is recorded in the ADR. The one left open as of 2026-11-13 is Studolog's written acceptance of the [partner terms](PARTNER_TERMS.md). Before issuing a key in an environment, run the faculty-timetable job there (`POST /commands/insis/faculty-timetables`) so the visible set is not empty.

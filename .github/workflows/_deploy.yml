@@ -89,6 +89,7 @@ jobs:
           APP_MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
           APP_API_SESSION_SECRET: ${{ secrets.API_SESSION_SECRET }}
           APP_API_COMMAND_TOKEN: ${{ secrets.API_COMMAND_TOKEN }}
+          APP_API_STUDOLOG_KEY: ${{ secrets.API_STUDOLOG_KEY }}
           APP_MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           APP_MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           APP_MYSQL_URI: ${{ secrets.MYSQL_URI }}
