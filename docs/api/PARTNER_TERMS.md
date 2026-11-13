@@ -51,7 +51,7 @@ Verze 1, 13. 11. 2026
 
 1. API je bez záruky dostupnosti (SLA). Data pocházejí z veřejného katalogu InSIS a za jejich správnost
    neručíme my ani VŠE.
-2. Nezpětné změny verze `v1` oznámíme nejméně 30 dní předem. Rozšíření (nová pole, nové endpointy) mohou přijít
+2. Změny verze `v1`, které nejsou zpětně kompatibilní, oznámíme nejméně 30 dní předem. Rozšíření (nová pole, nové endpointy) mohou přijít
    kdykoliv.
 
 ## 6. Druhý směr
