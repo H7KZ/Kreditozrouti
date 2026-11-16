@@ -92,4 +92,4 @@ Commands: `create-consumer`, `create-key`, `list`, `set-origins <prefix> <origin
 
 ## Before the first key
 
-All five gates in ADR 0004 must pass; their status is recorded in the ADR. The one left open as of 2026-11-13 is Studolog's written acceptance of the [partner terms](PARTNER_TERMS.md). Before issuing a key in an environment, run the faculty-timetable job there (`POST /commands/insis/faculty-timetables`) so the visible set is not empty.
+All five gates in ADR 0004 must pass; their status is recorded in the ADR. All five passed on 2026-11-14, when Studolog accepted the [partner terms](PARTNER_TERMS.md) in writing. Before issuing a key in an environment, run the faculty-timetable job there (`POST /commands/insis/faculty-timetables`) so the visible set is not empty.
