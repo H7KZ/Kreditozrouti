@@ -15,35 +15,35 @@
     "courses": [
         {
             "id": 188377,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188377;aktualni=1;poc_obdobi=1140",
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188377;aktualni=1;poc_obdobi=1140;lang=cz",
             "ident": "4IT544",
             "group": "field_specific_master",
             "category": "compulsory"
         },
         {
             "id": 188380,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188380;aktualni=1;poc_obdobi=1140",
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188380;aktualni=1;poc_obdobi=1140;lang=cz",
             "ident": "4IT539",
             "group": "field_specific_master",
             "category": "compulsory"
         },
         {
             "id": 188366,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188366;aktualni=1;poc_obdobi=1140",
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188366;aktualni=1;poc_obdobi=1140;lang=cz",
             "ident": "4IT542",
             "group": "field_specific_master",
             "category": "compulsory"
         },
         {
             "id": 188365,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188365;aktualni=1;poc_obdobi=1140",
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188365;aktualni=1;poc_obdobi=1140;lang=cz",
             "ident": "4IT541",
             "group": "field_specific_master",
             "category": "compulsory"
         },
         {
             "id": 188390,
-            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188390;aktualni=1;poc_obdobi=1140",
+            "url": "https://insis.vse.cz/katalog/../katalog/syllabus.pl?predmet=188390;aktualni=1;poc_obdobi=1140;lang=cz",
             "ident": "4ADA_VYR",
             "group": "field_specific_master",
             "category": "state_exam"

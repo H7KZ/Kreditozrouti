@@ -70,7 +70,29 @@
             ]
         }
     ],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "N-IS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-IS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-IS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

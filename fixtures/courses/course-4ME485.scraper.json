@@ -91,7 +91,211 @@
             ]
         }
     ],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "RI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "UX",
+            "facultyIdent": "FIS",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eP"
+        },
+        {
+            "ident": "UX",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eP"
+        },
+        {
+            "ident": "UX",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eP"
+        },
+        {
+            "ident": "UX",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eP"
+        },
+        {
+            "ident": "UX",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eP"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "VY",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

@@ -49,7 +49,7 @@
     "course_contents": "**1.**\n\n**Vyjednávání** (dotace 0/6)\n\na.\n\nÚvod do vyjednávání\n\nb.\n\nVyjednávací strategie\n\nc.\n\nTypy vyjednávání\n\nd.\n\nIdentifikace klíčových aspektů přípravy na úspěšné vyjednávání, včetně strategie vyjednávání a argumentačních klamů (simulační cvičení)\n\ne.\n\n9 tváří vyjednávajících = představení nástroje „Enneagram“ (typologie osobnosti) a jednotlivých enneagramových typů – včetně „sebehodnocení“ a hodnocení ostatních účastníků kurzu\n\n**2.**\n\n**Mediace** (dotace 0/6)\n\na.\n\nMetoda mediace\n\nb.\n\nCharakteristika dobrého mediátora\n\nc.\n\nIdentifikace situací, kdy je mediace jako způsob řešení sporů plně použitelná a především smysluplná\n\nd.\n\nSimulace sporu řešeného mediátorem\n\n**3.**\n\n**Rozhodčí řízení neboli arbitráž** (dotace 0/6)\n\na.\n\nPochopení metody arbitráže se změřením na její odlišnosti oproti soudnímu řízení\n\nb.\n\nRozhodčí smlouva, rozhodčí doložka a její součásti\n\nc.\n\nNávrh rozhodčí doložky ve vztahu ke konkrétní situaci\n\nd.\n\nRozhodčí řízení a rozhodčí nález, výhody rozhodčího řízení\n\ne.\n\nObchodní arbitráž a další typy arbitráže\n\nf.\n\nSimulace sporu řešeného arbitráží\n\n**4.**\n\n**Soudní řízení** (dotace 0/8)\n\na.\n\nZákladní zásady soudního řízení\n\nb.\n\nPříslušnost soudu\n\nc.\n\nŽaloba a její obsah\n\nd.\n\nUnesení břemene tvrzení a důkazního břemene\n\ne.\n\nRozhodnutí soudu (usnesení, rozsudek)\n\nf.\n\nOdvolání a další opravné prostředky\n\ng.\n\nNáklady soudního řízení aneb kolik stojí se soudit?\n\nh.\n\nSimulovaný soudní proces neboli „Moot Court“ a individuální návštěva soudu",
     "special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující.",
     "literature_required": null,
-    "literature_recommended": "RAZ, Tahl; VOSS, Chris. _Nikdy nedělej kompromis, aneb, Vyjednávej tak, jako by ti šlo o život._ \\[Brno\\]: Jan Melvil Publishing, 2016. ISBN 978-80-7555-002-6.[](https://library.vse.cz/sysno?000310119)",
+    "literature_recommended": "VOSS, Chris; RAZ, Tahl. _Nikdy nedělej kompromis, aneb, Vyjednávej tak, jako by ti šlo o život._ \\[Brno\\]: Jan Melvil Publishing, 2016. ISBN 978-80-7555-002-6.[](https://library.vse.cz/sysno?000310119)",
     "assessment_methods": [
         {
             "method": "Aktivita na přednáškách/cvičeních/seminářích",
@@ -457,6 +457,13 @@
             "group_code": "cVM"
         },
         {
+            "ident": "N-BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
             "ident": "N-DAB",
             "facultyIdent": "FIS",
             "period": "ZS 2021/2022",
@@ -474,6 +481,13 @@
             "ident": "N-DAB",
             "facultyIdent": "FIS",
             "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAVP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },
@@ -549,6 +563,13 @@
         },
         {
             "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO",
             "facultyIdent": "FIS",
             "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
@@ -737,6 +758,13 @@
             "group_code": "cVM"
         },
         {
+            "ident": "N-SDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
             "ident": "N-ST",
             "facultyIdent": "FIS",
             "period": "ZS 2021/2022",
@@ -768,6 +796,13 @@
             "ident": "N-ST",
             "facultyIdent": "FIS",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UIDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },
@@ -1132,6 +1167,13 @@
             "ident": "N-MNG",
             "facultyIdent": "FPH",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },

@@ -11,8 +11,7 @@
 		"preview": "node dist/apps/scraper/src/index.js",
 		"type-check": "tsc --noEmit && tsc -p src/Tests/tsconfig.json --noEmit",
 		"test": "vitest run",
-		"test:regen": "cross-env FORCE_FIXTURES=1 vitest run",
-		"generate-fixtures": "tsx --tsconfig tsconfig.json scripts/generate-fixtures.ts"
+		"test:regen": "cross-env FORCE_FIXTURES=1 vitest run"
 	},
 	"dependencies": {
 		"@kreditozrouti/core": "workspace:*",

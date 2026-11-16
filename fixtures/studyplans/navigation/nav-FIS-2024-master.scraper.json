@@ -7,7 +7,7 @@
                 "Vedlejší specializace",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=117;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -16,7 +16,7 @@
                 "Vedlejší specializace",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=212;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -25,7 +25,7 @@
                 "Vedlejší specializace",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=703;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -34,7 +34,7 @@
                 "Vedlejší specializace",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=40;poc_obdobi=1143;typ_ss=5;typ_studia=4;new_spec=63;misto_vyuky=;lang=cz"
         }
     ],
     "planUrls": []

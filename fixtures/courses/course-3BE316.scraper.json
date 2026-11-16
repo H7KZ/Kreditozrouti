@@ -38,7 +38,7 @@
     "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- vysvětlit odlišnosti v obsahu a zpracování informací pro rozhodování o optimální struktuře výkonů, v porovnání s účetními informacemi pro motivaci řídicích pracovníků na různých úrovních podnikového managementu;  \n\\- provést analýzu bodu zvratu a analýzu nákladů a výstupu  \n\\- vybrat vhodné varianty sestavovaných kalkulací v návaznosti na odlišné rozhodovací úlohy, které řídicí pracovníci řeší;  \n\\- vybrat vhodné varianty pro analýzu investičního plánování v podmínkách rizika a nejistoty.",
     "course_contents": "1\\. Vztah finančního účetnictví, manažerského účetnictví a finančního řízení  \n2\\. Pojetí nákladů a výkonnosti  \n3\\. Hospodářský výsledek. Analýza bodu zvratu. Analýza nákladů - výstupu a zisku.  \n4\\. Kalkulace  \n5\\. Rozpočetnictví  \n6\\. Vazba manažerského účetnictví a investičního rozhodování.",
     "special_requirements": "Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 14 Studijního a zkušebního řádu.",
-    "literature_required": "**Základní:**\n\nDRURY, Colin. _Management accounting for business._ Andover: Cengage Learning, 2009. ISBN 978-1-4080-1771-5.[](https://library.vse.cz/sysno?000168157)\n\nDRURY, Colin. _Management and cost accounting._ London: South-Western/Cengage Learning, 2008. ISBN 978-1-84480-566-2.[](https://library.vse.cz/sysno?000182561)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197190-5.[](https://library.vse.cz/sysno?000133415)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis : student's solutions manual._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197224-7.[](https://library.vse.cz/sysno?000133417)\n\nGARRISON, Ray H. a NOREEN, Eric W. _Managerial accounting._ Boston: Irwin/McGraw-Hill, 2000. ISBN 0-07-109249-8.[](https://library.vse.cz/sysno?000034270)",
+    "literature_required": "**Základní:**\n\nDRURY, Colin. _Management accounting for business._ Andover: Cengage Learning, 2009. ISBN 978-1-4080-1771-5.[](https://library.vse.cz/sysno?000168157)\n\nDRURY, Colin. _Management and cost accounting._ London: South-Western/Cengage Learning, 2008. ISBN 978-1-84480-566-2.[](https://library.vse.cz/sysno?000182561)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197190-5.[](https://library.vse.cz/sysno?000133415)\n\nHORNGREN, Charles T. _Cost accounting : a managerial emphasis : student's solutions manual._ Toronto: Pearson Prentice Hall, 2007. ISBN 978-0-13-197224-7.[](https://library.vse.cz/sysno?000133417)\n\nNOREEN, Eric W. a GARRISON, Ray H. _Managerial accounting._ Boston: Irwin/McGraw-Hill, 2000. ISBN 0-07-109249-8.[](https://library.vse.cz/sysno?000034270)",
     "literature_recommended": null,
     "assessment_methods": [
         {
@@ -417,6 +417,13 @@
             "group_code": "cZEXCB"
         },
         {
+            "ident": "Z-EXC-CEP",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
             "ident": "Z-EXC-JINB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2015/2016",
@@ -501,6 +508,13 @@
             "group_code": "cZEXCB"
         },
         {
+            "ident": "Z-EXC-JINB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
             "ident": "Z-EXC-LLPB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2015/2016",
@@ -581,6 +595,13 @@
             "ident": "Z-EXC-LLPB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
+            "ident": "Z-EXC-LLPB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cZEXCB"
         },

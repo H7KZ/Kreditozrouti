@@ -15,7 +15,7 @@
         "year_of_study": 2,
         "semester": "LS",
         "year": 2025,
-        "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|Ing. Tomáš Miklánek, M.A., Ph.D.",
+        "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|doc. Ing. Tomáš Miklánek, M.A., Ph.D.",
         "prerequisites": "nelze (studovat po absolvování 3MI407 nebo studovat současně s 3MI407 nebo studovat po absolvování 3MI707 nebo studovat současně s 3MI707)",
         "recommended_programmes": "žádné",
         "required_work_experience": "žádná",
@@ -27,7 +27,7 @@
         "last_modified_date": "7. 10. 2025",
         "last_modified_by": "Ing. Pavel Mikan",
         "study_load": "[{\"activity\":\"Druh\",\"hours\":\"Prezenční studium\"},{\"activity\":\"Účast na přednáškách\",\"hours\":\"26 h\"},{\"activity\":\"Účast na cvičeních/seminářích/tutoriálech\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na přednášky a cvičení samostudiem\",\"hours\":\"13 h\"},{\"activity\":\"Příprava na průběžný test (testy)\",\"hours\":\"26 h\"},{\"activity\":\"Příprava na závěrečnou ústní zkoušku\",\"hours\":\"39 h\"}]",
-        "literature_required": "**Základní:**\n\nBAYE, Michael R. a PRINCE, Jeff. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
+        "literature_required": "**Základní:**\n\nPRINCE, Jeff a BAYE, Michael R. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
         "literature_recommended": null,
         "aims_of_the_course_en": null,
         "learning_outcomes_en": null,
@@ -80,7 +80,7 @@
             ]
         },
         {
-            "lecturer": "Ing. Tomáš Miklánek, M.A., Ph.D.",
+            "lecturer": "doc. Ing. Tomáš Miklánek, M.A., Ph.D.",
             "capacity": 40,
             "note": null,
             "slots": [

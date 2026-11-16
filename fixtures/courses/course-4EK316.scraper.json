@@ -85,7 +85,148 @@
             ]
         }
     ],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "LS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "oV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "4EK",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4EK",
+            "facultyIdent": "FIS",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

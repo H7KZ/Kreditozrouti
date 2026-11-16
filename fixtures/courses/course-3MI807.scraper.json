@@ -17,7 +17,7 @@
     },
     "level": "magisterský navazující (druhý cyklus): 2",
     "year_of_study": "magisterský navazující (druhý cyklus): 2",
-    "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|Ing. Tomáš Miklánek, M.A., Ph.D.",
+    "lecturers": "doc. PhDr. Lubomír Cingl, Ph.D.|doc. Ing. Tomáš Miklánek, M.A., Ph.D.",
     "guarantors": "doc. Ing. Marek Hudík, Ph.D.",
     "lecturer_refs": [
         {
@@ -32,7 +32,7 @@
         },
         {
             "id": 103867,
-            "name": "Ing. Tomáš Miklánek, M.A., Ph.D.",
+            "name": "doc. Ing. Tomáš Miklánek, M.A., Ph.D.",
             "role": "lecturer"
         }
     ],
@@ -43,7 +43,7 @@
     "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení chování spotřebitelů a trhů obecně;  \n\\- analyzovat manažerská rozhodnutí týkající se cen a konkurence;  \n\\- definovat a aplikovat klíčové pojmy v analýze rozhodování a v teorii her;  \n\\- analyzovat různé tržní struktury a jejich důsledky pro rozhodování v firmě;  \n\\- přijímat strategická rozhodnutí na základě analýzy a vyhodnocení vládních regulací.",
     "course_contents": "1\\. Úvod do manažerské ekonomie  \n2\\. Rozhodování jedince  \n3\\. Analýza poptávky  \n4\\. Analýza produkce a nákladů  \n5\\. Organizace firmy a odvětvové struktury  \n6\\. Strategie firmy na konkurenčních trzích  \n7\\. Cenové strategie firem s tržní silou  \n8\\. Diferenciace produkce a reklama, monopolistická konkurence  \n9\\. Oligopol  \n10\\. Teorie her  \n11\\. Rozhodování v podmínkách rizika  \n12\\. Ekonomie informací  \n13\\. Externality a veřejné statky",
     "special_requirements": "Student postoupí na zkoušku, pokud dosáhne minimálně 20 bodů celkem za průběžné testy. Pokud tomu tak není, je hodnocen stupněm 4. Pokud je student při ústní zkoušce hodnocen stupněm 4+, opakuje ústní zkoušku. Na přednáškách je vyžadována nejméně 50% účast, při nižší účasti je student hodnocen známkou nevyhověl. Pokud student z vážných důvodů nemohl splnit tuto studijní povinnost, postupuje se dle článku 11 Studijního a zkušebního řád",
-    "literature_required": "**Základní:**\n\nBAYE, Michael R. a PRINCE, Jeff. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
+    "literature_required": "**Základní:**\n\nPRINCE, Jeff a BAYE, Michael R. _Managerial economics and business strategy._ New York: McGraw-Hill Education, 2017. ISBN 978-1-259-29061-9.[](https://library.vse.cz/sysno?000547154)",
     "literature_recommended": null,
     "assessment_methods": [
         {
@@ -80,7 +80,7 @@
             ]
         },
         {
-            "lecturer": "Ing. Tomáš Miklánek, M.A., Ph.D.",
+            "lecturer": "doc. Ing. Tomáš Miklánek, M.A., Ph.D.",
             "capacity": 40,
             "note": null,
             "slots": [
@@ -96,7 +96,155 @@
             ]
         }
     ],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "oP"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "LS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "oP"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "oP"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "oP"
+        },
+        {
+            "ident": "C-INDI",
+            "facultyIdent": "FPH",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "fV"
+        },
+        {
+            "ident": "C-INDI",
+            "facultyIdent": "FPH",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "fV"
+        },
+        {
+            "ident": "C-INDI",
+            "facultyIdent": "FPH",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "fV"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "hP"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

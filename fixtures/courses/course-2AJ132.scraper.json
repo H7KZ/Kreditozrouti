@@ -33,7 +33,7 @@
     "learning_outcomes": "Po úspěšném absolvování budou studenti schopni:  \n\\- prezentovat odborná témata z oblasti kreativního sektoru.  \n\\- analyzovat a interpretovat odborné texty a autentické verbální projevy, a aplikovat získané poznatky v profesní komunikaci.  \n\\-poskytovat a přijímat zpětnou vazbu v profesních situacích s využitím vhodných jazykových prostředků.  \n\\-řešit konflikty v pracovním prostředí prostřednictvím efektivní komunikace v angličtině.  \n\\-používat jazykové strategie pro ovlivňování rozhodování, včetně argumentace, přesvědčování a vyjednávání.  \n\\-rozvíjet ústní i písemné komunikační schopnosti na úrovni B2+ podle CEFR, se zvláštním důrazem na potřeby oboru Arts management.  \n\\-Upevnit gramatické struktury odpovídající úrovni B2+ a aplikovat je v profesních i akademických kontextech.",
     "course_contents": "**1.**\n\n**Práce v zahraničí** (dotace 0/2)\n\na.\n\nSlovní zásoba spojená s prací v zahraničí\n\nb.\n\nProjekt: Stěhování se za prací\n\nc.\n\nInverze\n\nd.\n\nSlovní zásoba na téma studia/práce\n\n**2.**\n\n**Hodnotící pohovor** (dotace 0/2)\n\na.\n\nFráze pro hodnotící pohovor\n\nb.\n\nFunkční jazyk: zpětná vazba\n\nc.\n\nFunkční jazyk: Argumentace\n\nd.\n\npředminulý čas\n\n**3.**\n\n**Strategické aliance** (dotace 0/2)\n\na.\n\nSlovní zásoba na téma spolupráce, strategické aliance, akvizice\n\nb.\n\nModální slovesa\n\nc.\n\nFunkční jazyk: Řešení konfliktu\n\nd.\n\nProjekt: Řešení konfliktu mezi sponzorem a organizátorem akce\n\n**4.**\n\n**Rizika** (dotace 0/2)\n\na.\n\nSlovní zásoba na téma živelné pohromy\n\nb.\n\nProjekt: Krizový protokol\n\nc.\n\nZvládání rizik\n\nd.\n\nPodmínkové věty\n\n**5.**\n\n**Rizika** (dotace 0/2)\n\na.\n\nFunkční jazyk: Analýza možných rizik\n\nb.\n\nInvestiční rizika\n\nc.\n\nReport\n\n**6.**\n\n**Rozhodování** (dotace 0/2)\n\na.\n\nSlovní zásoba na téma rozhodování\n\nb.\n\nto-infinitive x -ing form\n\nc.\n\nFunkční jazyk: Různé přístupy k rozhodování\n\nd.\n\nFunkční jazyk: Popis rozhodovacího procesu\n\n**7.**\n\n**Testy** (dotace 0/2)\n\na.\n\nPrůběžné testy\n\nb.\n\nZávěrečný test",
     "special_requirements": "Docházka na semináře je povinná, o omluvě rozhodne vyučující. Podmínkou připuštění k ústní zkoušce je získání 60% bodů ze závěrečného testu.",
-    "literature_required": "**Základní:**\n\nDIGNEN, Bob; DUBICKA, Iwonna; HOGAN, Mike; ROSENBERG, Marjorie a WRIGHT, Lizzie. _Business partner B2+ : coursebook._ Harlow: Pearson Education Limited, 2019. ISBN 978-1-292-23357-4.[](https://library.vse.cz/sysno?000726725)",
+    "literature_required": "**Základní:**\n\nDIGNEN, Bob; DUBICKA, Iwonna; WRIGHT, Lizzie; ROSENBERG, Marjorie a HOGAN, Mike. _Business partner B2+ : coursebook._ Harlow: Pearson Education Limited, 2019. ISBN 978-1-292-23357-4.[](https://library.vse.cz/sysno?000726725)",
     "literature_recommended": null,
     "assessment_methods": [
         {
@@ -990,6 +990,13 @@
             "group_code": "fJV"
         },
         {
+            "ident": "B-AM",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "fJV"
+        },
+        {
             "ident": "B-EM-AM",
             "facultyIdent": "FPH",
             "period": "ZS 2013/2014",
@@ -1126,6 +1133,13 @@
             "ident": "B-PE",
             "facultyIdent": "FPH",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "fJV"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "fJV"
         },

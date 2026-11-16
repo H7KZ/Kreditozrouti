@@ -48,7 +48,120 @@
         }
     ],
     "timetable": [],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2019/2020 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2020/2021 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2021/2022 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2022/2023 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2023/2024 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2024/2025 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2025/2026 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MG",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2026/2027 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2019/2020 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2020/2021 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2021/2022 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2022/2023 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2023/2024 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2024/2025 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2025/2026 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        },
+        {
+            "ident": "D-MGE",
+            "facultyIdent": "FMJH",
+            "period": "ZS 2026/2027 - doktorská studia",
+            "mode_of_study": "prezenční",
+            "group_code": "fP"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

@@ -9,7 +9,7 @@
                 "",
                 "-"
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=842;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=842;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -20,7 +20,7 @@
                 "",
                 "-"
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=843;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=843;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -31,7 +31,7 @@
                 "",
                 "-"
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=844;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=844;misto_vyuky=;lang=cz"
         },
         {
             "texts": [
@@ -42,7 +42,7 @@
                 "",
                 "-"
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=845;misto_vyuky="
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=10;poc_obdobi=1145;typ_ss=5;typ_studia=1;program=845;misto_vyuky=;lang=cz"
         }
     ],
     "planUrls": []

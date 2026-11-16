@@ -6,7 +6,7 @@
                 "ZS 2025/2026",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1373;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1373;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -14,7 +14,7 @@
                 "ZS 2024/2025",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1312;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1312;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -22,7 +22,7 @@
                 "LS 2023/2024",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1311;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1311;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -30,7 +30,7 @@
                 "ZS 2023/2024",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1260;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1260;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -38,7 +38,7 @@
                 "LS 2022/2023",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1236;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1236;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -46,7 +46,7 @@
                 "ZS 2022/2023",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1167;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1167;typ_ss=5;lang=cz"
         },
         {
             "texts": [
@@ -54,15 +54,7 @@
                 "LS 2021/2022",
                 ""
             ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1129;typ_ss=5"
-        },
-        {
-            "texts": [
-                "",
-                "ZS 2021/2022",
-                ""
-            ],
-            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1128;typ_ss=5"
+            "url": "https://insis.vse.cz/katalog/plany.pl?fakulta=142;poc_obdobi=1129;typ_ss=5;lang=cz"
         }
     ],
     "planUrls": []

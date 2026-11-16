@@ -28,5 +28,20 @@
         "title": "Zápis - 3. kolo",
         "starts_at": "2027-02-09T08:00:00",
         "ends_at": "2027-02-10T23:59:00"
+    },
+    {
+        "title": "Registrace specializací (ZS 2027/2028)",
+        "starts_at": "2027-06-14T08:00:00",
+        "ends_at": "2027-08-10T23:59:00"
+    },
+    {
+        "title": "Výběrové řízení specializací (ZS 2027/2028)",
+        "starts_at": "2027-06-14T08:00:00",
+        "ends_at": "2027-08-11T23:59:00"
+    },
+    {
+        "title": "Registrace (ZS 2027/2028)",
+        "starts_at": "2027-06-14T08:00:00",
+        "ends_at": "2027-08-29T23:59:00"
     }
 ]

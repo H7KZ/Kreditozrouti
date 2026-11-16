@@ -195,6 +195,13 @@
             "group_code": "cZEXCB"
         },
         {
+            "ident": "Z-EXC-CEP",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
             "ident": "Z-EXC-JINB",
             "facultyIdent": "OZS PZAH REK",
             "period": "ZS 2023/2024",
@@ -230,6 +237,13 @@
             "group_code": "cZEXCB"
         },
         {
+            "ident": "Z-EXC-JINB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
             "ident": "Z-EXC-LLPB",
             "facultyIdent": "OZS PZAH REK",
             "period": "ZS 2023/2024",
@@ -261,6 +275,13 @@
             "ident": "Z-EXC-LLPB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
+            "ident": "Z-EXC-LLPB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cZEXCB"
         },

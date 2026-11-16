@@ -322,6 +322,34 @@
             "group_code": "cVM"
         },
         {
+            "ident": "N-FT",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "N-FT",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "N-FT",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
+            "ident": "N-FT",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "hV"
+        },
+        {
             "ident": "N-UC",
             "facultyIdent": "FFU",
             "period": "ZS 2021/2022",
@@ -392,6 +420,13 @@
             "group_code": "cVM"
         },
         {
+            "ident": "N-BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
             "ident": "N-DAB",
             "facultyIdent": "FIS",
             "period": "ZS 2021/2022",
@@ -409,6 +444,13 @@
             "ident": "N-DAB",
             "facultyIdent": "FIS",
             "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAVP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },
@@ -484,6 +526,13 @@
         },
         {
             "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO",
             "facultyIdent": "FIS",
             "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
@@ -672,6 +721,13 @@
             "group_code": "cVM"
         },
         {
+            "ident": "N-SDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
             "ident": "N-ST",
             "facultyIdent": "FIS",
             "period": "ZS 2021/2022",
@@ -703,6 +759,13 @@
             "ident": "N-ST",
             "facultyIdent": "FIS",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UIDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },
@@ -1067,6 +1130,13 @@
             "ident": "N-MNG",
             "facultyIdent": "FPH",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVM"
         },

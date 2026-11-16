@@ -43,7 +43,36 @@
         }
     ],
     "timetable": [],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "oSZ"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "oSZ"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "oSZ"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "oSZ"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

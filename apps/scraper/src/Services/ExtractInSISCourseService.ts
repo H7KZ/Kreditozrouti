@@ -127,8 +127,8 @@ export default class ExtractInSISCourseService {
 		const title_en = getRowValueCaseInsensitive($, 'Název anglicky:')
 		const title = getRowValueCaseInsensitive($, 'Název v jazyce výuky:')
 		const ects = getRowValueCaseInsensitive($, 'Počet přidělených ECTS kreditů:')
-		const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky kurzu:')
-		const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení kurzu:')
+		const mode_of_delivery = getRowValueCaseInsensitive($, 'Forma výuky:')
+		const mode_of_completion = getRowValueCaseInsensitive($, 'Forma ukončení:')
 		const languages = getRowValueCaseInsensitive($, 'Jazyk výuky:')
 
 		return { ident, title, title_cs, title_en, ects, mode_of_delivery, mode_of_completion, languages }
@@ -204,7 +204,7 @@ export default class ExtractInSISCourseService {
 
 	private static extractSyllabusContent($: CheerioAPI) {
 		const prerequisites = getRowValueCaseInsensitive($, 'Omezení pro zápis:')
-		const recommended_programmes = getRowValueCaseInsensitive($, 'Doporučené doplňky kurzu:')
+		const recommended_programmes = getRowValueCaseInsensitive($, 'Doporučené doplňky:')
 		const required_work_experience = getRowValueCaseInsensitive($, 'Vyžadovaná praxe:')
 		const aims_of_the_course = getSectionContent($, 'Zaměření předmětu:')
 		const learning_outcomes = getSectionContent($, 'Výsledky učení:')

@@ -218,7 +218,6147 @@
             ]
         }
     ],
-    "study_plans": [],
+    "study_plans": [
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "LS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-FU-UP2",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "LS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-BP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-DP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FG",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FI",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-FO",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-FU-UP",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UC",
+            "facultyIdent": "FFU",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "B-AED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "LS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "LS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "LS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-AI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "LS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IN",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-IN",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-ME",
+            "facultyIdent": "FIS",
+            "period": "LS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-ME",
+            "facultyIdent": "FIS",
+            "period": "LS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-ME",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AI-ME",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-AIN1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "LS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IMES",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IVWT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "LS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SD",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SE",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-KM-SM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "eV"
+        },
+        {
+            "ident": "IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "MM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ADA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "LS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "LS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-AI-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-BI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAB",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAB",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAB",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAB",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-DAVP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EDA1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EO1",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ISM",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EK",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EK",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EK",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-EO",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-MOS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-MOS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-MOS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-QEA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-QEA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-QEA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-QEA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-QEA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ST",
+            "facultyIdent": "FIS",
+            "period": "LS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-KM-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-SDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ST",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UIDS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ZW",
+            "facultyIdent": "FIS",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "SP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "4DI",
+            "facultyIdent": "FIS",
+            "period": "LS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "sP"
+        },
+        {
+            "ident": "4DI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "sP"
+        },
+        {
+            "ident": "4DI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "sP"
+        },
+        {
+            "ident": "4DI",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "sP"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "LS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2011/2012",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "LS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "LS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4IP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "4KS",
+            "facultyIdent": "FIS",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "sV"
+        },
+        {
+            "ident": "B-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ME-RC",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "N-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EG",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EG",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-IB",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ID",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-CR",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EG",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EG",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EG",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-EI",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-IDS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-MP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ME-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MO",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MS",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PL-PL",
+            "facultyIdent": "FMV",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-PP",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-TM",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UT",
+            "facultyIdent": "FMV",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-UT",
+            "facultyIdent": "FMV",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "N-EM-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2017/2018",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2005/2006",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EM-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-MNG",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-ES-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-NH",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "C-MIM-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2012/2013",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "C-MIM-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2013/2014",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "C-MIM-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "C-MIM-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "C-MIM-EKE",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "LS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EK",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-EPP",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-EA",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-LAE",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-LAE",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RS",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2016/2017",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2018/2019",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-VS",
+            "facultyIdent": "NF",
+            "period": "ZS 2015/2016",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-ES-ZPE",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "LS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HD",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-RE",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2006/2007",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2007/2008",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "LS 2008/2009",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "LS 2009/2010",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2010/2011",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-HP-ZP",
+            "facultyIdent": "NF",
+            "period": "ZS 2014/2015",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2019/2020",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2020/2021",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "LS 2021/2022",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "LS 2022/2023",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "LS 2023/2024",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2024/2025",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        },
+        {
+            "ident": "N-RVS",
+            "facultyIdent": "NF",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVM"
+        }
+    ],
     "study_load": [
         {
             "activity": "Druh",

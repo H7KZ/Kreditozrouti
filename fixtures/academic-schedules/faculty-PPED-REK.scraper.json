@@ -2,6 +2,46 @@
     "_facultyId": 0,
     "periods": [
         {
+            "insis_period_id": 1498,
+            "insis_faculty_id": 0,
+            "faculty_ident": "PEDO",
+            "semester": "LS",
+            "year": 2028,
+            "level": null,
+            "starts_at": "2029-02-19",
+            "ends_at": "2029-09-01"
+        },
+        {
+            "insis_period_id": 1497,
+            "insis_faculty_id": 0,
+            "faculty_ident": "PEDO",
+            "semester": "ZS",
+            "year": 2028,
+            "level": null,
+            "starts_at": "2028-09-01",
+            "ends_at": "2029-02-19"
+        },
+        {
+            "insis_period_id": 1496,
+            "insis_faculty_id": 0,
+            "faculty_ident": "PEDO",
+            "semester": "LS",
+            "year": 2027,
+            "level": null,
+            "starts_at": "2028-02-14",
+            "ends_at": "2028-09-01"
+        },
+        {
+            "insis_period_id": 1495,
+            "insis_faculty_id": 0,
+            "faculty_ident": "PEDO",
+            "semester": "ZS",
+            "year": 2027,
+            "level": null,
+            "starts_at": "2027-09-01",
+            "ends_at": "2028-02-14"
+        },
+        {
             "insis_period_id": 1467,
             "insis_faculty_id": 0,
             "faculty_ident": "PEDO",
@@ -22,44 +62,14 @@
             "ends_at": "2027-02-15"
         },
         {
-            "insis_period_id": 1468,
-            "insis_faculty_id": 0,
-            "faculty_ident": "PEDO",
-            "semester": "LS",
-            "year": 2025,
-            "level": "doktorská studia",
-            "starts_at": "2026-02-16",
-            "ends_at": "2026-09-01"
-        },
-        {
-            "insis_period_id": 1465,
-            "insis_faculty_id": 0,
-            "faculty_ident": "PEDO",
-            "semester": "LS",
-            "year": 2025,
-            "level": null,
-            "starts_at": "2026-02-16",
-            "ends_at": "2026-09-01"
-        },
-        {
-            "insis_period_id": 1463,
+            "insis_period_id": 1519,
             "insis_faculty_id": 0,
             "faculty_ident": "PEDO",
             "semester": "ZS",
-            "year": 2025,
+            "year": 2026,
             "level": "doktorská studia",
-            "starts_at": "2025-09-01",
-            "ends_at": "2026-02-16"
-        },
-        {
-            "insis_period_id": 1363,
-            "insis_faculty_id": 0,
-            "faculty_ident": "PEDO",
-            "semester": "ZS",
-            "year": 2025,
-            "level": null,
-            "starts_at": "2025-09-01",
-            "ends_at": "2026-02-16"
+            "starts_at": "2026-09-01",
+            "ends_at": "2027-02-15"
         }
     ]
 }

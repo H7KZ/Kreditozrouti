@@ -33,7 +33,7 @@
     "learning_outcomes": "Po úspěšném absolvování kurzu budou studenti schopni:  \n\\- vysvětlit principy fungování dodavatelsko-odběratelských řetězců,  \n\\- využít základní modely pro řízení zásob a poptávky,  \n\\- popsat hlavní problémy při tvorbě řetězců,  \n\\- implementovat a modelovat základní konfigurace logistických řetězců,  \n\\- vysvětlit smluvní zajištění a faktory ovlivňující obsah smluv v oblasti logistických řetězců,  \n\\- uvést příklady distribučních strategií,  \n\\- pochopit význam informací pro efektivní řízení,  \n\\- identifikovat, vyhodnotit a řídit rizika,  \n\\- vymezit úlohu informačních technologií v oblasti supply chin managementu,  \n  \n\\-",
     "course_contents": "1\\. Úvod do problematiky supply chain managementu.  \n2\\. Řízení zásob a rizik.  \n3\\. Plánování a koncipování logistických řetězců.  \n4\\. Supply chian managenet.  \n5\\. Význam informací v oblasti supply chain managementu.  \n6\\. Stretegické řízení dodavatelsko-odběratelských řetězců.  \n7\\. Distribuční strategie.  \n8\\. Možnosti využití strategie outsourcingu.  \n9\\. Strategické aliance.  \n10\\. Řízení rizik a operace v rámci řetězců.",
     "special_requirements": "žádné",
-    "literature_required": "**Základní:**\n\nKAMINSKY, Philip; SIMCHI-LEVI, David; SIMCHI-LEVI, Edith. _Designing and managing the suply chain : concepts, strategies and case studies._ Boston: McGraw-Hill International, 2008. ISBN 978-0-07-110750-1.[](https://library.vse.cz/sysno?000159391)",
+    "literature_required": "**Základní:**\n\nKAMINSKY, Philip; SIMCHI-LEVI, Edith; SIMCHI-LEVI, David. _Designing and managing the suply chain : concepts, strategies and case studies._ Boston: McGraw-Hill International, 2008. ISBN 978-0-07-110750-1.[](https://library.vse.cz/sysno?000159391)",
     "literature_recommended": null,
     "assessment_methods": [
         {
@@ -728,6 +728,13 @@
             "group_code": "cVB"
         },
         {
+            "ident": "B-AED",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
             "ident": "B-AI-AI",
             "facultyIdent": "FIS",
             "period": "ZS 2014/2015",
@@ -903,6 +910,13 @@
             "group_code": "cVB"
         },
         {
+            "ident": "B-AIN",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
             "ident": "B-AIN1",
             "facultyIdent": "FIS",
             "period": "ZS 2020/2021",
@@ -941,6 +955,13 @@
             "ident": "B-AIN1",
             "facultyIdent": "FIS",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-DA",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVB"
         },
@@ -1046,6 +1067,13 @@
             "ident": "B-IMES",
             "facultyIdent": "FIS",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-IVWT",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVB"
         },
@@ -1396,6 +1424,13 @@
             "ident": "B-MM",
             "facultyIdent": "FIS",
             "period": "ZS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
+            "ident": "B-MVEP",
+            "facultyIdent": "FIS",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cVB"
         },
@@ -2114,6 +2149,13 @@
             "group_code": "cVB"
         },
         {
+            "ident": "B-PE",
+            "facultyIdent": "FPH",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cVB"
+        },
+        {
             "ident": "B-EK",
             "facultyIdent": "NF",
             "period": "ZS 2019/2020",
@@ -2737,6 +2779,13 @@
             "group_code": "cZEXCB"
         },
         {
+            "ident": "Z-EXC-CEP",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
             "ident": "Z-EXC-JINB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2013/2014",
@@ -2908,6 +2957,13 @@
             "ident": "Z-EXC-JINB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
+            "ident": "Z-EXC-JINB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cZEXCB"
         },
@@ -3097,6 +3153,13 @@
             "ident": "Z-EXC-LLPB",
             "facultyIdent": "OZS PZAH REK",
             "period": "LS 2025/2026",
+            "mode_of_study": "prezenční",
+            "group_code": "cZEXCB"
+        },
+        {
+            "ident": "Z-EXC-LLPB",
+            "facultyIdent": "OZS PZAH REK",
+            "period": "ZS 2026/2027",
             "mode_of_study": "prezenční",
             "group_code": "cZEXCB"
         },
