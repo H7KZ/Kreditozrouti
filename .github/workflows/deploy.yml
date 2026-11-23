@@ -59,13 +59,37 @@ concurrency:
   group: deploy-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
 jobs:
+  runner:
+    name: Pick runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      labels: ${{ steps.pick.outputs.labels }}
+    steps:
+      - id: pick
+        env:
+          GH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork == true }}
+        run: |
+          # self-hosted if an idle runner is online (and not a fork PR), else GitHub-hosted
+          labels='["ubuntu-latest"]'
+          if [ -n "$GH_TOKEN" ] && [ "$IS_FORK" != "true" ]; then
+            n=$(gh api "repos/$GITHUB_REPOSITORY/actions/runners?per_page=100"               --jq '[.runners[] | select(.status == "online" and .busy == false and ([.labels[].name] | index("self-hosted")))] | length' 2>/dev/null || echo 0)
+            if [ "${n:-0}" -gt 0 ]; then
+              labels='["self-hosted","Linux","X64","hetzner"]'
+            fi
+          fi
+          echo "labels=$labels" >> "$GITHUB_OUTPUT"
+          echo "Runner: $labels"
+
   resolve:
     name: Resolve source and images
     permissions:
       actions: read
       contents: read
       packages: read
-    runs-on: ubuntu-latest
+    needs: runner
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 15
     outputs:
       source_commit: ${{ steps.release.outputs.source_commit }}
@@ -110,6 +134,7 @@ jobs:
     needs: resolve
     if: github.event_name == 'push' || inputs.verify
     uses: ./.github/workflows/_verify.yml
+    secrets: inherit
     with:
       affected: false
       source_commit: ${{ needs.resolve.outputs.source_commit }}
@@ -210,10 +235,11 @@ jobs:
   release:
     name: Tag and publish GitHub Release
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     permissions:
       contents: write
     needs:
+      - runner
       - resolve
       - deploy
     if: ${{ !cancelled() && needs.deploy.result == 'success' && inputs.environment == 'production' && inputs.operation == 'deploy' }}
@@ -242,12 +268,12 @@ jobs:
           echo "GitHub Release: \`$tag\`" >>"$GITHUB_STEP_SUMMARY"
   publish-qualified-development-release:
     name: Publish qualified development release
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     environment: development
     permissions:
       contents: read
-    needs: [resolve, deploy, build-api, build-web, build-scraper, build-mcp]
+    needs: [runner, resolve, deploy, build-api, build-web, build-scraper, build-mcp]
     if: ${{ !cancelled() && needs.resolve.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && (github.event_name == 'push' || inputs.operation == 'deploy') && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success') && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
     steps:
       - name: Check out controller
