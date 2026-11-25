@@ -39,9 +39,15 @@ permissions:
   contents: read
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   sync:
+    needs: [runner]
     name: Sync host
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 30
     concurrency:
       group: deploy-host-sync

@@ -36,9 +36,15 @@ permissions:
   contents: read
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   verify-toolkit:
+    needs: [runner]
     name: Verify toolkit pin
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 5
     steps:
       - name: Check out source
@@ -50,8 +56,9 @@ jobs:
         run: bash deployment/toolkit verify
 
   verify:
+    needs: [runner]
     name: Verify Code
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 15
 
     permissions:

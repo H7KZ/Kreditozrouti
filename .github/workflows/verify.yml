@@ -45,6 +45,7 @@ jobs:
   verify:
     name: Verify Code
     uses: ./.github/workflows/_verify.yml
+    secrets: inherit
     with:
       affected: ${{ github.event_name == 'pull_request' }}
       source_commit: ${{ inputs.ref || github.sha }}

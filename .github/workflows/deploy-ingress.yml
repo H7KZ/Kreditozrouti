@@ -24,9 +24,15 @@ concurrency:
   group: deploy-ingress
   cancel-in-progress: false
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   resolve:
+    needs: [runner]
     name: Resolve source
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 5
     outputs:
       source_commit: ${{ steps.source.outputs.sha }}

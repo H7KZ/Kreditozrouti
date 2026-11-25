@@ -28,14 +28,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   merge:
+    needs: [runner]
     name: Merge Dependabot group
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'pull_request' &&
       github.event.workflow_run.actor.login == 'dependabot[bot]' &&
       github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 5
     permissions:
       contents: write

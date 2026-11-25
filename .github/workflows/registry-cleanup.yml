@@ -54,9 +54,15 @@ permissions:
   contents: read
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   validate:
+    needs: [runner]
     name: Validate inputs
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 5
     permissions: {}
     outputs:
@@ -85,8 +91,8 @@ jobs:
           PY
   deployed:
     name: Read retained release digests
-    needs: validate
-    runs-on: ubuntu-latest
+    needs: [runner, validate]
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     permissions:
       contents: read
@@ -132,9 +138,9 @@ jobs:
           echo "digests=$digests" >>"$GITHUB_OUTPUT"
           echo "Protected from the VPS: ${digests:-none}" >>"$GITHUB_STEP_SUMMARY"
   cleanup:
-    needs: [validate, deployed]
+    needs: [runner, validate, deployed]
     name: Cleanup ${{ matrix.package }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 15
     permissions:
       contents: read
