@@ -59,13 +59,19 @@ concurrency:
   group: deploy-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   resolve:
+    needs: [runner]
     name: Resolve source and images
     permissions:
       actions: read
       contents: read
       packages: read
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 15
     outputs:
       source_commit: ${{ steps.release.outputs.source_commit }}
@@ -110,6 +116,7 @@ jobs:
     needs: resolve
     if: github.event_name == 'push' || inputs.verify
     uses: ./.github/workflows/_verify.yml
+    secrets: inherit
     with:
       affected: false
       source_commit: ${{ needs.resolve.outputs.source_commit }}
@@ -209,13 +216,11 @@ jobs:
     secrets: inherit
   release:
     name: Tag and publish GitHub Release
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     permissions:
       contents: write
-    needs:
-      - resolve
-      - deploy
+    needs: [runner, resolve, deploy]
     if: ${{ !cancelled() && needs.deploy.result == 'success' && inputs.environment == 'production' && inputs.operation == 'deploy' }}
     steps:
       - name: Checkout controller with history and tags
@@ -242,12 +247,12 @@ jobs:
           echo "GitHub Release: \`$tag\`" >>"$GITHUB_STEP_SUMMARY"
   publish-qualified-development-release:
     name: Publish qualified development release
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     environment: development
     permissions:
       contents: read
-    needs: [resolve, deploy, build-api, build-web, build-scraper, build-mcp]
+    needs: [runner, resolve, deploy, build-api, build-web, build-scraper, build-mcp]
     if: ${{ !cancelled() && needs.resolve.result == 'success' && needs.deploy.result == 'success' && (github.event_name == 'push' || inputs.environment == 'development') && (github.event_name == 'push' || inputs.operation == 'deploy') && (needs.resolve.outputs.api_digest != '' || needs.build-api.result == 'success') && (needs.resolve.outputs.web_digest != '' || needs.build-web.result == 'success') && (needs.resolve.outputs.scraper_digest != '' || needs.build-scraper.result == 'success') && (needs.resolve.outputs.mcp_digest != '' || needs.build-mcp.result == 'success') }}
     steps:
       - name: Check out controller
