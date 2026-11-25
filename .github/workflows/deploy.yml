@@ -217,7 +217,6 @@ jobs:
   release:
     name: Tag and publish GitHub Release
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     permissions:
       contents: write
     needs: [runner, resolve, deploy]
