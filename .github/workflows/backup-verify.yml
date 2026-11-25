@@ -39,33 +39,9 @@ env:
   BACKUP_B2_KEY: ${{ secrets.BACKUP_B2_READER_KEY }}
 
 jobs:
-  runner:
-    name: Pick runner
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    outputs:
-      labels: ${{ steps.pick.outputs.labels }}
-    steps:
-      - id: pick
-        env:
-          GH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
-          IS_FORK: ${{ github.event.pull_request.head.repo.fork == true }}
-        run: |
-          # self-hosted if an idle runner is online (and not a fork PR), else GitHub-hosted
-          labels='["ubuntu-latest"]'
-          if [ -n "$GH_TOKEN" ] && [ "$IS_FORK" != "true" ]; then
-            n=$(gh api "repos/$GITHUB_REPOSITORY/actions/runners?per_page=100"               --jq '[.runners[] | select(.status == "online" and .busy == false and ([.labels[].name] | index("self-hosted")))] | length' 2>/dev/null || echo 0)
-            if [ "${n:-0}" -gt 0 ]; then
-              labels='["self-hosted","Linux","X64","hetzner"]'
-            fi
-          fi
-          echo "labels=$labels" >> "$GITHUB_OUTPUT"
-          echo "Runner: $labels"
-
   source:
     name: Resolve source
-    needs: runner
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       sha: ${{ steps.source.outputs.sha }}
@@ -80,9 +56,9 @@ jobs:
 
   freshness:
     name: Check freshness
-    needs: [runner, source]
+    needs: [source]
     if: (github.event_name == 'schedule' && github.event.schedule == '5 6 * * *') || (github.event_name == 'workflow_dispatch' && inputs.check != 'drill')
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Check out source
@@ -100,9 +76,9 @@ jobs:
 
   drill:
     name: Restore drill
-    needs: [runner, source]
+    needs: [source]
     if: (github.event_name == 'schedule' && github.event.schedule == '35 6 * * 1') || (github.event_name == 'workflow_dispatch' && inputs.check != 'freshness')
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - name: Check out source
